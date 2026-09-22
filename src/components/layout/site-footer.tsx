@@ -30,7 +30,7 @@ export function SiteFooter() {
 
         <nav aria-label="Footer" className="grid grid-cols-2 gap-8 md:col-span-7 md:grid-cols-3">
           <div>
-            <h2 className="text-label font-medium text-saffron-500 uppercase">Explore</h2>
+            <h2 className="font-sans text-label font-medium text-saffron-500 uppercase">Explore</h2>
             <ul className="mt-4 space-y-1">
               {primaryNav.map((item) => (
                 <li key={item.href}>
@@ -40,7 +40,9 @@ export function SiteFooter() {
             </ul>
           </div>
           <div>
-            <h2 className="text-label font-medium text-saffron-500 uppercase">OrangeTemple</h2>
+            <h2 className="font-sans text-label font-medium text-saffron-500 uppercase">
+              OrangeTemple
+            </h2>
             <ul className="mt-4 space-y-1">
               {menuNav.site.map((item) => (
                 <li key={item.href}>
@@ -50,7 +52,9 @@ export function SiteFooter() {
             </ul>
           </div>
           <div className="col-span-2 md:col-span-1">
-            <h2 className="text-label font-medium text-saffron-500 uppercase">Corrections</h2>
+            <h2 className="font-sans text-label font-medium text-saffron-500 uppercase">
+              Corrections
+            </h2>
             <p className="mt-4 text-small text-sand-100/80">
               Spotted something inaccurate? We review every correction.
             </p>

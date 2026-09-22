@@ -35,7 +35,9 @@ export default function MenuSheetContent({
         </SheetHeader>
         <SheetBody>
           <nav aria-label="Menu">
-            <h3 className="mt-2 text-label font-medium text-stone-600 uppercase">Collections</h3>
+            <h3 className="mt-2 font-sans text-label font-medium text-stone-600 uppercase">
+              Collections
+            </h3>
             <ul className="mt-2 divide-y divide-border border-y border-border">
               {menuNav.collections.map((item) => (
                 <li key={item.href}>
@@ -51,7 +53,9 @@ export default function MenuSheetContent({
                 </li>
               ))}
             </ul>
-            <h3 className="mt-8 text-label font-medium text-stone-600 uppercase">OrangeTemple</h3>
+            <h3 className="mt-8 font-sans text-label font-medium text-stone-600 uppercase">
+              OrangeTemple
+            </h3>
             <ul className="mt-2 grid grid-cols-2 gap-x-4">
               {menuNav.site.map((item) => (
                 <li key={item.href}>
