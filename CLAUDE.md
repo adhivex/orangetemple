@@ -61,6 +61,7 @@ pnpm db:deploy      # apply migrations only (preview/production)
 pnpm db:seed        # upsert seed files into the database (SEED_TARGET decides publishing)
 pnpm db:generate    # regenerate the Prisma client (also runs on postinstall)
 pnpm db:studio      # browse the database
+pnpm revalidate     # refresh cached pages after seeding (needs REVALIDATE_SECRET)
 # Phase 10: test:e2e (Playwright + axe)
 ```
 

@@ -40,6 +40,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Cache Components (D-015): pages prerender from cached, tagged reads and refresh on
+  // demand via /api/revalidate. See src/server/queries.ts.
+  cacheComponents: true,
   // Cloudinary does the resizing (D-012); see src/lib/cloudinary-loader.ts.
   images: {
     loader: 'custom',

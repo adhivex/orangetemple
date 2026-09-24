@@ -4,7 +4,6 @@ import type { ReactNode } from 'react'
 import { BottomNav } from '@/components/layout/bottom-nav'
 import { SiteFooter } from '@/components/layout/site-footer'
 import { SiteHeader } from '@/components/layout/site-header'
-import { MotionProvider } from '@/components/motion/motion-provider'
 import { env } from '@/env'
 import { fraunces, inter } from '@/lib/fonts'
 import { siteConfig } from '@/lib/site-config'
@@ -42,16 +41,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         >
           Skip to content
         </a>
-        <MotionProvider>
-          <SiteHeader />
-          <main id="main" tabIndex={-1} className="flex-1 outline-none">
-            {children}
-          </main>
-          <div className="bg-charcoal-900 pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] md:pb-0">
-            <SiteFooter />
-          </div>
-          <BottomNav />
-        </MotionProvider>
+        <SiteHeader />
+        <main id="main" tabIndex={-1} className="flex-1 outline-none">
+          {children}
+        </main>
+        <div className="bg-charcoal-900 pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] md:pb-0">
+          <SiteFooter />
+        </div>
+        <BottomNav />
       </body>
     </html>
   )

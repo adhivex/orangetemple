@@ -15,7 +15,6 @@ import { Rail } from '@/components/content/rail'
 import { SectionHeader } from '@/components/content/section-header'
 import { ActionBar } from '@/components/layout/action-bar'
 import { MenuSheet } from '@/components/layout/menu-sheet'
-import { Reveal } from '@/components/motion/reveal'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -463,17 +462,20 @@ export default function DesignSystemPage() {
       <DemoSection
         id="motion"
         title="Motion"
-        description="LazyMotion with async domAnimation. Entrances run once, 300–400 ms. With reduced motion on, only a short fade remains."
+        description="Motion is kept to interactions (D-035): sheets slide and fade, cards lift their image on hover, and navigation underlines grow. Durations are 200–400 ms; with reduced motion on, nothing moves. Sections do not animate in: measured on the homepage, scroll-driven entrances cost about a third of the LCP."
       >
-        <div className="grid gap-4 sm:grid-cols-3">
-          {[0, 0.08, 0.16].map((delay, i) => (
-            <Reveal key={delay} delay={delay}>
-              <div className="flex aspect-[3/2] items-center justify-center rounded-card bg-sand-100 font-display text-h2 text-charcoal-700">
-                {i + 1}
-              </div>
-            </Reveal>
+        <ul className="grid gap-3 text-charcoal-700 sm:grid-cols-3">
+          {[
+            ['Sheets', 'Slide up and fade: 300 ms in, 200 ms out.'],
+            ['Cards', 'Image scales to 103% on hover, 500 ms ease-out.'],
+            ['Navigation', 'Active underline grows from the left, 300 ms.'],
+          ].map(([name, detail]) => (
+            <li key={name} className="rounded-card border border-border p-5">
+              <p className="font-display text-h3 text-charcoal-900">{name}</p>
+              <p className="mt-2 text-small">{detail}</p>
+            </li>
           ))}
-        </div>
+        </ul>
       </DemoSection>
 
       <DemoSection

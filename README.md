@@ -19,7 +19,10 @@ Before the database steps, create `.env.local` (gitignored) with the local Docke
 DATABASE_URL=postgresql://orangetemple:orangetemple@localhost:5433/orangetemple
 DIRECT_URL=postgresql://orangetemple:orangetemple@localhost:5433/orangetemple
 SEED_TARGET=development
+REVALIDATE_SECRET=<any random string of 16+ characters>
 ```
+
+Pages are prerendered from the database. After changing content, run `corepack pnpm db:seed`, then `corepack pnpm revalidate` while the site is running.
 
 These are local-only development defaults, not secrets. Then open http://localhost:3000 and http://localhost:3000/design-system. All commands are listed in `CLAUDE.md`.
 

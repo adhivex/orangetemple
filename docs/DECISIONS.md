@@ -6,6 +6,8 @@ On 2026-09-23 the owner accepted all Proposed entries D-002 to D-022 as written,
 
 On 2026-09-24 the owner approved the Phase 1 review gate ("proceed"). D-023 to D-029 were not individually confirmed and remain Proposed.
 
+On 2026-09-24 the owner approved the Phase 2 review gate ("push and proceed"). Open items 1–3 remain open: every temple stays `reviewed: false`, so nothing can be published to production.
+
 | ID | Decision | Reason | Status |
 |---|---|---|---|
 | D-001 | V1 has **15 unique temple records** (12 Jyotirlingas + 4 Char Dham, Rameshwaram shared) and 16 collection memberships. | The earlier "16 temples" was a miscount and risked a duplicate Rameshwaram record. | Accepted |
@@ -42,6 +44,8 @@ On 2026-09-24 the owner approved the Phase 1 review gate ("proceed"). D-023 to D
 | D-032 | **Seed files** are TypeScript under `prisma/seed-data/`: one file per temple, plus states, deities and collections, validated by Zod schemas in both the seed and Vitest. Collection files are the single source of membership and order. Unverified Devanagari candidates are kept in each record's `review.nameNativeCandidate` and are not written to the database. | Type-checked, reviewable per temple in pull requests, and scales to hundreds of temples without code changes. | Proposed |
 | D-033 | The local database is **PostgreSQL 17** (`postgres:17-alpine`, Neon's default major version) via `compose.yaml`, published on host **port 5433** because 5432 is often taken by a local install. | Refines D-026. | Accepted (2026-09-24) |
 | D-034 | **Pin only package versions at least 24 hours old.** pnpm 12 enforces a 24-hour `minimumReleaseAge`; newer packages can pass locally (on a cached verification) but fail `pnpm install --frozen-lockfile` in CI. The policy stays on. | The first CI run failed for exactly this reason on 2026-09-22, and passed unchanged once the packages had aged (2026-09-24). | Accepted (2026-09-24) |
+| D-035 | **No section-entrance animations in V1.** Motion is limited to interactions: sheets, card hovers, navigation underlines (200–400 ms, off under reduced motion). The Framer Motion `LazyMotion` provider stays in the codebase but is not mounted until a component needs JavaScript-driven motion. | Both versions tried failed a requirement. The Framer Motion one rendered content at `opacity: 0` until JavaScript ran; the CSS scroll-driven one cost about a third of homepage LCP in a controlled measurement (660 → 420 ms at 4× CPU without it). Performance and accessibility outrank decorative motion. | Proposed |
+| D-036 | **Rendering implements D-015 with Next.js 16 Cache Components** (`cacheComponents: true`). Reads in `src/server/queries.ts` use `'use cache'`, `cacheLife('max')` and the `content` tag; `POST /api/revalidate` (Bearer `REVALIDATE_SECRET`, `noindex`) calls `revalidateTag('content', 'max')`; run `pnpm revalidate` after seeding. Builds need a migrated, seeded database, so CI runs a Postgres 17 service. | Verified end to end on 2026-09-24: a changed temple stayed cached until revalidated, then appeared. | Accepted (2026-09-24) |
 
 ## Pinned versions (Phase 0, 2026-09-23; Prisma added in Phase 2, 2026-09-24)
 Checked against the npm registry and each tool's bundled or official documentation. Exact versions are pinned in `package.json` (`save-exact`).

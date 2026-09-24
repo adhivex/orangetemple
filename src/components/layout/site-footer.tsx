@@ -1,3 +1,4 @@
+import { cacheLife } from 'next/cache'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 
@@ -5,9 +6,16 @@ import { Logo } from '@/components/brand/logo'
 import { env } from '@/env'
 import { menuNav, primaryNav, siteConfig } from '@/lib/site-config'
 
+/** Copyright year. Cached for a day: Cache Components forbids a bare `new Date()` in a prerender. */
+async function currentYear() {
+  'use cache'
+  cacheLife('days')
+  return new Date().getFullYear()
+}
+
 /** Site footer: navigation, credits, contact and privacy (PRD §5.8). Dark surface. */
-export function SiteFooter() {
-  const year = new Date().getFullYear()
+export async function SiteFooter() {
+  const year = await currentYear()
   const contactEmail = env.NEXT_PUBLIC_CONTACT_EMAIL
 
   return (

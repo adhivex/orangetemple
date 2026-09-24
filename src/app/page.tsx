@@ -1,44 +1,83 @@
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
-import { Button } from '@/components/ui/button'
-import { siteConfig } from '@/lib/site-config'
+import { CollectionSection } from '@/components/home/collection-section'
+import { ExploreTiles } from '@/components/home/explore-tiles'
+import { HomeHero } from '@/components/home/home-hero'
+import { SacredBharat } from '@/components/home/sacred-bharat'
+import { directoryHref } from '@/lib/routes'
+import {
+  getCatalogueStats,
+  getCollectionWithTemples,
+  getDeityTiles,
+  getRegionTiles,
+} from '@/server/queries'
 
 /**
- * Holding homepage for Phases 0–3. Replaced by the database-driven homepage in Phase 4.
+ * Homepage (PRD §5), fully database-driven. Every read is cached and tagged, so the
+ * page is prerendered at build and refreshed on demand after seeding (D-015).
  */
-export default function HomePage() {
-  const showPreviewLink = process.env.VERCEL_ENV !== 'production'
+export default async function HomePage() {
+  const [stats, jyotirlingas, charDham, deityTiles, regionTiles] = await Promise.all([
+    getCatalogueStats(),
+    getCollectionWithTemples('jyotirlingas'),
+    getCollectionWithTemples('char-dham'),
+    getDeityTiles(),
+    getRegionTiles(),
+  ])
 
   return (
-    <section className="container-standard section-y">
-      <p className="flex items-center gap-3 text-label font-medium text-saffron-800 uppercase">
-        <span aria-hidden="true" className="h-px w-8 bg-gold-500" />
-        {siteConfig.name}
-      </p>
-      <h1 className="mt-5 max-w-4xl text-display text-charcoal-900">
-        The sacred temples and spiritual heritage of Bharat
-      </h1>
-      <p className="mt-6 measure text-charcoal-700">{siteConfig.description}</p>
-      <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-        <Button asChild size="lg">
-          <Link href="/jyotirlingas">
-            The 12 Jyotirlingas
-            <ArrowRight aria-hidden="true" />
-          </Link>
-        </Button>
-        <Button asChild size="lg" variant="secondary">
-          <Link href="/char-dham">The Char Dham</Link>
-        </Button>
+    <>
+      <HomeHero stats={stats} />
+
+      <section aria-labelledby="intro-title" className="container-narrow section-y">
+        <h2 id="intro-title" className="text-h2 text-charcoal-900">
+          A careful guide to sacred places
+        </h2>
+        <div className="mt-5 space-y-4 text-charcoal-700">
+          <p>
+            OrangeTemple brings together the significance, history and traditions of the temples of
+            Bharat, with practical guidance for visiting them.
+          </p>
+          <p>
+            We keep documented history and traditional belief clearly apart, credit every
+            photograph, and mark visit details with the date they were last checked, so you know
+            what to confirm before you travel.
+          </p>
+        </div>
+        <Link
+          href="/about"
+          className="group mt-6 inline-flex min-h-11 items-center gap-2 font-medium text-saffron-800"
+        >
+          About OrangeTemple
+          <ArrowRight
+            className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
+            aria-hidden="true"
+          />
+        </Link>
+      </section>
+
+      <CollectionSection collection={jyotirlingas} tone="muted" />
+      <CollectionSection collection={charDham} />
+
+      <div className="bg-sand-100/60">
+        <ExploreTiles
+          id="deity"
+          eyebrow="Explore by deity"
+          title="Temples by presiding deity"
+          tiles={deityTiles}
+          hrefFor={(slug) => directoryHref({ deity: slug })}
+        />
       </div>
-      {showPreviewLink && (
-        <p className="mt-16 border-t border-border pt-6 text-small text-stone-600">
-          In development.{' '}
-          <Link href="/design-system" className="text-saffron-800 underline underline-offset-4">
-            Review the design system
-          </Link>
-        </p>
-      )}
-    </section>
+      <ExploreTiles
+        id="region"
+        eyebrow="Explore by region"
+        title="Temples across Bharat"
+        tiles={regionTiles}
+        hrefFor={(slug) => directoryHref({ region: slug })}
+      />
+
+      <SacredBharat />
+    </>
   )
 }
