@@ -89,13 +89,24 @@ Rule: a published temple has exactly one HERO image.
 - Unique: `Temple.slug`, `Collection.slug`, `Deity.slug`, `State.slug`, `Festival.slug`, `SlugRedirect.oldSlug`
 - Composite keys on `CollectionTemple` and `TempleFestival`
 - Index: `Temple(status, stateId)`, `Temple(status, deityId)`, `CollectionTemple(templeId)`, `TempleImage(templeId, imageType, displayOrder)`
-- GIN trigram indexes supporting search on `Temple.name`, `Temple.nameNative`, `Temple.city` and `alternateNames` (via a search column or expression index)
+- GIN trigram indexes supporting search on `Temple.name`, `Temple.nameNative`, `Temple.city` and `alternateNames` (via a search column or expression index). **Implemented as a search column:** `Temple.searchText` with one GIN `gin_trgm_ops` index (D-031).
 - Slugs are lowercase, URL-safe, stable and unique. See D-009 for the naming convention.
+- Also unique: `TempleImage.publicId` (lets the seed upsert images idempotently).
+- CHECK constraints, added in the initial migration because Prisma cannot express them: `Temple` latitude and longitude are both set or both empty; `coordinatesSource` is non-blank whenever coordinates are set; `TempleReference` has a `url` or a `citation`.
 
 ## 7. Important data rules
 - Rameshwaram is one Temple record, a member of both `jyotirlingas` and `char-dham`.
 - Only `PUBLISHED` records appear publicly; `DRAFT` and `ARCHIVED` never do.
 - Never write guessed coordinates, timings or URLs into any field.
 
-## 8. Future extensions
+## 8. Implementation notes (Phase 2)
+The Prisma schema is `prisma/schema.prisma`; the migrations are in `prisma/migrations`. Where the implementation had to choose, it chose:
+- **`Temple.searchText`** (required text): derived by the seed from name, native name, alternate names, city, district and state name, lowercased with Latin diacritics removed (`src/lib/search-text.ts`). Never edited by hand. Queries normalise their input the same way and use `unaccent` in PostgreSQL.
+- **Coordinates** are `Float` (double precision), which is ample for maps and serialises directly into page props.
+- **Required, not optional:** `TempleImage.width`, `height`, `altText`, `credit` and `licenseType` (every image needs credit and licence metadata); `Deity.description`; `Collection.description`.
+- **Optional:** `Festival.description`, `Festival.recurrenceNote`, `TempleFestival.description`, `Ritual.description`, `NearbyPlace.description`.
+- **Deletes cascade** from a temple to its visit info, images, festivals, rituals, references, nearby places, memberships and slug redirects. `NearbyPlace.relatedTempleId` is set to null if the related temple is deleted.
+- **Postgres extensions** `pg_trgm` and `unaccent` are created by the initial migration.
+
+## 9. Future extensions
 Story, Yatra, YatraStop, FestivalCalendar (with lunar-calendar recurrence), User, SavedTemple, VisitedTemple, additional Region/State data.

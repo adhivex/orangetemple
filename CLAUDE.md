@@ -55,7 +55,12 @@ pnpm test           # Vitest unit tests in tests/unit
 pnpm format         # Prettier write (format:check in CI)
 pnpm icons          # regenerate PWA icons and favicon from the logomark
 
-# Phase 2: db:generate | db:migrate | db:seed | db:studio
+pnpm db:up          # start local Postgres 17 in Docker (compose.yaml, port 5433)
+pnpm db:migrate     # create/apply migrations (prisma migrate dev)
+pnpm db:deploy      # apply migrations only (preview/production)
+pnpm db:seed        # upsert seed files into the database (SEED_TARGET decides publishing)
+pnpm db:generate    # regenerate the Prisma client (also runs on postinstall)
+pnpm db:studio      # browse the database
 # Phase 10: test:e2e (Playwright + axe)
 ```
 

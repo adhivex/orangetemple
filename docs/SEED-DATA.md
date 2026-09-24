@@ -1,6 +1,6 @@
 # OrangeTemple — Seed Data Specification
 
-The 15 launch temples, their states, deities and collections. Seed files live in the repository and are upserted by slug with `pnpm db:seed` (D-002).
+The 15 launch temples, their states, deities and collections. Seed files live in the repository under `prisma/seed-data/` (one file per temple; D-032) and are upserted by slug with `pnpm db:seed` (D-002).
 
 **Everything here is a proposal for the owner to confirm before Phase 2** (see `DECISIONS.md`, open items). Native names and identifications are candidates and must be verified against reliable sources.
 

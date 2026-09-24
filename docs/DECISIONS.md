@@ -4,6 +4,8 @@ Newest entries win over older text elsewhere. Status is **Accepted** (settled) o
 
 On 2026-09-23 the owner accepted all Proposed entries D-002 to D-022 as written, with one note on D-002 (below).
 
+On 2026-09-24 the owner approved the Phase 1 review gate ("proceed"). D-023 to D-029 were not individually confirmed and remain Proposed.
+
 | ID | Decision | Reason | Status |
 |---|---|---|---|
 | D-001 | V1 has **15 unique temple records** (12 Jyotirlingas + 4 Char Dham, Rameshwaram shared) and 16 collection memberships. | The earlier "16 temples" was a miscount and risked a duplicate Rameshwaram record. | Accepted |
@@ -35,8 +37,13 @@ On 2026-09-23 the owner accepted all Proposed entries D-002 to D-022 as written,
 | D-027 | Type scale is **fluid**: each style interpolates linearly from its mobile value at a 360 px viewport to its desktop value at 1280 px (CSS `clamp()`), instead of jumping at a breakpoint. | Hits both documented sizes exactly and avoids awkward tablet sizes. | Proposed |
 | D-028 | The footer is a **dark charcoal surface** (`--charcoal-900`, ivory and sand text, saffron-500 headings; all pairings AA-tested). The site remains light-theme only. | Gives the page a firm, editorial end; uses existing tokens only. | Proposed |
 | D-029 | The **logomark** (an abstract doorway arch) and wordmark are **placeholders** pending owner approval. The mark is hand-drawn geometry, not a depiction of any real temple or deity. | PWA icons and the header need a mark in Phase 0; no brand assets were supplied. | Proposed |
+| D-030 | **Prisma 7 setup**: `prisma.config.ts` holds the CLI datasource (`DIRECT_URL`, falling back to `DATABASE_URL`) and the seed command; the app connects through the `@prisma/adapter-pg` driver adapter with the pooled `DATABASE_URL` (`src/lib/db.ts`); the `prisma-client` generator writes to `src/generated/prisma` (gitignored, generated on `postinstall`). `.env.local` and `.env` are loaded with Node's built-in `process.loadEnvFile`, not dotenv. | Prisma 7 requires a driver adapter and a config file; this keeps migrations on the direct connection Neon needs, and avoids a dotenv dependency. | Accepted (2026-09-24) |
+| D-031 | Search uses a derived **`Temple.searchText` column** with a GIN `gin_trgm_ops` index, rather than expression indexes. The seed builds it; queries normalise their input the same way and apply `unaccent`. | DATABASE-SCHEMA.md allows either. Prisma can represent this index, so later migrations never see it as drift; an expression index over `unaccent` would need an immutable wrapper function that Prisma cannot track. | Proposed |
+| D-032 | **Seed files** are TypeScript under `prisma/seed-data/`: one file per temple, plus states, deities and collections, validated by Zod schemas in both the seed and Vitest. Collection files are the single source of membership and order. Unverified Devanagari candidates are kept in each record's `review.nameNativeCandidate` and are not written to the database. | Type-checked, reviewable per temple in pull requests, and scales to hundreds of temples without code changes. | Proposed |
+| D-033 | The local database is **PostgreSQL 17** (`postgres:17-alpine`, Neon's default major version) via `compose.yaml`, published on host **port 5433** because 5432 is often taken by a local install. | Refines D-026. | Accepted (2026-09-24) |
+| D-034 | **Pin only package versions at least 24 hours old.** pnpm 12 enforces a 24-hour `minimumReleaseAge`; newer packages can pass locally (on a cached verification) but fail `pnpm install --frozen-lockfile` in CI. The policy stays on. | The first CI run failed for exactly this reason on 2026-09-22, and passed unchanged once the packages had aged (2026-09-24). | Accepted (2026-09-24) |
 
-## Pinned versions (Phase 0, 2026-09-23)
+## Pinned versions (Phase 0, 2026-09-23; Prisma added in Phase 2, 2026-09-24)
 Checked against the npm registry and each tool's bundled or official documentation. Exact versions are pinned in `package.json` (`save-exact`).
 
 | Tool | Version | Notes |
@@ -51,7 +58,9 @@ Checked against the npm registry and each tool's bundled or official documentati
 | Framer Motion | 13.4.1 | `LazyMotion` + async `domAnimation` + `m`, `strict`. |
 | ESLint | 9.39.5 | **Not 10.x**: eslint-plugin-react, -import and -jsx-a11y (used by eslint-config-next 16.3.6) support ESLint up to 9. |
 | Others | eslint-config-next 16.3.6, Prettier 3.9.8, Vitest 5.0.1, Zod 4.6.5, lucide-react 1.47.0, sharp 0.35.4 (icon script only) | |
-| Prisma | *Phase 2* | npm's `latest` tag currently points to **8.0.0-rc.15, a release candidate**; the latest stable is 7.10.0. Pin a stable release in Phase 2 after reading the Prisma and Neon driver-adapter docs. |
+| Prisma | 7.10.0 (`prisma`, `@prisma/client`, `@prisma/adapter-pg`) | Latest stable, pinned 2026-09-24. npm's `latest` tag points to 8.0.0 release candidates, which are not used. Setup in D-030. |
+| tsx | 4.23.15 | Runs the TypeScript seed, which imports Prisma's generated TypeScript client. |
+| PostgreSQL (local) | 17 (`postgres:17-alpine`) | D-033. |
 
 ## Open items to confirm before Phase 2
 1. Final launch slugs and working temple names (`SEED-DATA.md`).
