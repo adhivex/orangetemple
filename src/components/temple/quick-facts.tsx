@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { ReactNode } from 'react'
 
 import { collectionHref } from '@/lib/routes'
+import { cn } from '@/lib/utils'
 import type { TempleDetail } from '@/server/shapes'
 
 type QuickFactsTemple = Pick<
@@ -22,9 +23,11 @@ type VerifiedVisit = Pick<
 export function QuickFacts({
   temple,
   verifiedVisit,
+  className,
 }: {
   temple: QuickFactsTemple
   verifiedVisit: VerifiedVisit | null
+  className?: string
 }) {
   const location = [temple.city, temple.district, temple.state.name].filter(Boolean).join(', ')
   const rows: [string, ReactNode][] = [
@@ -58,7 +61,7 @@ export function QuickFacts({
   if (visible.length === 0) return null
 
   return (
-    <dl className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
+    <dl className={cn('grid gap-x-8 gap-y-5 sm:grid-cols-2', className)}>
       {visible.map(([label, value]) => (
         <div key={label} className="border-t border-border pt-3">
           <dt className="text-label font-medium text-stone-600 uppercase">{label}</dt>

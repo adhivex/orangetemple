@@ -38,6 +38,24 @@ const securityHeaders = [
   { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
 ]
 
+/*
+ * Directory robots and canonical rules (ROUTES.md §4.3) as HTTP headers. /temples reads
+ * its query parameters at request time, so Next.js streams its <meta>/<link> tags into
+ * the body, where crawlers may ignore them. X-Robots-Tag and a Link canonical header are
+ * honoured by Google regardless of HTML placement. One entry per parameter: conditions
+ * inside a single `has` must all match. Recorded as D-038.
+ */
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '')
+const DIRECTORY_FILTER_PARAMS = ['q', 'deity', 'state', 'region', 'collection']
+const filteredDirectoryHeaders = DIRECTORY_FILTER_PARAMS.map((key) => ({
+  source: '/temples',
+  has: [{ type: 'query' as const, key }],
+  headers: [
+    { key: 'X-Robots-Tag', value: 'noindex, follow' },
+    { key: 'Link', value: `<${siteUrl}/temples>; rel="canonical"` },
+  ],
+}))
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Cache Components (D-015): pages prerender from cached, tagged reads and refresh on
@@ -49,7 +67,7 @@ const nextConfig: NextConfig = {
     loaderFile: './src/lib/cloudinary-loader.ts',
   },
   async headers() {
-    return [{ source: '/:path*', headers: securityHeaders }]
+    return [{ source: '/:path*', headers: securityHeaders }, ...filteredDirectoryHeaders]
   },
 }
 
