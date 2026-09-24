@@ -215,3 +215,52 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Long-form Markdown content (D-003): tokens only, ~65-character measure. */
+@utility prose-ot {
+  max-width: 65ch;
+  color: var(--charcoal-700);
+
+  & > * + * {
+    margin-top: 1em;
+  }
+  & :is(h3, h4, h5, h6) {
+    margin-top: 1.75em;
+    color: var(--charcoal-900);
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+  }
+  & strong {
+    color: var(--charcoal-900);
+    font-weight: 600;
+  }
+  & a {
+    color: var(--link);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  & :is(ul, ol) {
+    padding-left: 1.25em;
+  }
+  & ul {
+    list-style: disc;
+  }
+  & ol {
+    list-style: decimal;
+  }
+  & li + li {
+    margin-top: 0.35em;
+  }
+  /* Gold only on bullets (decorative); numbered markers are text and stay AA. */
+  & ul > li::marker {
+    color: var(--gold-500);
+  }
+  & ol > li::marker {
+    color: var(--stone-600);
+  }
+  & blockquote {
+    border-left: 2px solid var(--gold-500);
+    padding-left: 1em;
+    font-style: italic;
+  }
+}

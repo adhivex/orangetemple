@@ -40,6 +40,11 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Cloudinary does the resizing (D-012); see src/lib/cloudinary-loader.ts.
+  images: {
+    loader: 'custom',
+    loaderFile: './src/lib/cloudinary-loader.ts',
+  },
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }]
   },
