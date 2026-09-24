@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button'
 import type { DirectoryFilters } from '@/lib/directory'
 import { MAX_QUERY_LENGTH } from '@/lib/directory'
 
+import { GetForm } from './get-form'
+
 /**
  * Directory search (PRD §6). A plain GET form, so it works before JavaScript loads and
  * every result URL is shareable. Active filters are kept; the page resets to 1.
@@ -17,7 +19,7 @@ export function SearchForm({ filters }: { filters: DirectoryFilters }) {
     collection: filters.collection,
   }
   return (
-    <form role="search" action="/temples" method="get" className="w-full">
+    <GetForm role="search" action="/temples" className="w-full">
       <label htmlFor="search" className="sr-only">
         Search temples by name, city or state
       </label>
@@ -48,6 +50,6 @@ export function SearchForm({ filters }: { filters: DirectoryFilters }) {
       {Object.entries(kept).map(([name, value]) =>
         value ? <input key={name} type="hidden" name={name} value={value} /> : null,
       )}
-    </form>
+    </GetForm>
   )
 }

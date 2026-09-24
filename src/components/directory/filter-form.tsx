@@ -2,6 +2,7 @@ import { ChevronDown } from 'lucide-react'
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
+import { GetForm } from './get-form'
 import type { DirectoryFilters, FilterOption, FilterOptions } from '@/lib/directory'
 import { directoryHref } from '@/lib/routes'
 
@@ -31,7 +32,7 @@ export function FilterForm({
   layout?: 'stack' | 'bar'
 }) {
   return (
-    <form action="/temples" method="get" aria-label="Filter temples">
+    <GetForm action="/temples" aria-label="Filter temples">
       {filters.q && <input type="hidden" name="q" value={filters.q} />}
       <div className={layout === 'bar' ? 'grid grid-cols-4 items-end gap-4' : 'grid gap-5'}>
         {FIELDS.map((field) => (
@@ -54,7 +55,7 @@ export function FilterForm({
           Show results
         </Button>
       </div>
-    </form>
+    </GetForm>
   )
 }
 
