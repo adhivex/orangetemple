@@ -25,7 +25,8 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
-      # Phase 2 adds: pnpm prisma validate && pnpm db:generate
+      # postinstall runs `prisma generate`; validate needs no database.
+      - run: pnpm exec prisma validate
       - run: pnpm format:check
       - run: pnpm typecheck
       - run: pnpm lint

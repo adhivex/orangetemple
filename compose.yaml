@@ -1,0 +1,25 @@
+# Local development database (D-026). Neon replaces this before deployment.
+# Credentials are local-only defaults, not secrets. Port 5433 avoids clashing with
+# any Postgres already installed on the host.
+name: orangetemple
+
+services:
+  db:
+    image: postgres:17-alpine # Neon's default major version; includes pg_trgm and unaccent
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: orangetemple
+      POSTGRES_PASSWORD: orangetemple
+      POSTGRES_DB: orangetemple
+    ports:
+      - '5433:5432'
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U orangetemple -d orangetemple']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  db-data:

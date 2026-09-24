@@ -1,4 +1,11 @@
-# Dependencies allowed to run install scripts. Keep this list minimal and justified.
+# Dependency install scripts: pnpm runs only those listed as true. Keep this minimal
+# and give a reason for each entry.
 allowBuilds:
   # Native resolver used by eslint-import-resolver-typescript (via eslint-config-next).
   unrs-resolver: true
+  # Downloads Prisma's schema-engine binary, required by `prisma migrate`.
+  '@prisma/engines': true
+  # Verifies and links esbuild's native binary, used by tsx to run the seed script.
+  esbuild: true
+  # Preinstall is only an environment sanity check; not needed.
+  prisma: false

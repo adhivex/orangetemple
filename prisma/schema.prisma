@@ -1,0 +1,359 @@
+// OrangeTemple data model. Specification: docs/DATABASE-SCHEMA.md — keep the two in sync.
+// Long-form text fields are Markdown with raw HTML disabled (D-003).
+// Only PUBLISHED records are ever read by public pages.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ──────────────────────────────────────────────────────────────────
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum Region {
+  NORTH
+  SOUTH
+  EAST
+  WEST
+  CENTRAL
+  NORTHEAST
+}
+
+enum Tradition {
+  SHAIVA
+  VAISHNAVA
+  SHAKTA
+  OTHER
+}
+
+enum ImageType {
+  HERO
+  GALLERY
+  THUMBNAIL
+  OG
+}
+
+enum LicenseType {
+  OWNED
+  CC0
+  CC_BY
+  CC_BY_SA
+  PUBLIC_DOMAIN
+  LICENSED
+  OTHER
+}
+
+enum ReferenceSourceType {
+  OFFICIAL_TEMPLE
+  GOVERNMENT
+  ACADEMIC
+  TRADITIONAL_TEXT
+  NEWS
+  OTHER
+}
+
+enum NearbyPlaceType {
+  TEMPLE
+  SHRINE
+  GHAT
+  NATURAL
+  HERITAGE
+  OTHER
+}
+
+// ─── Reference data ─────────────────────────────────────────────────────────
+
+model State {
+  id               String   @id @default(cuid())
+  name             String
+  slug             String   @unique
+  region           Region
+  /// ISO 3166-2:IN code. Optional; set only when verified.
+  code             String?
+  isUnionTerritory Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  temples Temple[]
+}
+
+/// Presiding deity, used for filtering and grouping. Asserts no theology; no hierarchy in V1.
+model Deity {
+  id           String     @id @default(cuid())
+  name         String
+  nameNative   String?
+  slug         String     @unique
+  description  String
+  /// Set only where widely uncontroversial.
+  tradition    Tradition?
+  isFeatured   Boolean    @default(false)
+  displayOrder Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  temples Temple[]
+}
+
+// ─── Temples ────────────────────────────────────────────────────────────────
+
+model Temple {
+  id               String   @id @default(cuid())
+  name             String
+  /// Devanagari in V1 (D-022). Only verified values.
+  nameNative       String?
+  slug             String   @unique
+  /// Transliterations, older or local names. Searchable.
+  alternateNames   String[] @default([])
+  /// ~200 characters max; cards and meta description fallback.
+  shortDescription String
+  /// Markdown: the "About" text.
+  overview         String
+
+  deityId String
+  deity   Deity  @relation(fields: [deityId], references: [id])
+  stateId String
+  state   State  @relation(fields: [stateId], references: [id])
+
+  city              String
+  district          String?
+  country           String  @default("India")
+  address           String?
+  /// Verified coordinates only; both or neither (CHECK constraint in migration).
+  latitude          Float?
+  longitude         Float?
+  /// Required when coordinates are set (CHECK constraint in migration).
+  coordinatesSource String?
+  /// Markdown. Disputed or alternate site claims (D-019).
+  locationNote      String?
+
+  /// Hedged free text, e.g. "Traditional dating varies".
+  estimatedPeriod   String?
+  architectureStyle String?
+
+  /// Markdown. Required for every temple.
+  significance String
+  /// Markdown. Documented history only.
+  history      String?
+  /// Markdown. Traditional belief only; the UI labels it as such.
+  legend       String?
+  /// Markdown.
+  architecture String?
+
+  /// Verified URL only.
+  officialWebsite String?
+  metaTitle       String?
+  metaDescription String?
+
+  /// Derived by the seed from name, native name, alternate names, city, district and
+  /// state name: lowercased, Latin diacritics removed (D-014). Never edit by hand.
+  searchText String
+
+  status      ContentStatus @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  visitInfo     TempleVisitInfo?
+  collections   CollectionTemple[]
+  images        TempleImage[]
+  festivals     TempleFestival[]
+  rituals       Ritual[]
+  references    TempleReference[]
+  nearbyPlaces  NearbyPlace[]      @relation("NearbyPlaces")
+  nearbyOf      NearbyPlace[]      @relation("NearbyRelatedTemple")
+  slugRedirects SlugRedirect[]
+
+  @@index([status, stateId])
+  @@index([status, deityId])
+  @@index([searchText(ops: raw("gin_trgm_ops"))], type: Gin)
+}
+
+/// Time-sensitive: every value needs a source and a verification date (CONTENT-MODEL.md §6).
+model TempleVisitInfo {
+  id                    String    @id @default(cuid())
+  templeId              String    @unique
+  temple                Temple    @relation(fields: [templeId], references: [id], onDelete: Cascade)
+  timings               String?
+  entryRules            String?
+  dressCode             String?
+  photographyRules      String?
+  bestTimeToVisit       String?
+  seasonalAccess        String?
+  /// Markdown.
+  howToReach            String?
+  nearestAirport        String?
+  nearestRailway        String?
+  lastVerifiedAt        DateTime?
+  verificationSourceUrl String?
+  notes                 String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+// ─── Collections ────────────────────────────────────────────────────────────
+
+model Collection {
+  id            String        @id @default(cuid())
+  name          String
+  slug          String        @unique
+  subtitle      String?
+  description   String
+  /// Markdown.
+  introduction  String?
+  imagePublicId String?
+  imageUrl      String?
+  imageAlt      String?
+  displayOrder  Int           @default(0)
+  status        ContentStatus @default(DRAFT)
+  publishedAt   DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  temples     CollectionTemple[]
+  related     RelatedCollection[] @relation("CollectionRelated")
+  relatedFrom RelatedCollection[] @relation("RelatedCollectionTarget")
+}
+
+model CollectionTemple {
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  templeId     String
+  temple       Temple     @relation(fields: [templeId], references: [id], onDelete: Cascade)
+  displayOrder Int        @default(0)
+
+  @@id([collectionId, templeId])
+  @@index([templeId])
+}
+
+model RelatedCollection {
+  collectionId        String
+  collection          Collection @relation("CollectionRelated", fields: [collectionId], references: [id], onDelete: Cascade)
+  relatedCollectionId String
+  relatedCollection   Collection @relation("RelatedCollectionTarget", fields: [relatedCollectionId], references: [id], onDelete: Cascade)
+  displayOrder        Int        @default(0)
+
+  @@id([collectionId, relatedCollectionId])
+}
+
+// ─── Media ──────────────────────────────────────────────────────────────────
+
+/// A published temple has exactly one HERO image (enforced by the seed).
+model TempleImage {
+  id            String      @id @default(cuid())
+  templeId      String
+  temple        Temple      @relation(fields: [templeId], references: [id], onDelete: Cascade)
+  url           String
+  /// Cloudinary public ID; unique so the seed can upsert images idempotently.
+  publicId      String      @unique
+  imageType     ImageType
+  altText       String
+  caption       String?
+  displayOrder  Int         @default(0)
+  width         Int
+  height        Int
+  blurDataUrl   String?
+  credit        String
+  licenseType   LicenseType
+  sourceUrl     String?
+  /// Development only. Production must have none (PRD §11).
+  isPlaceholder Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([templeId, imageType, displayOrder])
+}
+
+// ─── Festivals, rituals, references, nearby places ──────────────────────────
+
+model Festival {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  description    String?
+  /// When it occurs, in words. No fixed Gregorian dates: festivals follow the lunar calendar.
+  recurrenceNote String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  temples TempleFestival[]
+}
+
+model TempleFestival {
+  templeId     String
+  temple       Temple   @relation(fields: [templeId], references: [id], onDelete: Cascade)
+  festivalId   String
+  festival     Festival @relation(fields: [festivalId], references: [id], onDelete: Cascade)
+  /// How it is observed at this temple.
+  description  String?
+  displayOrder Int      @default(0)
+
+  @@id([templeId, festivalId])
+}
+
+model Ritual {
+  id           String   @id @default(cuid())
+  templeId     String
+  temple       Temple   @relation(fields: [templeId], references: [id], onDelete: Cascade)
+  name         String
+  description  String?
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([templeId])
+}
+
+/// At least one of url or citation is required (CHECK constraint in migration).
+model TempleReference {
+  id           String              @id @default(cuid())
+  templeId     String
+  temple       Temple              @relation(fields: [templeId], references: [id], onDelete: Cascade)
+  title        String
+  url          String?
+  citation     String?
+  sourceType   ReferenceSourceType
+  accessedAt   DateTime?
+  displayOrder Int                 @default(0)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@index([templeId])
+}
+
+model NearbyPlace {
+  id              String          @id @default(cuid())
+  templeId        String
+  temple          Temple          @relation("NearbyPlaces", fields: [templeId], references: [id], onDelete: Cascade)
+  name            String
+  type            NearbyPlaceType
+  description     String?
+  latitude        Float?
+  longitude       Float?
+  url             String?
+  /// Links internally to another temple page when set.
+  relatedTempleId String?
+  relatedTemple   Temple?         @relation("NearbyRelatedTemple", fields: [relatedTempleId], references: [id], onDelete: SetNull)
+  displayOrder    Int             @default(0)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([templeId])
+}
+
+/// Old slug → current temple; unknown slugs are checked here and 308-redirected (ROUTES.md §4).
+model SlugRedirect {
+  id        String   @id @default(cuid())
+  oldSlug   String   @unique
+  templeId  String
+  temple    Temple   @relation(fields: [templeId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
