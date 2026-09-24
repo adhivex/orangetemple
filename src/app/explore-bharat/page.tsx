@@ -3,14 +3,16 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { PageHeader } from '@/components/content/page-header'
+import { JsonLd } from '@/components/seo/json-ld'
 import { directoryHref } from '@/lib/routes'
 import { getStatesByRegion } from '@/server/queries'
+import { breadcrumbJsonLd, pageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Explore Bharat',
   description: 'Browse the sacred temples of Bharat region by region and state by state.',
-  alternates: { canonical: '/explore-bharat' },
-}
+  path: '/explore-bharat',
+})
 
 /**
  * Explore Bharat (D-006): a state-by-region browse page. Each region and state opens the
@@ -21,6 +23,7 @@ export default async function ExploreBharatPage() {
 
   return (
     <>
+      <JsonLd data={breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'Explore Bharat' }])} />
       <PageHeader
         eyebrow="Sacred Bharat"
         title="Explore Bharat"

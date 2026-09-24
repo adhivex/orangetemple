@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from 'next/navigation'
 
 import { Markdown } from '@/components/content/markdown'
 import { ActionBar } from '@/components/layout/action-bar'
+import { JsonLd } from '@/components/seo/json-ld'
 import { Gallery } from '@/components/temple/gallery'
 import { QuickFacts } from '@/components/temple/quick-facts'
 import { RelatedTemples } from '@/components/temple/related-temples'
@@ -17,6 +18,7 @@ import {
 } from '@/components/temple/temple-sections'
 import { VisitInformation } from '@/components/temple/visit-information'
 import { templeHref } from '@/lib/routes'
+import { breadcrumbJsonLd, pageMetadata, templeJsonLd } from '@/lib/seo'
 import { shouldShowVisitDetails } from '@/lib/visit-info'
 import {
   getPublishedTempleSlugs,
@@ -38,11 +40,12 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { slug } = await params
   const temple = await getTempleBySlug(slug)
   if (!temple) return { title: 'Temple not found', robots: { index: false } }
-  return {
+  return pageMetadata({
     title: temple.metaTitle ?? temple.name,
     description: temple.metaDescription ?? temple.shortDescription,
-    alternates: { canonical: templeHref(temple.slug) },
-  }
+    path: templeHref(temple.slug),
+    ownImage: true,
+  })
 }
 
 export default async function TemplePage({ params }: { params: Params }) {
@@ -65,6 +68,19 @@ export default async function TemplePage({ params }: { params: Params }) {
 
   return (
     <>
+      <JsonLd
+        data={[
+          templeJsonLd({
+            ...temple,
+            heroImageUrl: hero && !hero.isPlaceholder ? hero.url : null,
+          }),
+          breadcrumbJsonLd([
+            { name: 'Home', path: '/' },
+            { name: 'Temples', path: '/temples' },
+            { name: temple.name },
+          ]),
+        ]}
+      />
       <TempleHero
         name={temple.name}
         nameNative={temple.nameNative}

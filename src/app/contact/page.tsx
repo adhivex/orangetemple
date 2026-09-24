@@ -2,14 +2,16 @@ import { Mail } from 'lucide-react'
 import type { Metadata } from 'next'
 
 import { PageHeader } from '@/components/content/page-header'
+import { JsonLd } from '@/components/seo/json-ld'
 import { Button } from '@/components/ui/button'
 import { env } from '@/env'
+import { breadcrumbJsonLd, pageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Contact and corrections',
   description: 'Send a correction or get in touch with OrangeTemple.',
-  alternates: { canonical: '/contact' },
-}
+  path: '/contact',
+})
 
 /**
  * Corrections and contact (ARCHITECTURE.md §12): a mailto link only, so there is no
@@ -21,6 +23,7 @@ export default function ContactPage() {
 
   return (
     <>
+      <JsonLd data={breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'Contact' }])} />
       <PageHeader
         eyebrow="Contact"
         title="Contact and corrections"

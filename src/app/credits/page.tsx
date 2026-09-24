@@ -2,15 +2,17 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { PageHeader } from '@/components/content/page-header'
+import { JsonLd } from '@/components/seo/json-ld'
 import type { LicenseType } from '@/generated/prisma/enums'
 import { templeHref } from '@/lib/routes'
 import { getCredits } from '@/server/queries'
+import { breadcrumbJsonLd, pageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Credits',
   description: 'Photography credits, sources and the typefaces and software behind OrangeTemple.',
-  alternates: { canonical: '/credits' },
-}
+  path: '/credits',
+})
 
 const LICENSE: Record<LicenseType, string> = {
   OWNED: 'Owned by OrangeTemple',
@@ -30,6 +32,7 @@ export default async function CreditsPage() {
 
   return (
     <>
+      <JsonLd data={breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'Credits' }])} />
       <PageHeader
         eyebrow="Credits"
         title="Credits"

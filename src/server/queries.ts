@@ -174,3 +174,22 @@ export async function getCredits() {
     },
   })
 }
+
+/** Sitemap data (ROUTES.md §4.6): published records only, with their last update. */
+export async function getSitemapData() {
+  'use cache'
+  cacheContent()
+  const [temples, collections] = await Promise.all([
+    getDb().temple.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: { name: 'asc' },
+      select: { slug: true, updatedAt: true },
+    }),
+    getDb().collection.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: { displayOrder: 'asc' },
+      select: { slug: true, updatedAt: true },
+    }),
+  ])
+  return { temples, collections }
+}

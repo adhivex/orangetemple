@@ -5,13 +5,24 @@ import { CollectionSection } from '@/components/home/collection-section'
 import { ExploreTiles } from '@/components/home/explore-tiles'
 import { HomeHero } from '@/components/home/home-hero'
 import { SacredBharat } from '@/components/home/sacred-bharat'
+import { JsonLd } from '@/components/seo/json-ld'
 import { directoryHref } from '@/lib/routes'
+import { organizationJsonLd, pageMetadata, websiteJsonLd } from '@/lib/seo'
+import { siteConfig } from '@/lib/site-config'
 import {
   getCatalogueStats,
   getCollectionWithTemples,
   getDeityTiles,
   getRegionTiles,
 } from '@/server/queries'
+
+export const metadata = pageMetadata({
+  title: `${siteConfig.name} — ${siteConfig.tagline}`,
+  absoluteTitle: true,
+  ownImage: true,
+  description: siteConfig.description,
+  path: '/',
+})
 
 /**
  * Homepage (PRD §5), fully database-driven. Every read is cached and tagged, so the
@@ -28,6 +39,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
       <HomeHero stats={stats} />
 
       <section aria-labelledby="intro-title" className="container-narrow section-y">

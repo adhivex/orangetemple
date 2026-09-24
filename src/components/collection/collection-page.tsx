@@ -4,8 +4,10 @@ import { notFound } from 'next/navigation'
 import { Markdown } from '@/components/content/markdown'
 import { PageHeader } from '@/components/content/page-header'
 import { SectionHeader } from '@/components/content/section-header'
+import { JsonLd } from '@/components/seo/json-ld'
 import { TempleCard } from '@/components/temple/temple-card'
 import { collectionHref } from '@/lib/routes'
+import { breadcrumbJsonLd, collectionJsonLd, pageMetadata } from '@/lib/seo'
 import { getCollectionPage } from '@/server/queries'
 
 import { CollectionCard } from './collection-card'
@@ -22,6 +24,17 @@ export async function CollectionPage({ slug }: { slug: string }) {
 
   return (
     <>
+      <JsonLd
+        data={[
+          collectionJsonLd({
+            name: collection.name,
+            description: collection.description,
+            path: collectionHref(collection.slug),
+            temples: collection.temples.map(({ temple }) => temple),
+          }),
+          breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: collection.name }]),
+        ]}
+      />
       <PageHeader
         eyebrow="Collection"
         title={collection.name}
@@ -83,9 +96,10 @@ export async function CollectionPage({ slug }: { slug: string }) {
 export async function collectionMetadata(slug: string): Promise<Metadata> {
   const collection = await getCollectionPage(slug)
   if (!collection) return { title: 'Collection not found', robots: { index: false } }
-  return {
+  return pageMetadata({
     title: collection.name,
     description: collection.description,
-    alternates: { canonical: collectionHref(collection.slug) },
-  }
+    path: collectionHref(collection.slug),
+    ownImage: true,
+  })
 }

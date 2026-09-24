@@ -2,19 +2,22 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { PageHeader } from '@/components/content/page-header'
+import { JsonLd } from '@/components/seo/json-ld'
 import { collectionHref } from '@/lib/routes'
 import { siteConfig } from '@/lib/site-config'
+import { breadcrumbJsonLd, pageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'About',
   description: `About ${siteConfig.name}: a careful, mobile-first guide to the sacred temples of Bharat.`,
-  alternates: { canonical: '/about' },
-}
+  path: '/about',
+})
 
 /** About (ROUTES.md). Describes how the site works; makes no claims about any temple. */
 export default function AboutPage() {
   return (
     <>
+      <JsonLd data={breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'About' }])} />
       <PageHeader
         eyebrow="About"
         title="About OrangeTemple"

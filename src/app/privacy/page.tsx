@@ -2,12 +2,14 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { PageHeader } from '@/components/content/page-header'
+import { JsonLd } from '@/components/seo/json-ld'
+import { breadcrumbJsonLd, pageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Privacy',
   description: 'How OrangeTemple handles your information.',
-  alternates: { canonical: '/privacy' },
-}
+  path: '/privacy',
+})
 
 /*
  * Privacy notice. Describes the site as it works today; must be reviewed by the owner
@@ -16,6 +18,7 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <>
+      <JsonLd data={breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'Privacy' }])} />
       <PageHeader
         eyebrow="Privacy"
         title="Privacy"

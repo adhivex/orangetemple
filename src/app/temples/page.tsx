@@ -18,6 +18,7 @@ import {
   parseDirectoryParams,
 } from '@/lib/directory'
 import { directoryHref } from '@/lib/routes'
+import { pageMetadata } from '@/lib/seo'
 import { getFilterOptions, searchTemples } from '@/server/directory'
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>
@@ -35,10 +36,13 @@ export async function generateMetadata({
   const filtered = hasSearchOrFilter(filters)
   const paged = !filtered && filters.page > 1
   return {
-    title: paged ? `Temples — page ${filters.page}` : 'Temples',
-    description:
-      'Search and browse the sacred temples of Bharat by name, deity, state, region and collection.',
-    alternates: { canonical: filtered ? '/temples' : directoryHref({ page: filters.page }) },
+    ...pageMetadata({
+      title: paged ? `Temples — page ${filters.page}` : 'Temples',
+      description:
+        'Search and browse the sacred temples of Bharat by name, deity, state, region and collection.',
+      path: filtered ? '/temples' : directoryHref({ page: filters.page }),
+    }),
+    // Also sent as an X-Robots-Tag header (D-038): this metadata streams into <body>.
     robots: filtered ? { index: false, follow: true } : undefined,
   }
 }
