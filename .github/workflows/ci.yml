@@ -12,7 +12,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
 
     # Pages prerender from the database at build time (D-015), so the build needs a
     # migrated and seeded Postgres. Same major version as local (D-033) and Neon.
@@ -58,3 +58,12 @@ jobs:
       - run: pnpm db:deploy
       - run: pnpm db:seed
       - run: pnpm build
+      # End-to-end suite against the production build (ARCHITECTURE.md §13).
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: test-results/
+          retention-days: 7

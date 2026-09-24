@@ -62,7 +62,9 @@ pnpm db:seed        # upsert seed files into the database (SEED_TARGET decides p
 pnpm db:generate    # regenerate the Prisma client (also runs on postinstall)
 pnpm db:studio      # browse the database
 pnpm revalidate     # refresh cached pages after seeding (needs REVALIDATE_SECRET)
-# Phase 10: test:e2e (Playwright + axe)
+pnpm test:e2e       # Playwright smoke, axe, keyboard and link checks at 390 and 1280 px
+                    # (needs a build and the database; reuses a running server on :3000;
+                    # PW_CHANNEL=msedge uses installed Edge instead of downloading Chromium)
 ```
 
 Internal component preview (development and preview deploys only, not indexed): `/design-system`. Delete it before Phase 11.

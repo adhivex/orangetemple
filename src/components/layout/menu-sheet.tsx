@@ -2,7 +2,7 @@
 
 import { MenuIcon } from 'lucide-react'
 import dynamic from 'next/dynamic'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 
@@ -17,11 +17,13 @@ const MenuSheetContent = dynamic(loadContent, { ssr: false })
 export function MenuSheet() {
   const [open, setOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const buttonRef = useRef<HTMLButtonElement>(null)
   const prefetch = () => void loadContent()
 
   return (
     <>
       <Button
+        ref={buttonRef}
         variant="ghost"
         size="icon"
         aria-label="Open menu"
@@ -36,7 +38,13 @@ export function MenuSheet() {
       >
         <MenuIcon aria-hidden="true" />
       </Button>
-      {mounted && <MenuSheetContent open={open} onOpenChange={setOpen} />}
+      {mounted && (
+        <MenuSheetContent
+          open={open}
+          onOpenChange={setOpen}
+          onCloseAutoFocus={() => buttonRef.current?.focus()}
+        />
+      )}
     </>
   )
 }

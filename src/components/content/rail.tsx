@@ -2,10 +2,12 @@ import { Children, type ReactNode } from 'react'
 
 import { cn } from '@/lib/utils'
 
+import { RailList } from './rail-list'
+
 /**
  * Horizontal swipe rail on mobile (scroll-snap, next card peeking), grid from md up
- * (DESIGN-SYSTEM.md §5). CSS only — no client JavaScript. Keyboard users move through
- * the cards' links, which scroll into view automatically.
+ * (DESIGN-SYSTEM.md §5). Scrolling is CSS; the only client code scrolls a card fully
+ * into view when a keyboard user tabs to it (see <RailList>).
  */
 export function Rail({
   children,
@@ -20,7 +22,7 @@ export function Rail({
   className?: string
 }) {
   return (
-    <ul
+    <RailList
       aria-label={label}
       className={cn(
         '-mx-(--gutter) scrollbar-none flex snap-x snap-mandatory scroll-px-(--gutter) gap-4 overflow-x-auto px-(--gutter) pb-2',
@@ -32,6 +34,6 @@ export function Rail({
       {Children.map(children, (child) => (
         <li className="w-[78%] max-w-80 shrink-0 snap-start md:w-auto md:max-w-none">{child}</li>
       ))}
-    </ul>
+    </RailList>
   )
 }

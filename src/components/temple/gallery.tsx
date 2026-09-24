@@ -5,6 +5,7 @@ import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
 
+import { scrollFocusedItemIntoView } from '@/components/content/rail-list'
 import type { ImageData } from '@/server/shapes'
 
 const loadLightbox = () => import('./gallery-lightbox')
@@ -24,6 +25,7 @@ export function Gallery({ images, templeName }: { images: ImageData[]; templeNam
     <>
       <ul
         aria-label={`Photographs of ${templeName}`}
+        onFocus={scrollFocusedItemIntoView}
         className="-mx-(--gutter) scrollbar-none flex snap-x snap-mandatory scroll-px-(--gutter) gap-3 overflow-x-auto px-(--gutter) md:mx-0 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible md:px-0"
       >
         {images.map((image, index) => (

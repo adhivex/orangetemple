@@ -17,18 +17,28 @@ import { menuNav, siteConfig } from '@/lib/site-config'
 /**
  * Menu sheet body: collections and site pages (DESIGN-SYSTEM.md §4). Loaded on demand
  * by <MenuSheet> so Radix Dialog stays out of every page's first-load JavaScript.
- * Radix returns focus to the menu button when the sheet closes.
+ * The menu button lives outside this Dialog (it has no Radix trigger), so the caller
+ * returns focus to it through `onCloseAutoFocus`.
  */
 export default function MenuSheetContent({
   open,
   onOpenChange,
+  onCloseAutoFocus,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
+  onCloseAutoFocus: () => void
 }) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" closeLabel="Close menu">
+      <SheetContent
+        side="bottom"
+        closeLabel="Close menu"
+        onCloseAutoFocus={(event) => {
+          event.preventDefault()
+          onCloseAutoFocus()
+        }}
+      >
         <SheetHeader>
           <SheetTitle>Menu</SheetTitle>
           <SheetDescription>{siteConfig.tagline}</SheetDescription>

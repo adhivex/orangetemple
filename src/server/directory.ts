@@ -14,9 +14,6 @@ import { templeCardSelect, type TempleCardData } from './shapes'
  * the content tag, so revalidation after seeding refreshes every cached search.
  */
 
-/** Minimum pg_trgm word similarity for a fuzzy match (D-037). */
-export const WORD_SIMILARITY_THRESHOLD = 0.5
-
 export type DirectoryResult = {
   temples: TempleCardData[]
   total: number
@@ -67,27 +64,20 @@ export async function searchTemples(filters: DirectoryFilters): Promise<Director
                  t."name" ASC`
     : Prisma.sql`t."name" ASC`
 
-  // Word-similarity threshold for `<%` (D-037). Transliteration variants such as
-  // v/w ("Rameswaram" vs "Ramesvaram") score 0.54–0.57 against the right temple, just
-  // under pg_trgm's 0.6 default; the best wrong match scored 0.20. SET LOCAL scopes it
-  // to this transaction, and the GIN trigram index still serves `<%`.
-  const threshold = Prisma.sql`SET LOCAL pg_trgm.word_similarity_threshold = ${Prisma.raw(String(WORD_SIMILARITY_THRESHOLD))}`
-
-  const [, countRows] = await db.$transaction([
-    db.$executeRaw(threshold),
-    db.$queryRaw<{ count: bigint }[]>`SELECT count(*) AS count FROM ${from} WHERE ${where}`,
-  ])
+  // `<%` uses the database's word-similarity threshold, 0.5 rather than pg_trgm's 0.6
+  // default, set by migration (D-037, D-041): v/w transliteration variants such as
+  // "Rameswaram" and "Ramesvaram" score 0.54–0.57 against the right temple, while the
+  // best wrong match scored 0.20. The GIN trigram index serves `<%`.
+  const countRows = await db.$queryRaw<{ count: bigint }[]>`
+    SELECT count(*) AS count FROM ${from} WHERE ${where}`
   const total = Number(countRows[0]?.count ?? 0)
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE))
   const page = Math.min(filters.page, pageCount)
 
-  const [, rows] = await db.$transaction([
-    db.$executeRaw(threshold),
-    db.$queryRaw<{ id: string }[]>`
-      SELECT t."id" FROM ${from} WHERE ${where}
-      ORDER BY ${order}
-      LIMIT ${PAGE_SIZE} OFFSET ${(page - 1) * PAGE_SIZE}`,
-  ])
+  const rows = await db.$queryRaw<{ id: string }[]>`
+    SELECT t."id" FROM ${from} WHERE ${where}
+    ORDER BY ${order}
+    LIMIT ${PAGE_SIZE} OFFSET ${(page - 1) * PAGE_SIZE}`
   const ids = rows.map((r) => r.id)
   const cards = await db.temple.findMany({
     where: { id: { in: ids } },
