@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="2000" viewBox="0 0 1600 2000">
+  <!-- Development placeholder only (isPlaceholder). Neutral: depicts no temple or deity. -->
+  <defs>
+    <radialGradient id="g" cx="50%" cy="0%" r="100%">
+      <stop offset="0" stop-color="#FBF6EC"/>
+      <stop offset="0.7" stop-color="#EFE6D6"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="2000" fill="url(#g)"/>
+  <g transform="translate(700 900) scale(6.25)" fill="none" stroke="#6B6257" stroke-opacity="0.25" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M7.5 27.5V15.2C7.5 10.3 11.4 7.4 16 3.5C20.6 7.4 24.5 10.3 24.5 15.2V27.5"/>
+    <path d="M4.5 27.5H27.5"/>
+  </g>
+</svg>
