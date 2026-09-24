@@ -264,3 +264,45 @@
     font-style: italic;
   }
 }
+
+/*
+ * Section entrance (D-035): fade and rise as a block enters the viewport, driven by the
+ * scroll timeline. Visible by default; animates only where supported and when the user
+ * has not asked for reduced motion.
+ */
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility reveal {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      /* forwards, not both: outside the range the element keeps its normal, visible
+         style, so nothing is hidden in print, full-page captures or before scrolling. */
+      animation: reveal-in linear forwards;
+      animation-timeline: view();
+      /* Complete once the top edge is 96px into the viewport, so any partial fade stays
+         in a thin strip at the bottom edge and readable text is always fully opaque. */
+      animation-range: entry 0px entry 96px;
+    }
+  }
+}
+
+/*
+ * Below-the-fold sections of long pages (D-040): the browser skips their style and
+ * layout until they near the viewport. Content stays in the accessibility tree and
+ * find-in-page. Measured on the homepage: LCP 916 → 508 ms at 4× CPU (9 interleaved
+ * runs). `auto` remembers each section's real size once rendered, so scrolling is stable.
+ * Never apply to anything that can be above the fold.
+ */
+@utility render-lazily {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}

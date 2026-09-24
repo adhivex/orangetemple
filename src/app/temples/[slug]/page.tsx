@@ -195,7 +195,7 @@ export default async function TemplePage({ params }: { params: Params }) {
       </div>
 
       {related.length > 0 && (
-        <div className="border-t border-border bg-sand-100/60">
+        <div className="border-t border-border bg-sand-100/60 render-lazily">
           <div className="container-wide section-y">
             <RelatedTemples temples={related} />
           </div>

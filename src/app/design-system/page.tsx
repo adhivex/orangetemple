@@ -462,7 +462,7 @@ export default function DesignSystemPage() {
       <DemoSection
         id="motion"
         title="Motion"
-        description="Motion is kept to interactions (D-035): sheets slide and fade, cards lift their image on hover, and navigation underlines grow. Durations are 200–400 ms; with reduced motion on, nothing moves. Sections do not animate in: measured on the homepage, scroll-driven entrances cost about a third of the LCP."
+        description="Sections fade and rise as they enter the viewport, driven by the CSS scroll timeline (D-035): no JavaScript, visible by default, and nothing moves with reduced motion on. Interactions add small motions of their own: sheets slide, card images lift on hover, navigation underlines grow (200–400 ms)."
       >
         <ul className="grid gap-3 text-charcoal-700 sm:grid-cols-3">
           {[

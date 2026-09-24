@@ -72,7 +72,10 @@ export async function CollectionPage({ slug }: { slug: string }) {
       </section>
 
       {collection.related.length > 0 && (
-        <section aria-labelledby="related-collections-title" className="container-wide section-y">
+        <section
+          aria-labelledby="related-collections-title"
+          className="container-wide section-y render-lazily"
+        >
           <SectionHeader
             id="related-collections-title"
             eyebrow="Continue exploring"

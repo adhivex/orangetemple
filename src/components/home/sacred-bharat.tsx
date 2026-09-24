@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
  */
 export function SacredBharat() {
   return (
-    <section aria-labelledby="sacred-bharat-title" className="bg-saffron-500">
+    <section aria-labelledby="sacred-bharat-title" className="bg-saffron-500 render-lazily">
       <div className="container-wide flex flex-col gap-8 py-16 md:flex-row md:items-center md:justify-between md:py-20">
         <div className="max-w-2xl">
           <p className="text-label font-medium text-charcoal-900 uppercase">Sacred Bharat</p>
