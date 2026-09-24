@@ -69,6 +69,14 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }, ...filteredDirectoryHeaders]
   },
+  // Vanity collection URLs are canonical (D-008); the generic paths redirect with 308.
+  async redirects() {
+    return ['jyotirlingas', 'char-dham'].map((slug) => ({
+      source: `/collections/${slug}`,
+      destination: `/${slug}`,
+      permanent: true,
+    }))
+  },
 }
 
 export default nextConfig

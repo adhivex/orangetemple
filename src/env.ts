@@ -14,7 +14,12 @@ const isProductionDeploy = process.env.VERCEL_ENV === 'production'
 
 const schema = z.object({
   NEXT_PUBLIC_SITE_URL: isProductionDeploy ? z.url() : z.url().default('http://localhost:3000'),
-  NEXT_PUBLIC_CONTACT_EMAIL: z.preprocess((v) => (v === '' ? undefined : v), z.email().optional()),
+  // Required on production deploys so /contact and the footer always offer a working
+  // corrections address (open item 4); optional in development and preview.
+  NEXT_PUBLIC_CONTACT_EMAIL: z.preprocess(
+    (v) => (v === '' ? undefined : v),
+    isProductionDeploy ? z.email() : z.email().optional(),
+  ),
   /** Public, URL-restricted Mapbox token for static maps (D-013). Optional: open item 6. */
   NEXT_PUBLIC_MAPBOX_TOKEN: z.preprocess(
     (v) => (v === '' ? undefined : v),
