@@ -35,7 +35,9 @@ async function main() {
   const now = new Date()
 
   // Seeding is a CLI task: prefer the direct (non-pooled) connection.
-  const db = createPrismaClient(process.env.DIRECT_URL ?? process.env.DATABASE_URL)
+  const db = createPrismaClient(
+    process.env.DIRECT_URL || process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL,
+  )
 
   try {
     await db.$transaction(

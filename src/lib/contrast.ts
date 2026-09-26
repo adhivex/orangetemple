@@ -1,6 +1,6 @@
 /**
- * WCAG 2.x contrast utilities. Pure functions, shared by the contrast test and the
- * design-system preview so both read the palette from globals.css, the single source.
+ * WCAG 2.x contrast utilities. Pure functions used by the contrast test, which reads the
+ * palette from globals.css, the single source.
  */
 
 /** Extracts `--name: #rrggbb` colour tokens from the stylesheet's :root block. */

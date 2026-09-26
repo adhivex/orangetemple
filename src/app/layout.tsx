@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 
+import { SiteAnalytics } from '@/components/analytics/site-analytics'
 import { BottomNav } from '@/components/layout/bottom-nav'
 import { SiteFooter } from '@/components/layout/site-footer'
 import { SiteHeader } from '@/components/layout/site-header'
@@ -49,6 +50,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <SiteFooter />
         </div>
         <BottomNav />
+        {/* Only on Vercel, which serves the analytics script (D-021). */}
+        {process.env.VERCEL && <SiteAnalytics />}
       </body>
     </html>
   )

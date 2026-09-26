@@ -18,8 +18,9 @@ export default defineConfig({
   },
   // The CLI (migrate, db seed, studio) uses the direct connection; on Neon the pooled
   // DATABASE_URL does not support migrations. The app itself connects through the
-  // pg driver adapter with DATABASE_URL (src/lib/db.ts).
+  // pg driver adapter with DATABASE_URL (src/lib/db.ts). DATABASE_URL_UNPOOLED is the
+  // name the Neon integration for Vercel gives the direct connection (D-042).
   datasource: {
-    url: process.env.DIRECT_URL ?? process.env.DATABASE_URL,
+    url: process.env.DIRECT_URL || process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL,
   },
 })

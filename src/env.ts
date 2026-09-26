@@ -12,6 +12,13 @@ import { z } from 'zod'
  */
 const isProductionDeploy = process.env.VERCEL_ENV === 'production'
 
+// Vercel preview deploys default to their own branch URL (D-042), so canonical links,
+// the sitemap and social images point at the preview rather than at localhost.
+const previewUrl =
+  process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_BRANCH_URL
+    ? `https://${process.env.VERCEL_BRANCH_URL}`
+    : undefined
+
 const schema = z.object({
   NEXT_PUBLIC_SITE_URL: isProductionDeploy ? z.url() : z.url().default('http://localhost:3000'),
   // Required on production deploys so /contact and the footer always offer a working
@@ -28,7 +35,7 @@ const schema = z.object({
 })
 
 const parsed = schema.safeParse({
-  NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+  NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || previewUrl,
   NEXT_PUBLIC_CONTACT_EMAIL: process.env.NEXT_PUBLIC_CONTACT_EMAIL,
   NEXT_PUBLIC_MAPBOX_TOKEN: process.env.NEXT_PUBLIC_MAPBOX_TOKEN,
 })

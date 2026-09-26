@@ -12,8 +12,8 @@ export const metadata: Metadata = pageMetadata({
 })
 
 /*
- * Privacy notice. Describes the site as it works today; must be reviewed by the owner
- * (and updated in Phase 11 when Vercel Web Analytics is added, D-021) before launch.
+ * Privacy notice. Describes the site as it works today, including Vercel Web Analytics
+ * (D-021); must be reviewed by the owner before launch.
  */
 export default function PrivacyPage() {
   return (
@@ -35,6 +35,20 @@ export default function PrivacyPage() {
             <li>OrangeTemple does not set cookies.</li>
             <li>We do not use advertising or third-party tracking scripts.</li>
           </ul>
+        </section>
+
+        <section aria-labelledby="analytics">
+          <h2 id="analytics" className="text-h2 text-charcoal-900">
+            Visitor statistics
+          </h2>
+          <p className="mt-4">
+            To learn which pages are useful, we count page views with Vercel Web Analytics, our
+            hosting provider&rsquo;s cookieless analytics. It records the page viewed, the site that
+            linked to it, and general information such as country, browser and device type. We
+            remove search terms and filters from page addresses before they are counted. Vercel
+            states that this analytics does not use cookies and does not follow visitors across
+            websites.
+          </p>
         </section>
 
         <section aria-labelledby="services">

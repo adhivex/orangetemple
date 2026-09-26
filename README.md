@@ -24,7 +24,19 @@ REVALIDATE_SECRET=<any random string of 16+ characters>
 
 Pages are prerendered from the database. After changing content, run `corepack pnpm db:seed`, then `corepack pnpm revalidate` while the site is running.
 
-These are local-only development defaults, not secrets. Then open http://localhost:3000 and http://localhost:3000/design-system. All commands are listed in `CLAUDE.md`.
+These are local-only development defaults, not secrets. Then open http://localhost:3000. All commands are listed in `CLAUDE.md`.
+
+## Deploying a preview to Vercel
+Until launch, deployments are previews only (D-042): every record is published, images are placeholders, and robots.txt blocks indexing. The build (`vercel.json` → `scripts/vercel-build.mjs`) applies migrations, seeds with `SEED_TARGET=preview`, then runs `next build`.
+
+1. In Vercel, **Add New → Project** and import `adhivex/orangetemple`. Keep the detected Next.js settings; `vercel.json` sets the build command.
+2. In the project settings for the Production environment, set the production branch to `production` (a branch that does not exist yet), so pushes to `main` deploy as previews.
+3. From the project's **Storage** tab, create a Neon database and connect it to the project for Preview and Development. It adds `DATABASE_URL` (pooled) and `DATABASE_URL_UNPOOLED` (direct).
+4. In the project's environment variables, for Preview: `ENABLE_EXPERIMENTAL_COREPACK=1` so Vercel uses the pnpm version pinned in `package.json`. Optional: `NEXT_PUBLIC_CONTACT_EMAIL`. Leave `NEXT_PUBLIC_SITE_URL` unset for Preview; previews use their own branch URL.
+5. Enable Web Analytics from the project's **Analytics** tab (D-021).
+6. Redeploy (or push to `main`). Previews sit behind Vercel Authentication by default, so only your Vercel team can open them.
+
+Production (Phase 11) comes after the launch criteria in `docs/PRD.md`: reviewed content, licensed images, a separate Neon branch for production, `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_CONTACT_EMAIL`, `REVALIDATE_SECRET`, then `SEED_TARGET=production pnpm db:seed` against the production database, the `orangetemple.in` domain, and switching the production branch back to `main`.
 
 ## Documentation
 

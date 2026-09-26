@@ -67,7 +67,7 @@ pnpm test:e2e       # Playwright smoke, axe, keyboard and link checks at 390 and
                     # PW_CHANNEL=msedge uses installed Edge instead of downloading Chromium)
 ```
 
-Internal component preview (development and preview deploys only, not indexed): `/design-system`. Delete it before Phase 11.
+The internal `/design-system` preview was removed before Phase 11; the review boards from it are no longer served.
 
 ## Environment variables
 Names only, in `.env.example`. Never commit values.
