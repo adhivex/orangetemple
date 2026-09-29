@@ -5,8 +5,8 @@ import { z } from 'zod'
  * misconfigured deployment fails at startup rather than rendering wrong URLs.
  *
  * Only variables the app currently reads are validated. The full list lives in
- * .env.example; server-only variables (DATABASE_URL, DIRECT_URL, REVALIDATE_SECRET,
- * Cloudinary, Mapbox) are added here in the phase that first uses them.
+ * .env.example; server-only variables (Supabase keys and connection strings,
+ * REVALIDATE_SECRET, Mapbox) are read where they are used.
  *
  * NEXT_PUBLIC_* values must be referenced literally so Next.js can inline them.
  */

@@ -1,4 +1,6 @@
-import type { Region } from '@/generated/prisma/enums'
+import type { Enums } from '@/lib/database.types'
+
+type Region = Enums<'region'>
 
 /** Region enum ↔ URL value (lowercase, ROUTES.md §3) ↔ display label, in display order. */
 export const REGIONS: { value: Region; param: string; label: string }[] = [

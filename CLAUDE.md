@@ -38,9 +38,9 @@ If documents conflict, or something is ambiguous or undecided: stop, ask, then r
 - No AI-generated imagery of temples or deities.
 
 ## Stack
-Next.js (App Router), React, TypeScript (strict), Tailwind CSS, shadcn/ui, Framer Motion, PostgreSQL on Neon, Prisma, Cloudinary, Mapbox (static images only in V1), Vercel, GitHub, pnpm, Node.js 24.
+Next.js (App Router), React, TypeScript (strict), Tailwind CSS, shadcn/ui, Framer Motion, Supabase (PostgreSQL through supabase-js, D-043), Cloudinary, Mapbox (static images only in V1), Vercel, GitHub, pnpm, Node.js 24.
 
-Pin exact versions in Phase 0 after checking each tool's current documentation. Next.js caching, Prisma configuration and driver adapters, and Tailwind/shadcn setup have changed across recent releases. Record the pinned versions in `docs/DECISIONS.md`.
+Pin exact versions in Phase 0 after checking each tool's current documentation. Next.js caching, Supabase keys and connection modes, and Tailwind/shadcn setup have changed across recent releases. Record the pinned versions in `docs/DECISIONS.md`.
 
 ## Commands
 pnpm is pinned via `packageManager` and run through Corepack. On Windows, `corepack enable` needs an administrator shell; without it, prefix commands with `corepack` (for example `corepack pnpm dev`).
@@ -55,12 +55,11 @@ pnpm test           # Vitest unit tests in tests/unit
 pnpm format         # Prettier write (format:check in CI)
 pnpm icons          # regenerate PWA icons and favicon from the logomark
 
-pnpm db:up          # start local Postgres 17 in Docker (compose.yaml, port 5433)
-pnpm db:migrate     # create/apply migrations (prisma migrate dev)
-pnpm db:deploy      # apply migrations only (preview/production)
-pnpm db:seed        # upsert seed files into the database (SEED_TARGET decides publishing)
-pnpm db:generate    # regenerate the Prisma client (also runs on postinstall)
-pnpm db:studio      # browse the database
+pnpm db:up          # start the local Supabase stack in Docker (API :54321, DB :54322, Studio :54323)
+pnpm db:reset       # rebuild the local database from supabase/migrations
+pnpm db:deploy      # apply Supabase migrations to a hosted database (scripts/db-push.mjs)
+pnpm db:seed        # upsert the content/ seed files into Supabase (SEED_TARGET decides publishing)
+pnpm db:types       # regenerate src/lib/database.types.ts after a schema change
 pnpm revalidate     # refresh cached pages after seeding (needs REVALIDATE_SECRET)
 pnpm test:e2e       # Playwright smoke, axe, keyboard and link checks at 390 and 1280 px
                     # (needs a build and the database; reuses a running server on :3000;
@@ -73,8 +72,11 @@ The internal `/design-system` preview was removed before Phase 11; the review bo
 Names only, in `.env.example`. Never commit values.
 
 ```
-DATABASE_URL                        # Neon pooled connection (runtime)
-DIRECT_URL                          # Neon direct connection (migrations)
+SUPABASE_URL                        # Supabase project URL (D-043)
+SUPABASE_PUBLISHABLE_KEY            # server-side reads; Row Level Security applies
+SUPABASE_SECRET_KEY                 # seed and upload scripts only, server-side
+POSTGRES_URL_NON_POOLING            # session connection for migrations
+SUPABASE_DB_URL                     # optional migration override (Session pooler URL)
 NEXT_PUBLIC_SITE_URL                # https://orangetemple.in
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
 CLOUDINARY_API_KEY                  # upload scripts only, server-side

@@ -1,13 +1,12 @@
 import { cacheLife, cacheTag } from 'next/cache'
 
-import { Prisma } from '@/generated/prisma/client'
-import { getDb } from '@/lib/db'
 import { PAGE_SIZE, type DirectoryFilters, type FilterOptions } from '@/lib/directory'
 import { REGIONS, regionFromParam } from '@/lib/regions'
 import { normalizeForSearch } from '@/lib/search-text'
+import { getSupabase, unwrap } from '@/lib/supabase'
 
 import { CONTENT_TAG } from './queries'
-import { templeCardSelect, type TempleCardData } from './shapes'
+import { TEMPLE_CARD_SELECT, toTempleCard, type TempleCardData } from './shapes'
 
 /*
  * Directory reads (PRD §6, D-014). Results are cached per filter combination and share
@@ -21,75 +20,48 @@ export type DirectoryResult = {
   pageCount: number
 }
 
-/** SQL WHERE fragments for the non-text filters. Only published temples, always. */
-function filterConditions(filters: DirectoryFilters): Prisma.Sql[] {
-  const conditions: Prisma.Sql[] = [Prisma.sql`t."status" = 'PUBLISHED'`]
-  if (filters.deity) conditions.push(Prisma.sql`d."slug" = ${filters.deity}`)
-  if (filters.state) conditions.push(Prisma.sql`s."slug" = ${filters.state}`)
-  const region = regionFromParam(filters.region)
-  if (region) conditions.push(Prisma.sql`s."region" = ${region}::"Region"`)
-  if (filters.collection) {
-    conditions.push(Prisma.sql`EXISTS (
-      SELECT 1 FROM "CollectionTemple" ct JOIN "Collection" c ON c."id" = ct."collectionId"
-      WHERE ct."templeId" = t."id" AND c."slug" = ${filters.collection} AND c."status" = 'PUBLISHED'
-    )`)
-  }
-  return conditions
-}
+/** What `search_temples` returns (supabase/migrations/*_search.sql). */
+type SearchPage = { total: number; page: number; ids: string[] }
 
 /**
  * Searches and filters published temples. With a query, results are ranked: names that
  * start with the query first, then by trigram word similarity (tolerates typos and
  * transliteration variants). Without one, alphabetical.
+ *
+ * Matching, ranking, the total and page clamping run in the database function
+ * `search_temples`, with its 0.5 word-similarity threshold (D-037, D-043); only
+ * published temples and collections can match.
  */
 export async function searchTemples(filters: DirectoryFilters): Promise<DirectoryResult> {
   'use cache'
   cacheLife('max')
   cacheTag(CONTENT_TAG)
 
-  const db = getDb()
-  const conditions = filterConditions(filters)
+  const db = getSupabase()
   const query = filters.q ? normalizeForSearch(filters.q) : ''
-  if (query) {
-    // Substring match catches short queries; `<%` (word similarity) catches typos.
-    conditions.push(
-      Prisma.sql`(t."searchText" LIKE ${'%' + query + '%'} OR lower(unaccent(${query})) <% t."searchText")`,
-    )
-  }
-  const where = Prisma.join(conditions, ' AND ')
-  const from = Prisma.sql`"Temple" t JOIN "State" s ON s."id" = t."stateId" JOIN "Deity" d ON d."id" = t."deityId"`
-  const order = query
-    ? Prisma.sql`(lower(unaccent(t."name")) LIKE ${query + '%'}) DESC,
-                 word_similarity(lower(unaccent(${query})), t."searchText") DESC,
-                 t."name" ASC`
-    : Prisma.sql`t."name" ASC`
+  const result = unwrap(
+    await db.rpc('search_temples', {
+      search_query: query || undefined,
+      deity_slug: filters.deity || undefined,
+      state_slug: filters.state || undefined,
+      region_code: regionFromParam(filters.region) ?? undefined,
+      collection_slug: filters.collection || undefined,
+      page_number: filters.page,
+      page_size: PAGE_SIZE,
+    }),
+  ) as SearchPage
 
-  // `<%` uses the database's word-similarity threshold, 0.5 rather than pg_trgm's 0.6
-  // default, set by migration (D-037, D-041): v/w transliteration variants such as
-  // "Rameswaram" and "Ramesvaram" score 0.54–0.57 against the right temple, while the
-  // best wrong match scored 0.20. The GIN trigram index serves `<%`.
-  const countRows = await db.$queryRaw<{ count: bigint }[]>`
-    SELECT count(*) AS count FROM ${from} WHERE ${where}`
-  const total = Number(countRows[0]?.count ?? 0)
-  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE))
-  const page = Math.min(filters.page, pageCount)
-
-  const rows = await db.$queryRaw<{ id: string }[]>`
-    SELECT t."id" FROM ${from} WHERE ${where}
-    ORDER BY ${order}
-    LIMIT ${PAGE_SIZE} OFFSET ${(page - 1) * PAGE_SIZE}`
-  const ids = rows.map((r) => r.id)
-  const cards = await db.temple.findMany({
-    where: { id: { in: ids } },
-    select: { id: true, ...templeCardSelect },
-  })
-  const byId = new Map(cards.map(({ id, ...card }) => [id, card]))
+  const cards =
+    result.ids.length === 0
+      ? []
+      : unwrap(await db.from('temples').select(`id, ${TEMPLE_CARD_SELECT}`).in('id', result.ids))
+  const byId = new Map(cards.map((row) => [row.id, toTempleCard(row)]))
 
   return {
-    temples: ids.map((id) => byId.get(id)).filter((c): c is TempleCardData => Boolean(c)),
-    total,
-    page,
-    pageCount,
+    temples: result.ids.map((id) => byId.get(id)).filter((c): c is TempleCardData => Boolean(c)),
+    total: result.total,
+    page: result.page,
+    pageCount: Math.max(1, Math.ceil(result.total / PAGE_SIZE)),
   }
 }
 
@@ -99,34 +71,34 @@ export async function getFilterOptions(): Promise<FilterOptions> {
   cacheLife('max')
   cacheTag(CONTENT_TAG)
 
-  const db = getDb()
-  const published = { some: { status: 'PUBLISHED' as const } }
+  const db = getSupabase()
+  // Embedded counts see published temples only (RLS), so a zero count means "unused".
   const [deities, states, collections] = await Promise.all([
-    db.deity.findMany({
-      where: { temples: published },
-      orderBy: [{ isFeatured: 'desc' }, { displayOrder: 'asc' }],
-      select: { slug: true, name: true },
-    }),
-    db.state.findMany({
-      where: { temples: published },
-      orderBy: { name: 'asc' },
-      select: { slug: true, name: true, region: true },
-    }),
-    db.collection.findMany({
-      where: { status: 'PUBLISHED', temples: { some: { temple: { status: 'PUBLISHED' } } } },
-      orderBy: { displayOrder: 'asc' },
-      select: { slug: true, name: true },
-    }),
+    db
+      .from('deities')
+      .select('slug, name, published_temples:temples(count)')
+      .order('is_featured', { ascending: false })
+      .order('display_order'),
+    db.from('states').select('slug, name, region, published_temples:temples(count)').order('name'),
+    db
+      .from('collections')
+      .select('slug, name, published_temples:collection_temples(count)')
+      .eq('status', 'PUBLISHED')
+      .order('display_order'),
   ])
-  const regionsInUse = new Set(states.map((s) => s.region))
+  const used = <T extends { published_temples: { count: number }[] }>(rows: T[]) =>
+    rows.filter((row) => (row.published_temples[0]?.count ?? 0) > 0)
+
+  const statesInUse = used(unwrap(states))
+  const regionsInUse = new Set(statesInUse.map((s) => s.region))
 
   return {
-    deities: deities.map((d) => ({ value: d.slug, label: d.name })),
-    states: states.map((s) => ({ value: s.slug, label: s.name })),
+    deities: used(unwrap(deities)).map((d) => ({ value: d.slug, label: d.name })),
+    states: statesInUse.map((s) => ({ value: s.slug, label: s.name })),
     regions: REGIONS.filter((r) => regionsInUse.has(r.value)).map((r) => ({
       value: r.param,
       label: r.label,
     })),
-    collections: collections.map((c) => ({ value: c.slug, label: c.name })),
+    collections: used(unwrap(collections)).map((c) => ({ value: c.slug, label: c.name })),
   }
 }

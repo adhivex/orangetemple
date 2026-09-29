@@ -1,14 +1,14 @@
 # OrangeTemple — Architecture
 
 ## 1. High-level architecture
-Browser → Next.js (App Router) → Server Components / route handlers → Prisma → PostgreSQL (Neon)
+Browser → Next.js (App Router) → Server Components / route handlers → supabase-js → Supabase (PostgreSQL) (D-043)
 
 Supporting services: Cloudinary (images), Mapbox (static maps in V1), Vercel (hosting/CDN), GitHub (source and CI).
 
 ## 2. Application layers
 - **Presentation:** React, TypeScript (strict), Tailwind CSS, shadcn/ui, Framer Motion.
 - **Application:** Server Components by default. Client Components only for real interactivity (filter sheet, gallery lightbox, mobile navigation, share button). V1 has almost no mutations; a route handler protected by `REVALIDATE_SECRET` triggers revalidation.
-- **Data:** Prisma, PostgreSQL on Neon. Validate inputs at boundaries with Zod, and validate environment variables at startup.
+- **Data:** Supabase PostgreSQL through `@supabase/supabase-js` on the server, with Row Level Security; schema as SQL migrations in `supabase/migrations`. Validate inputs at boundaries with Zod, and validate environment variables at startup.
 
 ## 3. Content architecture
 - Temple is the central entity. A temple belongs to many collections; collections reference temple IDs. Never duplicate temple records.
@@ -21,10 +21,10 @@ Supporting services: Cloudinary (images), Mapbox (static maps in V1), Vercel (ho
 - `/temples` (search and filters) renders on the server per request using query parameters, with efficient queries.
 - Only published content is ever fetched for public pages.
 
-## 5. Database and Neon
-- `DATABASE_URL` is the pooled connection for runtime; `DIRECT_URL` is the direct connection for migrations.
-- Use separate Neon branches for development, preview and production. Never point local or preview at the production database.
-- Prisma's configuration and driver-adapter requirements have changed in recent major versions. Check the current Prisma and Neon documentation in Phase 2 and record the chosen setup in `DECISIONS.md`.
+## 5. Database (Supabase, D-043)
+- The app reads with `SUPABASE_URL` and the publishable key, server-side only; Row Level Security limits it to published content. The secret key is for the seed and upload scripts only. Migrations use a session connection (`POSTGRES_URL_NON_POOLING`, or `SUPABASE_DB_URL`) through `pnpm db:deploy`.
+- Local development runs the Supabase CLI stack in Docker (`pnpm db:up`). One Supabase project serves previews until launch; production gets its own project. Never point local or preview at the production database.
+- Check the current Supabase documentation (API keys, connection modes, CLI) before configuring connections, and record the setup in `DECISIONS.md`.
 - Enable `pg_trgm` and `unaccent` via a migration.
 
 ## 6. Search
@@ -69,7 +69,7 @@ V1 ships `manifest.webmanifest` (name, short name, standalone display, theme and
 - Vitest for pure logic (slug rules, search ranking, related-temple selection, seed validation).
 - Playwright smoke tests at 390×844 and 1280×800: home, directory search and filter, a temple page, both collections, explore page, 404.
 - axe accessibility checks inside Playwright on key pages.
-- GitHub Actions on every pull request: install, Prisma validate and generate, typecheck, lint, tests, build.
+- GitHub Actions on every pull request: install, format, typecheck, lint, unit tests, then a local Supabase stack (migrations, generated-types check, database lint, seed), build and the Playwright suite.
 
 ## 14. Future architecture
 Interactive Mapbox map, yatra planner, search upgrade, authentication, saved temples, visit tracking, festival calendar, AI assistant over structured content, offline support, Hindi UI. None is built in V1; the model and routes leave room for them.

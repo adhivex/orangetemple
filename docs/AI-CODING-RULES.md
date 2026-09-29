@@ -21,10 +21,10 @@
 14. Check the pinned Next.js version's current documentation before using caching or revalidation APIs.
 
 ## Database
-15. Use Prisma and follow `DATABASE-SCHEMA.md`. Schema changes go through migrations and update the document.
+15. Use Supabase (`supabase-js` on the server) and follow `DATABASE-SCHEMA.md`. Schema changes go through SQL migrations in `supabase/migrations`, regenerate the types (`pnpm db:types`) and update the document.
 16. Seed scripts are idempotent, keyed by slug.
 17. Never expose credentials to the browser. Never commit secrets or real `.env` values.
-18. Check the current Prisma and Neon documentation for the pinned versions before configuring connections.
+18. Check the current Supabase documentation for the pinned versions before configuring connections or keys.
 
 ## UI
 19. Follow `DESIGN-SYSTEM.md`. Use tokens, not hardcoded colours.

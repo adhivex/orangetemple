@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 import { PageHeader } from '@/components/content/page-header'
 import { JsonLd } from '@/components/seo/json-ld'
-import type { LicenseType } from '@/generated/prisma/enums'
+import type { LicenseType } from '@/server/shapes'
 import { templeHref } from '@/lib/routes'
 import { getCredits } from '@/server/queries'
 import { breadcrumbJsonLd, pageMetadata } from '@/lib/seo'

@@ -21,7 +21,7 @@ Phases are numbered 0–11, with Phase 12 as future scope. Complete and validate
 **Done when:** every component renders correctly at 360, 390, 430, 768, 1024 and 1440 px; contrast meets AA; keyboard and focus work.
 
 ## Phase 2 — Database and seed (review gate)
-- Neon (dev, preview, production branches), Prisma, migrations including `pg_trgm` and `unaccent`
+- Neon (dev, preview, production branches), Prisma, migrations including `pg_trgm` and `unaccent` (built on Prisma; moved to Supabase in D-043)
 - Schema per `DATABASE-SCHEMA.md`; seed per `SEED-DATA.md` (Level 1 content, `reviewed` flag)
 - Seed validation test
 

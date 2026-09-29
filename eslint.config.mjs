@@ -23,6 +23,7 @@ export default defineConfig([
     'coverage/**',
     'next-env.d.ts',
     'pnpm-lock.yaml',
-    'src/generated/**',
+    // Design handoff reference files (docs/design/code), not application code.
+    'docs/**',
   ]),
 ])

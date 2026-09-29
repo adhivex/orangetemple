@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import { seedData } from '../../prisma/seed-data'
-import { SeedValidationError, validateSeedData } from '../../prisma/seed-data/validate'
+import { seedData } from '../../content'
+import { SeedValidationError, validateSeedData } from '../../content/validate'
 
 const data = validateSeedData(seedData)
 const bySlug = new Map(data.temples.map((t) => [t.slug, t]))

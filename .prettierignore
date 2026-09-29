@@ -4,5 +4,3 @@ pnpm-lock.yaml
 public
 docs
 *.md
-src/generated
-prisma/migrations

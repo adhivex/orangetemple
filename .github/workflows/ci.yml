@@ -14,26 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
-    # Pages prerender from the database at build time (D-015), so the build needs a
-    # migrated and seeded Postgres. Same major version as local (D-033) and Neon.
-    services:
-      postgres:
-        image: postgres:17-alpine
-        env:
-          POSTGRES_USER: orangetemple
-          POSTGRES_PASSWORD: orangetemple
-          POSTGRES_DB: orangetemple
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U orangetemple -d orangetemple"
-          --health-interval 2s
-          --health-timeout 3s
-          --health-retries 30
-
     env:
-      DATABASE_URL: postgresql://orangetemple:orangetemple@localhost:5432/orangetemple
-      DIRECT_URL: postgresql://orangetemple:orangetemple@localhost:5432/orangetemple
       NEXT_PUBLIC_SITE_URL: http://localhost:3000
       SEED_TARGET: development
 
@@ -49,13 +30,20 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
-      # postinstall runs `prisma generate`; validate needs no database.
-      - run: pnpm exec prisma validate
       - run: pnpm format:check
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm test
-      - run: pnpm db:deploy
+
+      # Pages prerender from the database at build time (D-015), so the build needs a
+      # migrated and seeded database: the local Supabase stack (D-043), which applies
+      # supabase/migrations on start. Services the site does not use are skipped;
+      # Storage stays because the bucket migration needs its schema.
+      - run: pnpm exec supabase start -x studio,mailpit,imgproxy,edge-runtime,logflare,vector,supavisor
+      - run: node scripts/local-supabase-env.mjs >> "$GITHUB_ENV"
+      # The committed types must match the migrations, and the schema must lint clean.
+      - run: pnpm db:types && git diff --exit-code src/lib/database.types.ts
+      - run: pnpm exec supabase db lint --fail-on error
       - run: pnpm db:seed
       - run: pnpm build
       # End-to-end suite against the production build (ARCHITECTURE.md §13).

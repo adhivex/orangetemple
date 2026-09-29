@@ -1,10 +1,17 @@
 import { cacheLife, cacheTag } from 'next/cache'
 
-import { getDb } from '@/lib/db'
 import { selectRelatedTemples } from '@/lib/related-temples'
+import { getSupabase, unwrap } from '@/lib/supabase'
 
 import { CONTENT_TAG } from './queries'
-import { templeCardSelect, templeDetailSelect, type TempleCardData } from './shapes'
+import {
+  TEMPLE_CARD_SELECT,
+  TEMPLE_DETAIL_SELECT,
+  toTempleCard,
+  toTempleDetail,
+  type TempleCardData,
+  type TempleDetail,
+} from './shapes'
 
 /* Temple page reads (PRD §7). Published only; cached and tagged like all content. */
 
@@ -16,43 +23,52 @@ function cacheContent() {
 export async function getPublishedTempleSlugs(): Promise<string[]> {
   'use cache'
   cacheContent()
-  const rows = await getDb().temple.findMany({
-    where: { status: 'PUBLISHED' },
-    orderBy: { name: 'asc' },
-    select: { slug: true },
-  })
+  const rows = unwrap(
+    await getSupabase().from('temples').select('slug').eq('status', 'PUBLISHED').order('name'),
+  )
   return rows.map((r) => r.slug)
 }
 
-export async function getTempleBySlug(slug: string) {
+export async function getTempleBySlug(slug: string): Promise<TempleDetail | null> {
   'use cache'
   cacheContent()
-  return getDb().temple.findFirst({
-    where: { slug, status: 'PUBLISHED' },
-    select: templeDetailSelect,
-  })
+  const row = unwrap(
+    await getSupabase()
+      .from('temples')
+      .select(TEMPLE_DETAIL_SELECT)
+      .eq('slug', slug)
+      .eq('status', 'PUBLISHED')
+      .maybeSingle(),
+  )
+  return row && toTempleDetail(row)
 }
 
 /** Current slug for a retired one, if the temple is still published (ROUTES.md §4.5). */
 export async function getRedirectSlug(oldSlug: string): Promise<string | null> {
   'use cache'
   cacheContent()
-  const redirect = await getDb().slugRedirect.findUnique({
-    where: { oldSlug },
-    select: { temple: { select: { slug: true, status: true } } },
-  })
-  return redirect?.temple.status === 'PUBLISHED' ? redirect.temple.slug : null
+  const redirect = unwrap(
+    await getSupabase()
+      .from('slug_redirects')
+      .select('temple:temples(slug, status)')
+      .eq('old_slug', oldSlug)
+      .maybeSingle(),
+  )
+  return redirect?.temple?.status === 'PUBLISHED' ? redirect.temple.slug : null
 }
 
 /** Up to four related temples (DATABASE-SCHEMA.md §5), as cards. */
 export async function getRelatedTemples(slug: string): Promise<TempleCardData[]> {
   'use cache'
   cacheContent()
-  const temples = await getDb().temple.findMany({
-    where: { status: 'PUBLISHED' },
-    orderBy: { name: 'asc' },
-    select: templeCardSelect,
-  })
+  const rows = unwrap(
+    await getSupabase()
+      .from('temples')
+      .select(TEMPLE_CARD_SELECT)
+      .eq('status', 'PUBLISHED')
+      .order('name'),
+  )
+  const temples = rows.map(toTempleCard)
   const asCandidate = (t: TempleCardData) => ({
     slug: t.slug,
     deitySlug: t.deity.slug,

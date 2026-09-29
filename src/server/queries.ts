@@ -1,15 +1,27 @@
 import { cacheLife, cacheTag } from 'next/cache'
 
-import { getDb } from '@/lib/db'
 import { REGIONS } from '@/lib/regions'
+import { getSupabase, unwrap } from '@/lib/supabase'
 
-import { collectionCardSelect, templeCardSelect } from './shapes'
+import {
+  COLLECTION_CARD_SELECT,
+  TEMPLE_CARD_SELECT,
+  toCollectionCard,
+  toDate,
+  imageTypeRank,
+  toTempleCard,
+  type CollectionCardData,
+  type LicenseType,
+  type Region,
+  type TempleCardData,
+} from './shapes'
 
 /*
- * Server-side data layer (ARCHITECTURE.md §2, AI-CODING-RULES.md §10). Every public read
- * filters to PUBLISHED. Reads are cached ('use cache') for the life of the content and
- * tagged CONTENT_TAG, so pages prerender at build and refresh on demand when
- * /api/revalidate is called after seeding (D-015).
+ * Server-side data layer (ARCHITECTURE.md §2, AI-CODING-RULES.md §10, D-043). Every public
+ * read filters to PUBLISHED; Row Level Security enforces the same in the database. Reads
+ * are cached ('use cache') for the life of the content and tagged CONTENT_TAG, so pages
+ * prerender at build and refresh on demand when /api/revalidate is called after seeding
+ * (D-015).
  */
 export const CONTENT_TAG = 'content'
 
@@ -18,22 +30,45 @@ function cacheContent() {
   cacheTag(CONTENT_TAG)
 }
 
+const byDisplayOrder = <T extends { display_order: number }>(a: T, b: T) =>
+  a.display_order - b.display_order
+
+export type CollectionWithTemples = CollectionCardData & {
+  introduction: string | null
+  temples: { temple: TempleCardData }[]
+}
+
+/** Collection memberships as cards: published temples only, in membership order. */
+function toMemberCards(
+  rows: { display_order: number; temple: Parameters<typeof toTempleCard>[0] | null }[],
+) {
+  return [...rows]
+    .sort(byDisplayOrder)
+    .flatMap((row) => (row.temple ? [{ temple: toTempleCard(row.temple) }] : []))
+}
+
 /** A published collection and its published temples, in display order. */
-export async function getCollectionWithTemples(slug: string) {
+export async function getCollectionWithTemples(
+  slug: string,
+): Promise<CollectionWithTemples | null> {
   'use cache'
   cacheContent()
-  return getDb().collection.findFirst({
-    where: { slug, status: 'PUBLISHED' },
-    select: {
-      ...collectionCardSelect,
-      introduction: true,
-      temples: {
-        where: { temple: { status: 'PUBLISHED' } },
-        orderBy: { displayOrder: 'asc' },
-        select: { temple: { select: templeCardSelect } },
-      },
-    },
-  })
+  const row = unwrap(
+    await getSupabase()
+      .from('collections')
+      .select(
+        `${COLLECTION_CARD_SELECT}, introduction, members:collection_temples(display_order, temple:temples(${TEMPLE_CARD_SELECT}))`,
+      )
+      .eq('slug', slug)
+      .eq('status', 'PUBLISHED')
+      .maybeSingle(),
+  )
+  if (!row) return null
+  return {
+    ...toCollectionCard(row),
+    introduction: row.introduction,
+    temples: toMemberCards(row.members),
+  }
 }
 
 export type Tile = { slug: string; name: string; count: number }
@@ -45,16 +80,15 @@ export type Tile = { slug: string; name: string; count: number }
 export async function getDeityTiles(): Promise<Tile[]> {
   'use cache'
   cacheContent()
-  const deities = await getDb().deity.findMany({
-    orderBy: [{ isFeatured: 'desc' }, { displayOrder: 'asc' }],
-    select: {
-      slug: true,
-      name: true,
-      _count: { select: { temples: { where: { status: 'PUBLISHED' } } } },
-    },
-  })
+  const deities = unwrap(
+    await getSupabase()
+      .from('deities')
+      .select('slug, name, published_temples:temples(count)')
+      .order('is_featured', { ascending: false })
+      .order('display_order'),
+  )
   return deities
-    .map((d) => ({ slug: d.slug, name: d.name, count: d._count.temples }))
+    .map((d) => ({ slug: d.slug, name: d.name, count: d.published_temples[0]?.count ?? 0 }))
     .filter((tile) => tile.count > 0)
 }
 
@@ -62,20 +96,13 @@ export async function getDeityTiles(): Promise<Tile[]> {
 export async function getRegionTiles(): Promise<Tile[]> {
   'use cache'
   cacheContent()
-  const counts = await getDb().temple.groupBy({
-    by: ['stateId'],
-    where: { status: 'PUBLISHED' },
-    _count: { _all: true },
-  })
-  const states = await getDb().state.findMany({
-    where: { id: { in: counts.map((c) => c.stateId) } },
-    select: { id: true, region: true },
-  })
-  const regionOf = new Map(states.map((s) => [s.id, s.region]))
-  const totals = new Map<string, number>()
-  for (const c of counts) {
-    const region = regionOf.get(c.stateId)
-    if (region) totals.set(region, (totals.get(region) ?? 0) + c._count._all)
+  const states = unwrap(
+    await getSupabase().from('states').select('region, published_temples:temples(count)'),
+  )
+  const totals = new Map<Region, number>()
+  for (const state of states) {
+    const count = state.published_temples[0]?.count ?? 0
+    totals.set(state.region, (totals.get(state.region) ?? 0) + count)
   }
   return REGIONS.filter((r) => (totals.get(r.value) ?? 0) > 0).map((r) => ({
     slug: r.param,
@@ -88,35 +115,51 @@ export async function getRegionTiles(): Promise<Tile[]> {
 export async function getCatalogueStats() {
   'use cache'
   cacheContent()
+  const db = getSupabase()
   const [temples, states] = await Promise.all([
-    getDb().temple.count({ where: { status: 'PUBLISHED' } }),
-    getDb().state.count({ where: { temples: { some: { status: 'PUBLISHED' } } } }),
+    db.from('temples').select('id', { count: 'exact', head: true }).eq('status', 'PUBLISHED'),
+    // `!inner` keeps only states with at least one (published, per RLS) temple.
+    db
+      .from('states')
+      .select('id, temples!inner(id)', { count: 'exact', head: true })
+      .eq('temples.status', 'PUBLISHED'),
   ])
-  return { temples, states }
+  unwrap(temples)
+  unwrap(states)
+  return { temples: temples.count ?? 0, states: states.count ?? 0 }
+}
+
+export type CollectionPageData = CollectionWithTemples & {
+  updatedAt: Date
+  related: { relatedCollection: CollectionCardData }[]
 }
 
 /** A collection page (PRD §8): the collection, its ordered temples and related collections. */
-export async function getCollectionPage(slug: string) {
+export async function getCollectionPage(slug: string): Promise<CollectionPageData | null> {
   'use cache'
   cacheContent()
-  return getDb().collection.findFirst({
-    where: { slug, status: 'PUBLISHED' },
-    select: {
-      ...collectionCardSelect,
-      introduction: true,
-      updatedAt: true,
-      temples: {
-        where: { temple: { status: 'PUBLISHED' } },
-        orderBy: { displayOrder: 'asc' },
-        select: { temple: { select: templeCardSelect } },
-      },
-      related: {
-        where: { relatedCollection: { status: 'PUBLISHED' } },
-        orderBy: { displayOrder: 'asc' },
-        select: { relatedCollection: { select: collectionCardSelect } },
-      },
-    },
-  })
+  const row = unwrap(
+    await getSupabase()
+      .from('collections')
+      .select(
+        `${COLLECTION_CARD_SELECT}, introduction, updated_at, members:collection_temples(display_order, temple:temples(${TEMPLE_CARD_SELECT})), related:related_collections!related_collections_collection_id_fkey(display_order, collection:collections!related_collections_related_collection_id_fkey(${COLLECTION_CARD_SELECT}))`,
+      )
+      .eq('slug', slug)
+      .eq('status', 'PUBLISHED')
+      .maybeSingle(),
+  )
+  if (!row) return null
+  return {
+    ...toCollectionCard(row),
+    introduction: row.introduction,
+    updatedAt: toDate(row.updated_at),
+    temples: toMemberCards(row.members),
+    related: [...row.related]
+      .sort(byDisplayOrder)
+      .flatMap((r) =>
+        r.collection ? [{ relatedCollection: toCollectionCard(r.collection) }] : [],
+      ),
+  }
 }
 
 export type StateEntry = { slug: string; name: string; count: number }
@@ -126,20 +169,19 @@ export type RegionGroup = { param: string; label: string; count: number; states:
 export async function getStatesByRegion(): Promise<RegionGroup[]> {
   'use cache'
   cacheContent()
-  const states = await getDb().state.findMany({
-    where: { temples: { some: { status: 'PUBLISHED' } } },
-    orderBy: { name: 'asc' },
-    select: {
-      slug: true,
-      name: true,
-      region: true,
-      _count: { select: { temples: { where: { status: 'PUBLISHED' } } } },
-    },
-  })
+  const rows = unwrap(
+    await getSupabase()
+      .from('states')
+      .select('slug, name, region, published_temples:temples(count)')
+      .order('name'),
+  )
+  const states = rows
+    .map((s) => ({ ...s, count: s.published_temples[0]?.count ?? 0 }))
+    .filter((s) => s.count > 0)
   return REGIONS.map((region) => {
     const inRegion = states
       .filter((s) => s.region === region.value)
-      .map((s) => ({ slug: s.slug, name: s.name, count: s._count.temples }))
+      .map((s) => ({ slug: s.slug, name: s.name, count: s.count }))
     return {
       param: region.param,
       label: region.label,
@@ -149,47 +191,81 @@ export async function getStatesByRegion(): Promise<RegionGroup[]> {
   }).filter((group) => group.states.length > 0)
 }
 
+export type CreditsEntry = {
+  slug: string
+  name: string
+  images: {
+    publicId: string
+    altText: string
+    credit: string
+    licenseType: LicenseType
+    sourceUrl: string | null
+  }[]
+  references: { title: string; url: string | null; citation: string | null }[]
+}
+
 /** Credits (CONTENT-MODEL.md §7): licensed images and references of published temples. */
-export async function getCredits() {
+export async function getCredits(): Promise<CreditsEntry[]> {
   'use cache'
   cacheContent()
-  return getDb().temple.findMany({
-    where: {
-      status: 'PUBLISHED',
-      OR: [{ images: { some: { isPlaceholder: false } } }, { references: { some: {} } }],
-    },
-    orderBy: { name: 'asc' },
-    select: {
-      slug: true,
-      name: true,
-      images: {
-        where: { isPlaceholder: false },
-        orderBy: [{ imageType: 'asc' }, { displayOrder: 'asc' }],
-        select: { publicId: true, altText: true, credit: true, licenseType: true, sourceUrl: true },
-      },
-      references: {
-        orderBy: { displayOrder: 'asc' },
-        select: { title: true, url: true, citation: true },
-      },
-    },
-  })
+  const temples = unwrap(
+    await getSupabase()
+      .from('temples')
+      .select(
+        'slug, name, images:temple_images(public_id, alt_text, credit, license_type, source_url, image_type, display_order), references:temple_references(title, url, citation, display_order)',
+      )
+      .eq('status', 'PUBLISHED')
+      .eq('images.is_placeholder', false)
+      .order('name'),
+  )
+  return temples
+    .filter((t) => t.images.length > 0 || t.references.length > 0)
+    .map((t) => ({
+      slug: t.slug,
+      name: t.name,
+      images: [...t.images]
+        .sort(
+          (a, b) =>
+            imageTypeRank(a.image_type) - imageTypeRank(b.image_type) ||
+            a.display_order - b.display_order,
+        )
+        .map((i) => ({
+          publicId: i.public_id,
+          altText: i.alt_text,
+          credit: i.credit,
+          licenseType: i.license_type,
+          sourceUrl: i.source_url,
+        })),
+      references: [...t.references]
+        .sort(byDisplayOrder)
+        .map(({ title, url, citation }) => ({ title, url, citation })),
+    }))
+}
+
+export type SitemapData = {
+  temples: { slug: string; updatedAt: Date }[]
+  collections: { slug: string; updatedAt: Date }[]
 }
 
 /** Sitemap data (ROUTES.md §4.6): published records only, with their last update. */
-export async function getSitemapData() {
+export async function getSitemapData(): Promise<SitemapData> {
   'use cache'
   cacheContent()
+  const db = getSupabase()
   const [temples, collections] = await Promise.all([
-    getDb().temple.findMany({
-      where: { status: 'PUBLISHED' },
-      orderBy: { name: 'asc' },
-      select: { slug: true, updatedAt: true },
-    }),
-    getDb().collection.findMany({
-      where: { status: 'PUBLISHED' },
-      orderBy: { displayOrder: 'asc' },
-      select: { slug: true, updatedAt: true },
-    }),
+    db.from('temples').select('slug, updated_at').eq('status', 'PUBLISHED').order('name'),
+    db
+      .from('collections')
+      .select('slug, updated_at')
+      .eq('status', 'PUBLISHED')
+      .order('display_order'),
   ])
-  return { temples, collections }
+  const toEntry = (r: { slug: string; updated_at: string }) => ({
+    slug: r.slug,
+    updatedAt: toDate(r.updated_at),
+  })
+  return {
+    temples: unwrap(temples).map(toEntry),
+    collections: unwrap(collections).map(toEntry),
+  }
 }

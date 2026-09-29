@@ -9,6 +9,8 @@ const PAGES = ['/', '/temples', '/temples/rameshwaram', '/jyotirlingas', '/explo
 
 test('no page scrolls sideways at any reference width', async ({ page }) => {
   test.skip(test.info().project.name !== 'desktop', 'widths are set explicitly here')
+  // Twenty page loads in one test: more than the 30 s default when workers share a machine.
+  test.setTimeout(120_000)
   const problems: string[] = []
   for (const width of WIDTHS) {
     await page.setViewportSize({ width, height: 900 })
