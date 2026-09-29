@@ -3,11 +3,14 @@
  * palette from globals.css, the single source.
  */
 
-/** Extracts `--name: #rrggbb` colour tokens from the stylesheet's :root block. */
+/**
+ * Extracts `--ot-name: #rrggbb` colour tokens from the stylesheet's :root block, keyed
+ * without the `ot-` prefix (`--ot-saffron-ink` → `saffron-ink`).
+ */
 export function parseColorTokens(css: string): Record<string, string> {
   const root = css.match(/:root\s*\{([\s\S]*?)\n\}/)?.[1] ?? ''
   const tokens: Record<string, string> = {}
-  for (const [, name, hex] of root.matchAll(/--([a-z]+-\d{2,3}|white):\s*(#[0-9a-f]{6})\b/gi)) {
+  for (const [, name, hex] of root.matchAll(/--ot-([a-z0-9-]+):\s*(#[0-9a-f]{6})\b/gi)) {
     if (name && hex) tokens[name] = hex.toLowerCase()
   }
   return tokens
@@ -39,24 +42,31 @@ export const approvedPairings: {
   min: number
   use: string
 }[] = [
-  { fg: 'charcoal-900', bg: 'ivory-50', min: AA.text, use: 'Primary text' },
-  { fg: 'charcoal-700', bg: 'ivory-50', min: AA.text, use: 'Secondary text' },
-  { fg: 'charcoal-700', bg: 'sand-100', min: AA.text, use: 'Secondary text on cards' },
-  { fg: 'stone-600', bg: 'ivory-50', min: AA.text, use: 'Meta text' },
-  { fg: 'stone-600', bg: 'sand-100', min: AA.text, use: 'Meta text on cards' },
-  { fg: 'saffron-800', bg: 'ivory-50', min: AA.text, use: 'Links, eyebrows' },
-  { fg: 'white', bg: 'saffron-700', min: AA.text, use: 'Primary button' },
-  { fg: 'charcoal-900', bg: 'saffron-500', min: AA.text, use: 'Accent button, highlights' },
-  { fg: 'ivory-50', bg: 'charcoal-900', min: AA.text, use: 'Footer text' },
-  { fg: 'sand-100', bg: 'charcoal-900', min: AA.text, use: 'Footer body text' },
-  { fg: 'saffron-500', bg: 'charcoal-900', min: AA.text, use: 'Footer headings' },
-  { fg: 'saffron-800', bg: 'ivory-50', min: AA.ui, use: 'Focus ring on light surfaces' },
-  { fg: 'saffron-500', bg: 'charcoal-900', min: AA.ui, use: 'Focus ring on dark surfaces' },
+  { fg: 'ink', bg: 'bg', min: AA.text, use: 'Primary text' },
+  { fg: 'ink', bg: 'card', min: AA.text, use: 'Primary text on cards' },
+  { fg: 'ink-2', bg: 'bg', min: AA.text, use: 'Body copy' },
+  { fg: 'ink-2', bg: 'card', min: AA.text, use: 'Body copy on cards' },
+  { fg: 'muted', bg: 'bg', min: AA.text, use: 'Secondary text' },
+  { fg: 'muted', bg: 'bg-alt', min: AA.text, use: 'Secondary text on icon wells' },
+  { fg: 'muted', bg: 'card', min: AA.text, use: 'Secondary text on cards' },
+  { fg: 'saffron-ink', bg: 'bg', min: AA.text, use: 'Links and saffron text' },
+  { fg: 'saffron-ink', bg: 'bg-alt', min: AA.text, use: 'Links on icon wells' },
+  { fg: 'saffron-ink', bg: 'card', min: AA.text, use: 'Links on cards' },
+  { fg: 'white', bg: 'saffron-deep', min: AA.text, use: 'Primary button, gradient top' },
+  { fg: 'white', bg: 'saffron-ink', min: AA.text, use: 'Primary button, gradient bottom' },
+  { fg: 'ink', bg: 'saffron-soft', min: AA.text, use: 'Chips and badges' },
+  { fg: 'bg', bg: 'night', min: AA.text, use: 'Footer text' },
+  { fg: 'gold-soft', bg: 'night', min: AA.text, use: 'Kickers and footer headings' },
+  { fg: 'saffron', bg: 'night', min: AA.text, use: 'Saffron text on dark surfaces' },
+  { fg: 'saffron-ink', bg: 'bg', min: AA.ui, use: 'Focus ring on light surfaces' },
+  { fg: 'saffron', bg: 'night', min: AA.ui, use: 'Focus ring on dark surfaces' },
+  { fg: 'saffron-deep', bg: 'bg', min: AA.ui, use: 'Switch on' },
+  { fg: 'muted', bg: 'bg', min: AA.ui, use: 'Switch off' },
 ]
 
 /** Pairings that must never be used for text — asserted to stay below AA so the rule stays honest. */
 export const forbiddenTextPairings: { fg: string; bg: string; reason: string }[] = [
-  { fg: 'white', bg: 'saffron-500', reason: 'White on bright saffron (D-017)' },
-  { fg: 'saffron-700', bg: 'ivory-50', reason: 'Button fill colour, not a text colour' },
-  { fg: 'gold-500', bg: 'ivory-50', reason: 'Decorative accents only' },
+  { fg: 'white', bg: 'saffron', reason: 'White on the design accent #D96B22 (D-046)' },
+  { fg: 'saffron', bg: 'bg', reason: 'Accent is for icons and decoration, not text' },
+  { fg: 'gold', bg: 'card', reason: 'Gold is for hairlines and decoration' },
 ]

@@ -41,7 +41,7 @@ export async function CollectionPage({ slug }: { slug: string }) {
         lede={collection.subtitle}
         breadcrumbs={[{ name: 'Home', href: '/' }, { name: collection.name }]}
       >
-        <p className="mt-6 text-small text-stone-600">
+        <p className="mt-6 text-small text-muted-ink">
           {count} {count === 1 ? 'temple' : 'temples'}
         </p>
       </PageHeader>
@@ -55,13 +55,16 @@ export async function CollectionPage({ slug }: { slug: string }) {
         </section>
       )}
 
-      <section aria-labelledby="temples-title" className="border-t border-border bg-sand-100/40">
+      <section
+        aria-labelledby="temples-title"
+        className="border-t border-border bg-card-surface/40"
+      >
         <div className="container-wide section-y">
           <SectionHeader id="temples-title" title={`The ${collection.name}`} className="mb-10" />
           <ol className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {collection.temples.map(({ temple }, index) => (
               <li key={temple.slug}>
-                <p aria-hidden="true" className="mb-3 font-display text-h3 text-saffron-800">
+                <p aria-hidden="true" className="mb-3 font-serif text-h3 text-saffron-ink">
                   {String(index + 1).padStart(2, '0')}
                 </p>
                 <TempleCard temple={temple} aspect="3/2" />

@@ -1,5 +1,12 @@
 # OrangeTemple — Design System
 
+> **Superseded for visual design (2026-09-30, D-046).** The approved v1 design lives in
+> `docs/design/` (`DESIGN_SYSTEM.md`, `HOMEPAGE_SPEC.md`, `COMPONENTS.md`, `ASSETS.md`,
+> `MOBILE_WEBAPP.md`). Its colours, fonts, radii and component styling replace §2, §3 and
+> §8 below; the AA adjustments are in D-045 and D-046, and the live tokens are in
+> `src/app/globals.css`. The accessibility, content and behaviour rules in this document
+> still apply where `docs/design/` is silent.
+
 ## 1. Direction
 Premium, minimal, spiritual, modern, warm, cinematic, editorial, rooted in Indian heritage. The experience is driven by **high-quality photography, typography, whitespace and subtle motion**.
 

@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from 'clsx'
 import { extendTailwindMerge } from 'tailwind-merge'
 
 // Teach tailwind-merge about our custom type-scale utilities so that
-// `text-body` and `text-charcoal-900` are not treated as conflicting.
+// `text-body` and `text-ink` are not treated as conflicting.
 const twMerge = extendTailwindMerge({
   extend: {
     classGroups: {

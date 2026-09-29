@@ -45,7 +45,7 @@ export default function MenuSheetContent({
         </SheetHeader>
         <SheetBody>
           <nav aria-label="Menu">
-            <h3 className="mt-2 font-sans text-label font-medium text-stone-600 uppercase">
+            <h3 className="mt-2 font-sans text-label font-medium text-muted-ink uppercase">
               Collections
             </h3>
             <ul className="mt-2 divide-y divide-border border-y border-border">
@@ -54,16 +54,16 @@ export default function MenuSheetContent({
                   <SheetClose asChild>
                     <Link
                       href={item.href}
-                      className="flex min-h-14 items-center justify-between py-3 font-display text-h3 text-charcoal-900"
+                      className="flex min-h-14 items-center justify-between py-3 font-serif text-h3 text-ink"
                     >
                       {item.label}
-                      <ArrowUpRight className="size-5 text-saffron-800" aria-hidden="true" />
+                      <ArrowUpRight className="size-5 text-saffron-ink" aria-hidden="true" />
                     </Link>
                   </SheetClose>
                 </li>
               ))}
             </ul>
-            <h3 className="mt-8 font-sans text-label font-medium text-stone-600 uppercase">
+            <h3 className="mt-8 font-sans text-label font-medium text-muted-ink uppercase">
               OrangeTemple
             </h3>
             <ul className="mt-2 grid grid-cols-2 gap-x-4">
@@ -72,7 +72,7 @@ export default function MenuSheetContent({
                   <SheetClose asChild>
                     <Link
                       href={item.href}
-                      className="flex min-h-12 items-center text-charcoal-700 hover:text-charcoal-900"
+                      className="flex min-h-12 items-center text-ink-2 hover:text-ink"
                     >
                       {item.label}
                     </Link>

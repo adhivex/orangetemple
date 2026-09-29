@@ -39,7 +39,7 @@ export function Gallery({ images, templeName }: { images: ImageData[]; templeNam
                   setMounted(true)
                   setOpenIndex(index)
                 }}
-                className="group relative block aspect-[3/2] w-full overflow-hidden rounded-card bg-sand-100"
+                className="group relative block aspect-[3/2] w-full overflow-hidden rounded-card bg-card-surface"
                 aria-label={`Open photograph ${index + 1} of ${images.length}: ${image.altText}`}
               >
                 <Image
@@ -51,12 +51,12 @@ export function Gallery({ images, templeName }: { images: ImageData[]; templeNam
                   blurDataURL={image.blurDataUrl ?? undefined}
                   className="object-cover transition-transform duration-500 motion-safe:group-hover:scale-[1.03]"
                 />
-                <span className="absolute right-2 bottom-2 inline-flex size-9 items-center justify-center rounded-full bg-charcoal-900/70 text-ivory-50 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+                <span className="absolute right-2 bottom-2 inline-flex size-9 items-center justify-center rounded-full bg-ink/70 text-surface opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
                   <Expand className="size-4" aria-hidden="true" />
                 </span>
               </button>
-              <figcaption className="mt-2 text-small text-stone-600">
-                {image.caption && <span className="text-charcoal-700">{image.caption} · </span>}
+              <figcaption className="mt-2 text-small text-muted-ink">
+                {image.caption && <span className="text-ink-2">{image.caption} · </span>}
                 {image.credit}
               </figcaption>
             </figure>

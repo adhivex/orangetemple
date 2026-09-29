@@ -34,12 +34,12 @@ export default async function ExploreBharatPage() {
         {regions.map((region) => (
           <section key={region.param} aria-labelledby={`region-${region.param}`}>
             <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-4">
-              <h2 id={`region-${region.param}`} className="text-h2 text-charcoal-900">
+              <h2 id={`region-${region.param}`} className="text-h2 text-ink">
                 {region.label}
               </h2>
               <Link
                 href={directoryHref({ region: region.param })}
-                className="inline-flex min-h-11 items-center gap-1.5 font-medium text-saffron-800 underline-offset-4 hover:underline"
+                className="inline-flex min-h-11 items-center gap-1.5 font-medium text-saffron-ink underline-offset-4 hover:underline"
               >
                 View all {region.count}
                 <span className="sr-only">
@@ -54,18 +54,16 @@ export default async function ExploreBharatPage() {
                 <li key={state.slug}>
                   <Link
                     href={directoryHref({ state: state.slug })}
-                    className="group flex min-h-20 items-center justify-between gap-4 rounded-card border border-border bg-sand-100/60 px-5 py-4 transition-colors hover:border-gold-500 hover:bg-sand-100"
+                    className="group flex min-h-20 items-center justify-between gap-4 rounded-card border border-border bg-card-surface/60 px-5 py-4 transition-colors hover:border-gold hover:bg-card-surface"
                   >
                     <span>
-                      <span className="block font-display text-h3 text-charcoal-900">
-                        {state.name}
-                      </span>
-                      <span className="text-small text-stone-600">
+                      <span className="block font-serif text-h3 text-ink">{state.name}</span>
+                      <span className="text-small text-muted-ink">
                         {state.count} {state.count === 1 ? 'temple' : 'temples'}
                       </span>
                     </span>
                     <ArrowUpRight
-                      className="size-5 shrink-0 text-saffron-800 transition-transform duration-200 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+                      className="size-5 shrink-0 text-saffron-ink transition-transform duration-200 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
                       aria-hidden="true"
                     />
                   </Link>

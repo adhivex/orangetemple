@@ -15,17 +15,17 @@ export function LogoMark({ className }: { className?: string }) {
       <path
         d="M7.5 27.5V15.2C7.5 10.3 11.4 7.4 16 3.5C20.6 7.4 24.5 10.3 24.5 15.2V27.5"
         fill="none"
-        className="stroke-saffron-700"
+        className="stroke-saffron-deep"
         strokeWidth="2.25"
         strokeLinejoin="round"
       />
       <path
         d="M12.25 27.5V19.4C12.25 17 13.9 15.5 16 13.9C18.1 15.5 19.75 17 19.75 19.4V27.5Z"
-        className="fill-saffron-500"
+        className="fill-saffron"
       />
       <path
         d="M4.5 27.5H27.5"
-        className="stroke-saffron-700"
+        className="stroke-saffron-deep"
         strokeWidth="2.25"
         strokeLinecap="round"
       />
@@ -46,12 +46,12 @@ export function Logo({
       <LogoMark className="size-7 shrink-0" />
       <span
         className={cn(
-          'font-display text-[1.3125rem] leading-none font-medium tracking-[-0.01em]',
-          tone === 'inverse' ? 'text-ivory-50' : 'text-charcoal-900',
+          'font-serif text-[1.3125rem] leading-none font-medium tracking-[-0.01em]',
+          tone === 'inverse' ? 'text-surface' : 'text-ink',
         )}
       >
         Orange
-        <span className={tone === 'inverse' ? 'text-saffron-500' : 'text-saffron-800'}>Temple</span>
+        <span className={tone === 'inverse' ? 'text-saffron' : 'text-saffron-ink'}>Temple</span>
       </span>
     </span>
   )

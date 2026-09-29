@@ -36,16 +36,16 @@ export function ExploreTiles({
             <li key={tile.slug}>
               <Link
                 href={hrefFor(tile.slug)}
-                className="group flex h-full min-h-28 flex-col justify-between rounded-card border border-border bg-sand-100/70 p-4 transition-colors hover:border-gold-500 hover:bg-sand-100 sm:p-5"
+                className="group flex h-full min-h-28 flex-col justify-between rounded-card border border-border bg-card-surface/70 p-4 transition-colors hover:border-gold hover:bg-card-surface sm:p-5"
               >
                 <span className="flex items-start justify-between gap-2">
-                  <span className="font-display text-h3 text-charcoal-900">{tile.name}</span>
+                  <span className="font-serif text-h3 text-ink">{tile.name}</span>
                   <ArrowUpRight
-                    className="mt-1 size-5 shrink-0 text-saffron-800 transition-transform duration-200 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+                    className="mt-1 size-5 shrink-0 text-saffron-ink transition-transform duration-200 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
                     aria-hidden="true"
                   />
                 </span>
-                <span className="mt-4 text-small text-stone-600">
+                <span className="mt-4 text-small text-muted-ink">
                   {tile.count} {tile.count === 1 ? 'temple' : 'temples'}
                 </span>
               </Link>

@@ -48,20 +48,20 @@ export default function GalleryLightbox({
   return (
     <Dialog.Root open={open} onOpenChange={(next) => !next && onIndexChange(null)}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-charcoal-900/95 data-[state=open]:animate-in data-[state=open]:fade-in-0" />
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-ink/95 data-[state=open]:animate-in data-[state=open]:fade-in-0" />
         <Dialog.Content
           data-surface="dark"
           onKeyDown={onKeyDown}
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
-          className="fixed inset-0 z-50 flex flex-col text-ivory-50 outline-none"
+          className="fixed inset-0 z-50 flex flex-col text-surface outline-none"
         >
           <div className="flex items-center justify-between gap-4 px-4 pt-[max(env(safe-area-inset-top),0.75rem)]">
-            <Dialog.Title className="text-small text-sand-100">
+            <Dialog.Title className="text-small text-card-surface">
               {templeName} · {current + 1} of {images.length}
             </Dialog.Title>
             <Dialog.Close
-              className="inline-flex size-11 items-center justify-center rounded-full hover:bg-ivory-50/10"
+              className="inline-flex size-11 items-center justify-center rounded-full hover:bg-surface/10"
               aria-label="Close gallery"
             >
               <XIcon className="size-6" aria-hidden="true" />
@@ -81,8 +81,8 @@ export default function GalleryLightbox({
                 />
               </div>
               <Dialog.Description asChild>
-                <figcaption className="mx-auto mt-3 max-w-3xl text-center text-small text-sand-100">
-                  {image.caption && <span className="text-ivory-50">{image.caption} · </span>}
+                <figcaption className="mx-auto mt-3 max-w-3xl text-center text-small text-card-surface">
+                  {image.caption && <span className="text-surface">{image.caption} · </span>}
                   {image.credit}
                 </figcaption>
               </Dialog.Description>
@@ -95,7 +95,7 @@ export default function GalleryLightbox({
                 type="button"
                 onClick={() => go(-1)}
                 aria-label="Previous photograph"
-                className="absolute top-1/2 left-2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-charcoal-900/60 hover:bg-charcoal-900/80"
+                className="absolute top-1/2 left-2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-ink/60 hover:bg-ink/80"
               >
                 <ChevronLeft className="size-6" aria-hidden="true" />
               </button>
@@ -103,7 +103,7 @@ export default function GalleryLightbox({
                 type="button"
                 onClick={() => go(1)}
                 aria-label="Next photograph"
-                className="absolute top-1/2 right-2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-charcoal-900/60 hover:bg-charcoal-900/80"
+                className="absolute top-1/2 right-2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-ink/60 hover:bg-ink/80"
               >
                 <ChevronRight className="size-6" aria-hidden="true" />
               </button>

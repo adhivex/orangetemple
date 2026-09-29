@@ -41,7 +41,7 @@ export function QuickFacts({
             <li key={collection.slug}>
               <Link
                 href={collectionHref(collection.slug)}
-                className="text-saffron-800 underline underline-offset-4"
+                className="text-saffron-ink underline underline-offset-4"
               >
                 {collection.name}
               </Link>
@@ -64,8 +64,8 @@ export function QuickFacts({
     <dl className={cn('grid gap-x-8 gap-y-5 sm:grid-cols-2', className)}>
       {visible.map(([label, value]) => (
         <div key={label} className="border-t border-border pt-3">
-          <dt className="text-label font-medium text-stone-600 uppercase">{label}</dt>
-          <dd className="mt-1.5 text-charcoal-900">{value}</dd>
+          <dt className="text-label font-medium text-muted-ink uppercase">{label}</dt>
+          <dd className="mt-1.5 text-ink">{value}</dd>
         </div>
       ))}
     </dl>

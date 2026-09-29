@@ -14,7 +14,7 @@ import { NavLink } from './nav-link'
  */
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-ivory-50/90 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-border bg-surface/90 backdrop-blur-md">
       <div className="container-wide flex h-(--top-bar-height) items-center justify-between gap-4 md:h-18">
         <Link
           href="/"
@@ -40,7 +40,7 @@ export function SiteHeader() {
               <SearchIcon aria-hidden="true" />
             </Link>
           </Button>
-          <Button asChild variant="secondary" size="sm" className="hidden md:inline-flex">
+          <Button asChild variant="outline" size="sm" className="hidden md:inline-flex">
             <Link href={searchHref}>
               <SearchIcon aria-hidden="true" />
               Search

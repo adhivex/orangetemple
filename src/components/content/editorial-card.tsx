@@ -46,7 +46,7 @@ export function EditorialCard({
     >
       <div
         className={cn(
-          'relative overflow-hidden rounded-card bg-sand-100 shadow-card',
+          'relative overflow-hidden rounded-card bg-card-surface shadow-card',
           aspect === 'responsive' && 'aspect-[4/5] md:aspect-[3/2]',
           aspect === '4/5' && 'aspect-[4/5]',
           aspect === '3/2' && 'aspect-[3/2]',
@@ -57,23 +57,23 @@ export function EditorialCard({
         </div>
       </div>
       <div className="flex flex-1 flex-col pt-4">
-        {label && <p className="text-label font-medium text-stone-600 uppercase">{label}</p>}
-        <h3 className={cn('text-h3 text-charcoal-900', label && 'mt-1.5')}>
+        {label && <p className="text-label font-medium text-muted-ink uppercase">{label}</p>}
+        <h3 className={cn('text-h3 text-ink', label && 'mt-1.5')}>
           <Link
             href={href}
-            className="decoration-saffron-500 decoration-2 underline-offset-4 group-hover:underline after:absolute after:inset-0 after:rounded-card focus-visible:outline-none"
+            className="decoration-saffron decoration-2 underline-offset-4 group-hover:underline after:absolute after:inset-0 after:rounded-card focus-visible:outline-none"
           >
             {title}
           </Link>
         </h3>
         {children}
         {location && (
-          <p className="mt-1.5 flex items-center gap-1.5 text-small text-stone-600">
+          <p className="mt-1.5 flex items-center gap-1.5 text-small text-muted-ink">
             <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
             {location}
           </p>
         )}
-        {description && <p className="mt-2 line-clamp-2 text-charcoal-700">{description}</p>}
+        {description && <p className="mt-2 line-clamp-2 text-ink-2">{description}</p>}
       </div>
     </article>
   )

@@ -13,14 +13,14 @@ import { ImageResponse } from 'next/og'
 export const OG_SIZE = { width: 1200, height: 630 }
 export const OG_CONTENT_TYPE = 'image/png'
 
-const IVORY_50 = '#FBF6EC'
-const SAND_100 = '#EFE6D6'
-const CHARCOAL_900 = '#1F1B16'
-const CHARCOAL_700 = '#3A342D'
-const SAFFRON_500 = '#F28C28'
-const SAFFRON_700 = '#BF510C'
-const SAFFRON_800 = '#A63F08'
-const GOLD_500 = '#B08D3C'
+const BG = '#FBF1E5'
+const CARD = '#EDE2CF'
+const INK = '#2B2118'
+const INK_2 = '#5A4332'
+const SAFFRON = '#D96B22'
+const SAFFRON_DEEP = '#B5561A'
+const SAFFRON_INK = '#A34C14'
+const GOLD = '#8B5E3C'
 
 /** Cached so the image routes can be prerendered: uncached file reads would make them dynamic. */
 async function loadFontData() {
@@ -67,7 +67,7 @@ export async function renderOgImage({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        background: `radial-gradient(120% 90% at 50% 0%, ${IVORY_50} 45%, ${SAND_100} 100%)`,
+        background: `radial-gradient(120% 90% at 50% 0%, ${BG} 45%, ${CARD} 100%)`,
         fontFamily: 'Inter',
       }}
     >
@@ -77,15 +77,15 @@ export async function renderOgImage({
           <path
             d="M7.5 27.5V15.2C7.5 10.3 11.4 7.4 16 3.5C20.6 7.4 24.5 10.3 24.5 15.2V27.5"
             fill="none"
-            stroke={SAFFRON_700}
+            stroke={SAFFRON_DEEP}
             strokeWidth="2.25"
             strokeLinejoin="round"
           />
           <path
             d="M12.25 27.5V19.4C12.25 17 13.9 15.5 16 13.9C18.1 15.5 19.75 17 19.75 19.4V27.5Z"
-            fill={SAFFRON_500}
+            fill={SAFFRON}
           />
-          <path d="M4.5 27.5H27.5" stroke={SAFFRON_700} strokeWidth="2.25" strokeLinecap="round" />
+          <path d="M4.5 27.5H27.5" stroke={SAFFRON_DEEP} strokeWidth="2.25" strokeLinecap="round" />
         </svg>
         <div
           style={{
@@ -93,10 +93,10 @@ export async function renderOgImage({
             marginLeft: 14,
             fontFamily: 'Fraunces',
             fontSize: 34,
-            color: CHARCOAL_900,
+            color: INK,
           }}
         >
-          Orange<span style={{ color: SAFFRON_800 }}>Temple</span>
+          Orange<span style={{ color: SAFFRON_INK }}>Temple</span>
         </div>
       </div>
 
@@ -119,13 +119,13 @@ export async function renderOgImage({
             fontSize: 20,
             letterSpacing: 3,
             textTransform: 'uppercase',
-            color: SAFFRON_800,
+            color: SAFFRON_INK,
             textAlign: 'center',
           }}
         >
-          <div style={{ width: 28, height: 2, background: GOLD_500, marginRight: 14 }} />
+          <div style={{ width: 28, height: 2, background: GOLD, marginRight: 14 }} />
           {eyebrow}
-          <div style={{ width: 28, height: 2, background: GOLD_500, marginLeft: 14 }} />
+          <div style={{ width: 28, height: 2, background: GOLD, marginLeft: 14 }} />
         </div>
         <div
           style={{
@@ -134,7 +134,7 @@ export async function renderOgImage({
             fontSize: titleSize,
             lineHeight: 1.08,
             letterSpacing: -1,
-            color: CHARCOAL_900,
+            color: INK,
             textAlign: 'center',
             width: COLUMN,
             justifyContent: 'center',
@@ -149,7 +149,7 @@ export async function renderOgImage({
               marginTop: 20,
               fontSize: 28,
               lineHeight: 1.3,
-              color: CHARCOAL_700,
+              color: INK_2,
               textAlign: 'center',
               width: COLUMN,
               justifyContent: 'center',
@@ -160,7 +160,7 @@ export async function renderOgImage({
           </div>
         )}
       </div>
-      <div style={{ width: '100%', height: 14, background: SAFFRON_500 }} />
+      <div style={{ width: '100%', height: 14, background: SAFFRON }} />
     </div>,
     { ...OG_SIZE, fonts: await loadFonts() },
   )

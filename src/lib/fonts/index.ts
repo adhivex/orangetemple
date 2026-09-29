@@ -1,16 +1,20 @@
-import { Fraunces, Inter } from 'next/font/google'
+import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
 
-/** Display and headings (D-016). The opsz axis gives proper optical sizing at display sizes. */
-export const fraunces = Fraunces({
+/* Approved v1 type pair (docs/design/code/fonts.ts, D-046). */
+
+/** Display and headings; italic for quotes. */
+export const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
-  axes: ['opsz'],
+  weight: ['500', '600', '700'],
+  style: ['normal', 'italic'],
   display: 'swap',
-  variable: '--font-fraunces',
+  variable: '--font-cormorant',
 })
 
-/** Body and UI (D-016). */
-export const inter = Inter({
+/** Body and UI. */
+export const dmSans = DM_Sans({
   subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
   display: 'swap',
-  variable: '--font-inter',
+  variable: '--font-dm-sans',
 })

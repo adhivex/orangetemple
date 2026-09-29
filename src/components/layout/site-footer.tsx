@@ -19,7 +19,7 @@ export async function SiteFooter() {
   const contactEmail = env.NEXT_PUBLIC_CONTACT_EMAIL
 
   return (
-    <footer data-surface="dark" className="bg-charcoal-900 text-sand-100">
+    <footer data-surface="dark" className="bg-ink text-card-surface">
       <div className="container-wide grid gap-12 py-14 md:grid-cols-12 md:py-20">
         <div className="md:col-span-5">
           <Link
@@ -29,8 +29,8 @@ export async function SiteFooter() {
           >
             <Logo tone="inverse" />
           </Link>
-          <p className="mt-5 max-w-sm text-sand-100">{siteConfig.description}</p>
-          <p className="mt-6 max-w-sm text-small text-sand-100/80">
+          <p className="mt-5 max-w-sm text-card-surface">{siteConfig.description}</p>
+          <p className="mt-6 max-w-sm text-small text-card-surface/80">
             Timings and access rules change. Please confirm with the official source before you
             travel.
           </p>
@@ -38,7 +38,7 @@ export async function SiteFooter() {
 
         <nav aria-label="Footer" className="grid grid-cols-2 gap-8 md:col-span-7 md:grid-cols-3">
           <div>
-            <h2 className="font-sans text-label font-medium text-saffron-500 uppercase">Explore</h2>
+            <h2 className="font-sans text-label font-medium text-saffron uppercase">Explore</h2>
             <ul className="mt-4 space-y-1">
               {primaryNav.map((item) => (
                 <li key={item.href}>
@@ -48,7 +48,7 @@ export async function SiteFooter() {
             </ul>
           </div>
           <div>
-            <h2 className="font-sans text-label font-medium text-saffron-500 uppercase">
+            <h2 className="font-sans text-label font-medium text-saffron uppercase">
               OrangeTemple
             </h2>
             <ul className="mt-4 space-y-1">
@@ -60,16 +60,14 @@ export async function SiteFooter() {
             </ul>
           </div>
           <div className="col-span-2 md:col-span-1">
-            <h2 className="font-sans text-label font-medium text-saffron-500 uppercase">
-              Corrections
-            </h2>
-            <p className="mt-4 text-small text-sand-100/80">
+            <h2 className="font-sans text-label font-medium text-saffron uppercase">Corrections</h2>
+            <p className="mt-4 text-small text-card-surface/80">
               Spotted something inaccurate? We review every correction.
             </p>
             {contactEmail ? (
               <a
                 href={`mailto:${contactEmail}`}
-                className="mt-2 inline-flex min-h-11 items-center text-ivory-50 underline decoration-saffron-500 underline-offset-4"
+                className="mt-2 inline-flex min-h-11 items-center text-surface underline decoration-saffron underline-offset-4"
               >
                 {contactEmail}
               </a>
@@ -80,8 +78,8 @@ export async function SiteFooter() {
         </nav>
       </div>
 
-      <div className="border-t border-ivory-50/10">
-        <div className="container-wide flex flex-col gap-2 py-6 text-small text-sand-100/70 md:flex-row md:justify-between">
+      <div className="border-t border-surface/10">
+        <div className="container-wide flex flex-col gap-2 py-6 text-small text-card-surface/70 md:flex-row md:justify-between">
           <p>© {year} OrangeTemple</p>
           <p>Photography is credited on each image and on the Credits page.</p>
         </div>
@@ -94,7 +92,7 @@ function FooterLink({ href, children }: { href: string; children: ReactNode }) {
   return (
     <Link
       href={href}
-      className="inline-flex min-h-11 items-center text-sand-100 transition-colors hover:text-ivory-50"
+      className="inline-flex min-h-11 items-center text-card-surface transition-colors hover:text-surface"
     >
       {children}
     </Link>

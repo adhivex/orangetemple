@@ -31,7 +31,7 @@ export function Pagination({
   if (pageCount <= 1) return null
   const href = (p: number) => directoryHref({ ...filters, page: p })
   const cell =
-    'inline-flex size-11 items-center justify-center rounded-button text-charcoal-900 hover:bg-sand-100'
+    'inline-flex size-11 items-center justify-center rounded-button text-ink hover:bg-card-surface'
 
   return (
     <nav aria-label="Pagination" className="mt-12 flex items-center justify-center gap-1">
@@ -47,7 +47,7 @@ export function Pagination({
       <ol className="flex items-center gap-1">
         {pageWindow(page, pageCount).map((p, i) =>
           p === 'gap' ? (
-            <li key={`gap-${i}`} aria-hidden="true" className="px-1 text-stone-600">
+            <li key={`gap-${i}`} aria-hidden="true" className="px-1 text-muted-ink">
               …
             </li>
           ) : (
@@ -56,10 +56,7 @@ export function Pagination({
                 href={href(p)}
                 aria-current={p === page ? 'page' : undefined}
                 aria-label={`Page ${p}`}
-                className={cn(
-                  cell,
-                  p === page && 'bg-charcoal-900 text-ivory-50 hover:bg-charcoal-900',
-                )}
+                className={cn(cell, p === page && 'bg-ink text-surface hover:bg-ink')}
               >
                 {p}
               </Link>

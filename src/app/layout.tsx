@@ -5,8 +5,9 @@ import { SiteAnalytics } from '@/components/analytics/site-analytics'
 import { BottomNav } from '@/components/layout/bottom-nav'
 import { SiteFooter } from '@/components/layout/site-footer'
 import { SiteHeader } from '@/components/layout/site-header'
+import { Toaster } from '@/components/ui/sonner'
 import { env } from '@/env'
-import { fraunces, inter } from '@/lib/fonts'
+import { cormorant, dmSans } from '@/lib/fonts'
 import { siteConfig } from '@/lib/site-config'
 import { cn } from '@/lib/utils'
 
@@ -22,23 +23,34 @@ export const metadata: Metadata = {
   applicationName: siteConfig.name,
   appleWebApp: { capable: true, title: siteConfig.name, statusBarStyle: 'default' },
   formatDetection: { telephone: false },
+  icons: {
+    icon: [
+      { url: '/icons/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icons/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [{ url: '/icons/apple-touch-icon.png', sizes: '180x180' }],
+  },
 }
 
 export const viewport: Viewport = {
-  // --saffron-700 (DESIGN-SYSTEM.md §13). Metadata needs a literal value, not a CSS variable.
-  themeColor: '#BF510C',
   width: 'device-width',
   initialScale: 1,
+  // Content may sit under the notch; safe-area padding handles it. Never set maximumScale
+  // or userScalable: pinch-zoom must stay available.
   viewportFit: 'cover',
+  // --ot-bg. Metadata needs a literal value, not a CSS variable. Cream theme only, even
+  // when the device is in dark mode (D-046).
+  themeColor: '#FBF1E5',
+  colorScheme: 'only light',
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en-IN" className={cn(fraunces.variable, inter.variable)}>
+    <html lang="en-IN" className={cn(cormorant.variable, dmSans.variable)}>
       <body className="flex min-h-dvh flex-col">
         <a
           href="#main"
-          className="sr-only z-50 rounded-button bg-charcoal-900 px-4 py-3 text-ivory-50 focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+          className="sr-only z-50 rounded-button bg-ink px-4 py-3 text-surface focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
         >
           Skip to content
         </a>
@@ -46,10 +58,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <main id="main" tabIndex={-1} className="flex-1 outline-none">
           {children}
         </main>
-        <div className="bg-charcoal-900 pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] md:pb-0">
+        <div className="bg-ink pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] md:pb-0">
           <SiteFooter />
         </div>
         <BottomNav />
+        <Toaster />
         {/* Only on Vercel, which serves the analytics script (D-021). */}
         {process.env.VERCEL && <SiteAnalytics />}
       </body>

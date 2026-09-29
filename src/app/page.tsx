@@ -45,10 +45,10 @@ export default async function HomePage() {
 
       <section aria-labelledby="intro-title" className="container-narrow section-y">
         <Reveal>
-          <h2 id="intro-title" className="text-h2 text-charcoal-900">
+          <h2 id="intro-title" className="text-h2 text-ink">
             A careful guide to sacred places
           </h2>
-          <div className="mt-5 space-y-4 text-charcoal-700">
+          <div className="mt-5 space-y-4 text-ink-2">
             <p>
               OrangeTemple brings together the significance, history and traditions of the temples
               of Bharat, with practical guidance for visiting them.
@@ -61,7 +61,7 @@ export default async function HomePage() {
           </div>
           <Link
             href="/about"
-            className="group mt-6 inline-flex min-h-11 items-center gap-2 font-medium text-saffron-800"
+            className="group mt-6 inline-flex min-h-11 items-center gap-2 font-medium text-saffron-ink"
           >
             About OrangeTemple
             <ArrowRight
@@ -75,7 +75,7 @@ export default async function HomePage() {
       <CollectionSection collection={jyotirlingas} tone="muted" />
       <CollectionSection collection={charDham} />
 
-      <div className="bg-sand-100/60">
+      <div className="bg-card-surface/60">
         <ExploreTiles
           id="deity"
           eyebrow="Explore by deity"

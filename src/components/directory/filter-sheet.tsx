@@ -29,11 +29,11 @@ export function FilterSheet({
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="secondary" className="lg:hidden">
+        <Button variant="outline" className="lg:hidden">
           <SlidersHorizontal aria-hidden="true" />
           Filters
           {activeCount > 0 && (
-            <span className="ml-1 inline-flex size-6 items-center justify-center rounded-full bg-saffron-500 text-small text-charcoal-900">
+            <span className="ml-1 inline-flex size-6 items-center justify-center rounded-full bg-saffron text-small text-ink">
               {activeCount}
               <span className="sr-only"> active</span>
             </span>

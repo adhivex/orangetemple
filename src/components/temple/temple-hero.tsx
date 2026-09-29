@@ -39,16 +39,13 @@ export function TempleHero({
       <p
         className={cn(
           'mt-4 text-label font-medium uppercase',
-          tone === 'inverse' ? 'text-saffron-500' : 'text-saffron-800',
+          tone === 'inverse' ? 'text-saffron' : 'text-saffron-ink',
         )}
       >
         {eyebrow}
       </p>
       <h1
-        className={cn(
-          'mt-3 max-w-4xl text-h1',
-          tone === 'inverse' ? 'text-ivory-50' : 'text-charcoal-900',
-        )}
+        className={cn('mt-3 max-w-4xl text-h1', tone === 'inverse' ? 'text-surface' : 'text-ink')}
       >
         {name}
       </h1>
@@ -57,7 +54,7 @@ export function TempleHero({
           variant="serif"
           className={cn(
             'mt-2 block text-h3',
-            tone === 'inverse' ? 'text-sand-100' : 'text-charcoal-700',
+            tone === 'inverse' ? 'text-card-surface' : 'text-ink-2',
           )}
         >
           {nameNative}
@@ -66,7 +63,7 @@ export function TempleHero({
       <p
         className={cn(
           'mt-4 flex items-center gap-2',
-          tone === 'inverse' ? 'text-sand-100' : 'text-charcoal-700',
+          tone === 'inverse' ? 'text-card-surface' : 'text-ink-2',
         )}
       >
         <MapPin className="size-4 shrink-0" aria-hidden="true" />
@@ -77,7 +74,7 @@ export function TempleHero({
 
   if (!hasPhoto) {
     return (
-      <header className="border-b border-border bg-sand-100/70">
+      <header className="border-b border-border bg-card-surface/70">
         <div className="container-wide pt-6 pb-12 md:pt-8 md:pb-16">{text('default')}</div>
       </header>
     )
@@ -85,17 +82,17 @@ export function TempleHero({
 
   return (
     <header className="relative isolate">
-      <div className="relative aspect-[4/5] max-h-[85svh] w-full overflow-hidden bg-charcoal-900 md:aspect-video md:max-h-[80vh]">
+      <div className="relative aspect-[4/5] max-h-[85svh] w-full overflow-hidden bg-ink md:aspect-video md:max-h-[80vh]">
         <TempleImage image={image} sizes="100vw" preload />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-linear-to-t from-charcoal-900/95 via-charcoal-900/80 via-50% to-charcoal-900/10"
+          className="absolute inset-0 bg-linear-to-t from-ink/95 via-ink/80 via-50% to-ink/10"
         />
         <div data-surface="dark" className="absolute inset-x-0 bottom-0">
           <div className="container-wide pb-8 md:pb-12">{text('inverse')}</div>
         </div>
         {image?.credit && (
-          <p className="absolute top-3 right-3 max-w-[60%] truncate rounded-full bg-charcoal-900/70 px-3 py-1 text-[0.75rem] text-sand-100">
+          <p className="absolute top-3 right-3 max-w-[60%] truncate rounded-full bg-ink/70 px-3 py-1 text-[0.75rem] text-card-surface">
             Photo: {image.credit}
           </p>
         )}

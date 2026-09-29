@@ -30,13 +30,13 @@ export default function ContactPage() {
         lede="Spotted something inaccurate or out of date? We review every correction."
         breadcrumbs={[{ name: 'Home', href: '/' }, { name: 'Contact' }]}
       />
-      <div className="container-narrow space-y-10 section-y text-charcoal-700">
+      <div className="container-narrow space-y-10 section-y text-ink-2">
         <section aria-labelledby="send">
-          <h2 id="send" className="text-h2 text-charcoal-900">
+          <h2 id="send" className="text-h2 text-ink">
             Send a correction
           </h2>
           <p className="mt-4">It helps us most if you include:</p>
-          <ul className="mt-3 list-disc space-y-2 pl-5 marker:text-gold-500">
+          <ul className="mt-3 list-disc space-y-2 pl-5 marker:text-gold">
             <li>the temple and the page it appears on,</li>
             <li>what is wrong or missing, and</li>
             <li>a source we can check, such as the temple&rsquo;s official website.</li>
@@ -51,7 +51,7 @@ export default function ContactPage() {
               </Button>
             </div>
           ) : (
-            <p className="mt-8 rounded-card border border-dashed border-charcoal-900/30 p-5 text-small">
+            <p className="mt-8 rounded-card border border-dashed border-ink/30 p-5 text-small">
               Development notice: set <code className="font-mono">NEXT_PUBLIC_CONTACT_EMAIL</code>{' '}
               to show the corrections address. Production deploys refuse to build without it.
             </p>

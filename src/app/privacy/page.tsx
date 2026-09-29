@@ -25,12 +25,12 @@ export default function PrivacyPage() {
         lede="OrangeTemple is built to collect as little about you as possible."
         breadcrumbs={[{ name: 'Home', href: '/' }, { name: 'Privacy' }]}
       />
-      <div className="container-narrow space-y-10 section-y text-charcoal-700">
+      <div className="container-narrow space-y-10 section-y text-ink-2">
         <section aria-labelledby="collect">
-          <h2 id="collect" className="text-h2 text-charcoal-900">
+          <h2 id="collect" className="text-h2 text-ink">
             What we collect
           </h2>
-          <ul className="mt-4 list-disc space-y-2 pl-5 marker:text-gold-500">
+          <ul className="mt-4 list-disc space-y-2 pl-5 marker:text-gold">
             <li>There are no accounts, and we do not ask for your name or contact details.</li>
             <li>OrangeTemple does not set cookies.</li>
             <li>We do not use advertising or third-party tracking scripts.</li>
@@ -38,7 +38,7 @@ export default function PrivacyPage() {
         </section>
 
         <section aria-labelledby="analytics">
-          <h2 id="analytics" className="text-h2 text-charcoal-900">
+          <h2 id="analytics" className="text-h2 text-ink">
             Visitor statistics
           </h2>
           <p className="mt-4">
@@ -52,7 +52,7 @@ export default function PrivacyPage() {
         </section>
 
         <section aria-labelledby="services">
-          <h2 id="services" className="text-h2 text-charcoal-900">
+          <h2 id="services" className="text-h2 text-ink">
             Services that help run the site
           </h2>
           <p className="mt-4">
@@ -65,7 +65,7 @@ export default function PrivacyPage() {
         </section>
 
         <section aria-labelledby="sharing">
-          <h2 id="sharing" className="text-h2 text-charcoal-900">
+          <h2 id="sharing" className="text-h2 text-ink">
             Sharing and directions
           </h2>
           <p className="mt-4">
@@ -75,13 +75,13 @@ export default function PrivacyPage() {
         </section>
 
         <section aria-labelledby="email">
-          <h2 id="email" className="text-h2 text-charcoal-900">
+          <h2 id="email" className="text-h2 text-ink">
             If you email us
           </h2>
           <p className="mt-4">
             If you send a correction or a question, we use your email only to read and reply to it.
             See{' '}
-            <Link href="/contact" className="text-saffron-800 underline underline-offset-4">
+            <Link href="/contact" className="text-saffron-ink underline underline-offset-4">
               Contact
             </Link>
             .

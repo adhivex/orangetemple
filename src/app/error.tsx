@@ -25,8 +25,8 @@ export default function ErrorPage({
   return (
     <section className="container-narrow section-y text-center">
       <LogoMark className="mx-auto size-14" />
-      <h1 className="mt-8 text-h1 text-charcoal-900">Something went wrong</h1>
-      <p className="mx-auto mt-4 measure text-charcoal-700">
+      <h1 className="mt-8 text-h1 text-ink">Something went wrong</h1>
+      <p className="mx-auto mt-4 measure text-ink-2">
         We could not load this page just now. This is usually temporary — please try again.
       </p>
       <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
@@ -34,11 +34,11 @@ export default function ErrorPage({
           <RotateCw aria-hidden="true" />
           Try again
         </Button>
-        <Button asChild variant="secondary">
+        <Button asChild variant="outline">
           <Link href="/">Go to the homepage</Link>
         </Button>
       </div>
-      {error.digest && <p className="mt-8 text-small text-stone-600">Reference: {error.digest}</p>}
+      {error.digest && <p className="mt-8 text-small text-muted-ink">Reference: {error.digest}</p>}
     </section>
   )
 }

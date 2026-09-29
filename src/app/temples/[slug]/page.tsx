@@ -112,8 +112,8 @@ export default async function TemplePage({ params }: { params: Params }) {
           <TempleSection id="about" title={`About ${temple.name}`}>
             <Markdown source={temple.overview} />
             {temple.locationNote && (
-              <div className="mt-6 max-w-[65ch] rounded-card border-l-2 border-gold-500 bg-sand-100/60 p-5">
-                <p className="text-label font-medium text-stone-600 uppercase">About the site</p>
+              <div className="mt-6 max-w-[65ch] rounded-card border-l-2 border-gold bg-card-surface/60 p-5">
+                <p className="text-label font-medium text-muted-ink uppercase">About the site</p>
                 <Markdown source={temple.locationNote} className="mt-2" />
               </div>
             )}
@@ -195,7 +195,7 @@ export default async function TemplePage({ params }: { params: Params }) {
       </div>
 
       {related.length > 0 && (
-        <div className="border-t border-border bg-sand-100/60 render-lazily">
+        <div className="border-t border-border bg-card-surface/60 render-lazily">
           <div className="container-wide section-y">
             <RelatedTemples temples={related} />
           </div>
@@ -210,8 +210,8 @@ export default async function TemplePage({ params }: { params: Params }) {
 function address(value: string | null) {
   if (!value) return null
   return (
-    <p className="mt-5 border-t border-border pt-3 text-small text-charcoal-700">
-      <span className="block text-label font-medium text-stone-600 uppercase">Address</span>
+    <p className="mt-5 border-t border-border pt-3 text-small text-ink-2">
+      <span className="block text-label font-medium text-muted-ink uppercase">Address</span>
       <span className="mt-1.5 block">{value}</span>
     </p>
   )

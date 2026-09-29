@@ -30,7 +30,7 @@ export function TempleCard({
       media={<TempleImage image={temple.images[0]} sizes={CARD_SIZES} />}
     >
       {temple.nameNative && (
-        <NativeName className="mt-0.5 text-small text-stone-600">{temple.nameNative}</NativeName>
+        <NativeName className="mt-0.5 text-small text-muted-ink">{temple.nameNative}</NativeName>
       )}
     </EditorialCard>
   )

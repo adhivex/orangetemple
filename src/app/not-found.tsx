@@ -15,9 +15,9 @@ export default function NotFound() {
   return (
     <section className="container-narrow section-y text-center">
       <LogoMark className="mx-auto size-14" />
-      <p className="mt-8 text-label font-medium text-saffron-800 uppercase">Error 404</p>
-      <h1 className="mt-3 text-h1 text-charcoal-900">This path leads nowhere</h1>
-      <p className="mx-auto mt-4 measure text-charcoal-700">
+      <p className="mt-8 text-label font-medium text-saffron-ink uppercase">Error 404</p>
+      <h1 className="mt-3 text-h1 text-ink">This path leads nowhere</h1>
+      <p className="mx-auto mt-4 measure text-ink-2">
         The page you were looking for has moved or does not exist. Try the temple directory, or
         begin with one of our collections.
       </p>
@@ -25,7 +25,7 @@ export default function NotFound() {
         <Button asChild>
           <Link href="/temples">Browse all temples</Link>
         </Button>
-        <Button asChild variant="secondary">
+        <Button asChild variant="outline">
           <Link href="/">Go to the homepage</Link>
         </Button>
       </div>
@@ -34,7 +34,7 @@ export default function NotFound() {
           <li key={item.href}>
             <Link
               href={item.href}
-              className="inline-flex min-h-11 items-center text-saffron-800 underline underline-offset-4"
+              className="inline-flex min-h-11 items-center text-saffron-ink underline underline-offset-4"
             >
               {item.label}
             </Link>

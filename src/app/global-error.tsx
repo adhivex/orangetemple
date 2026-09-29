@@ -21,17 +21,17 @@ export default function GlobalError({
 
   return (
     <html lang="en-IN">
-      <body className="flex min-h-dvh items-center justify-center bg-ivory-50 p-6 text-charcoal-900">
+      <body className="flex min-h-dvh items-center justify-center bg-surface p-6 text-ink">
         <title>Something went wrong · OrangeTemple</title>
         <main className="max-w-md text-center">
-          <h1 className="font-display text-h2">Something went wrong</h1>
-          <p className="mt-4 text-charcoal-700">
+          <h1 className="font-serif text-h2">Something went wrong</h1>
+          <p className="mt-4 text-ink-2">
             OrangeTemple could not load. This is usually temporary — please try again.
           </p>
           <button
             type="button"
             onClick={() => retry()}
-            className="mt-8 inline-flex h-12 items-center rounded-button bg-saffron-700 px-6 font-medium text-white hover:bg-saffron-800"
+            className="mt-8 inline-flex h-12 items-center rounded-button bg-saffron-deep px-6 font-medium text-white hover:bg-saffron-ink"
           >
             Try again
           </button>

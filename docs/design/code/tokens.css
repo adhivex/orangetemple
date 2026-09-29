@@ -1,0 +1,114 @@
+/*
+ * Brand palette (approved): Page background #FBF1E5 (earlier main bg #F5EFE3 is retired) · Section bg #FAF7F0 · Card bg #EDE2CF ·
+ * Primary text #2B2118 · Accent/buttons #D96B22 · Secondary text #8B5E3C
+ *
+ * OrangeTemple design tokens (Tailwind CSS v4 + shadcn/ui)
+ * Merge into src/app/globals.css. Keep shadcn's existing variables and
+ * map them to these tokens as shown at the bottom.
+ * Source of truth for values: docs/design/DESIGN_SYSTEM.md
+ */
+
+@theme {
+  /* Brand */
+  --color-saffron: #D96B22;
+  --color-saffron-deep: #B5561A;
+  --color-saffron-bright: #E37B33;
+  --color-gold: #8B5E3C;
+  --color-gold-soft: #EDE2CF;
+  --color-night: #2B2118;
+  --color-night-2: #231A12;
+
+  /* Fonts (variables are set by next/font in src/app/fonts.ts) */
+  --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-dm-sans), "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Radii */
+  --radius-card: 16px;
+  --radius-panel: 18px;
+  --radius-tile: 14px;
+
+  /* Shadows */
+  --shadow-soft: 0 1px 2px rgb(43 33 24 / .05), 0 10px 30px -10px rgb(43 33 24 / .18);
+  --shadow-lift: 0 30px 60px -24px rgb(43 33 24 / .32);
+  --shadow-cta: 0 8px 20px -8px rgb(217 107 34 / .6);
+
+  /* Motion */
+  --ease-temple: cubic-bezier(.2, .7, .2, 1);
+
+  /* Layout */
+  --container-site: 1200px;
+
+  /* Breakpoints: mobile-first. Unprefixed classes = MOBILE (priority 1).
+     tablet: = tablet portrait and up (priority 2)
+     tablet-lg: = tablet landscape and up
+     desktop: = desktop (priority 3) */
+  --breakpoint-tablet: 641px;
+  --breakpoint-tablet-lg: 981px;
+  --breakpoint-desktop: 1200px;
+}
+
+/* Surface + text tokens. Light (cream) theme only: no dark mode in v1. */
+:root {
+  color-scheme: light;
+  --ot-ink: #2B2118;
+  --ot-ink-2: #5A4332;
+  --ot-muted: #8B5E3C;
+  --ot-line: #E2D4BD;
+  --ot-gold-line: rgb(139 94 60 / .28);
+  --ot-bg: #FBF1E5;
+  --ot-bg-alt: #FAF7F0;
+  --ot-cream: #EDE2CF;
+  --ot-card: #EDE2CF;
+  --ot-saffron-soft: #F6DFC9;
+  --ot-saffron-tint: #FAF7F0;
+}
+
+/* Expose tokens as Tailwind colours: bg-surface, text-ink, border-line, etc. */
+@theme inline {
+  --color-ink: var(--ot-ink);
+  --color-ink-2: var(--ot-ink-2);
+  --color-muted-ink: var(--ot-muted);
+  --color-line: var(--ot-line);
+  --color-gold-line: var(--ot-gold-line);
+  --color-surface: var(--ot-bg);
+  --color-surface-alt: var(--ot-bg-alt);
+  --color-cream: var(--ot-cream);
+  --color-card-surface: var(--ot-card);
+  --color-saffron-soft: var(--ot-saffron-soft);
+  --color-saffron-tint: var(--ot-saffron-tint);
+}
+
+/* Map shadcn/ui variables onto the brand so shadcn components match */
+:root {
+  --background: var(--ot-bg);
+  --foreground: var(--ot-ink);
+  --card: var(--ot-card);
+  --card-foreground: var(--ot-ink);
+  --primary: #D96B22;
+  --primary-foreground: #FFFFFF;
+  --muted: var(--ot-bg-alt);
+  --muted-foreground: var(--ot-muted);
+  --border: var(--ot-line);
+  --input: var(--ot-line);
+  --ring: #D96B22;
+  --radius: 0.75rem;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
+  body { background: var(--ot-bg); color: var(--ot-ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  :focus-visible { outline: 2px solid var(--color-saffron); outline-offset: 3px; border-radius: 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* One-time hero image entrance */
+@keyframes ot-settle { from { transform: scale(1.08); opacity: .2; } to { transform: none; opacity: 1; } }
+.animate-settle { animation: ot-settle 2.6s var(--ease-temple) both; }
+
+/* Hide scrollbars on horizontal rails */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }

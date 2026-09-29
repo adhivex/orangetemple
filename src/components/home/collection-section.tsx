@@ -26,7 +26,7 @@ export function CollectionSection({
   return (
     <section
       aria-labelledby={`${id}-title`}
-      className={cn('render-lazily', tone === 'muted' && 'bg-sand-100/60')}
+      className={cn('render-lazily', tone === 'muted' && 'bg-card-surface/60')}
     >
       <div className="container-wide section-y">
         <Reveal>

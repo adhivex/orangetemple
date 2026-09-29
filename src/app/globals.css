@@ -2,37 +2,53 @@
 @import 'tw-animate-css';
 
 /*
- * OrangeTemple design tokens — source of truth is docs/DESIGN-SYSTEM.md.
- * Components use these via Tailwind utilities (bg-ivory-50, text-charcoal-900 …).
- * Never hardcode hex values in components. tests/unit/contrast.test.ts parses this
- * block and fails if any documented text pairing drops below WCAG AA.
+ * OrangeTemple design tokens: approved v1 "Premium Saffron" design (docs/design/, D-046).
+ * Values come from docs/design/code/tokens.css, with the AA adjustments of D-045/D-046:
+ * saffron-ink for saffron text, a saffron-deep → saffron-ink fill for white-text buttons,
+ * and a darker muted-ink. Cream theme only: no dark mode.
+ * Never hardcode hex values in components. tests/unit/contrast.test.ts parses the :root
+ * block below and fails if any documented text pairing drops below WCAG AA.
  */
 :root {
-  /* Palette (DESIGN-SYSTEM.md §2, D-017) */
-  --ivory-50: #fbf6ec; /* page background */
-  --sand-100: #efe6d6; /* sections, cards, dividers */
-  --charcoal-900: #1f1b16; /* primary text; text on saffron fills */
-  --charcoal-700: #3a342d; /* secondary text */
-  --stone-600: #6b6257; /* meta text on ivory */
-  --saffron-500: #f28c28; /* brand fill — charcoal text only, never white */
-  --saffron-700: #bf510c; /* primary button background, white text. Not for text on ivory (4.43:1). */
-  --saffron-800: #a63f08; /* links and small text on ivory */
-  --gold-500: #b08d3c; /* decorative accents and borders only — never text */
-  --white: #ffffff;
+  color-scheme: light;
 
-  /* Semantic aliases (also consumed by shadcn/ui primitives) */
-  --background: var(--ivory-50);
-  --foreground: var(--charcoal-900);
-  --muted: var(--sand-100);
-  --muted-foreground: var(--stone-600);
-  --primary: var(--saffron-700);
-  --primary-foreground: var(--white);
-  --accent: var(--saffron-500);
-  --accent-foreground: var(--charcoal-900);
-  --link: var(--saffron-800);
-  --border: color-mix(in oklab, var(--charcoal-900) 12%, transparent);
-  --ring: var(--saffron-800);
-  --ring-inverse: var(--saffron-500);
+  /* Palette (DESIGN_SYSTEM.md "Colour") */
+  --ot-bg: #fbf1e5; /* page background for every content section */
+  --ot-bg-alt: #faf7f0; /* icon wells, hover backgrounds */
+  --ot-card: #ede2cf; /* stats panel, explore cards, cookie banner, map section */
+  --ot-ink: #2b2118; /* headings, primary text */
+  --ot-ink-2: #5a4332; /* body copy on light surfaces */
+  --ot-muted: #80563a; /* secondary text; design #8B5E3C darkened for AA on cards (D-046) */
+  --ot-line: #e2d4bd; /* card borders, separators */
+  --ot-saffron: #d96b22; /* icons, active marks, decoration; ink text only on fills */
+  --ot-saffron-bright: #e37b33; /* decorative gradients only */
+  --ot-saffron-deep: #b5561a; /* white-text button fill (4.87:1) */
+  --ot-saffron-ink: #a34c14; /* saffron text and links on light surfaces (≥ 4.55:1) */
+  --ot-saffron-soft: #f6dfc9; /* chip and badge backgrounds */
+  --ot-gold: #8b5e3c; /* hairlines, dividers, decorative marks */
+  --ot-gold-soft: #ede2cf; /* kickers and labels on dark and photo backgrounds */
+  --ot-night: #2b2118; /* footer, quote band, image-card base */
+  --ot-night-2: #231a12;
+  --ot-white: #ffffff;
+
+  /* shadcn/ui semantic variables, mapped onto the brand */
+  --background: var(--ot-bg);
+  --foreground: var(--ot-ink);
+  --card: var(--ot-card);
+  --card-foreground: var(--ot-ink);
+  --popover: var(--ot-bg);
+  --popover-foreground: var(--ot-ink);
+  --muted: var(--ot-bg-alt);
+  --muted-foreground: var(--ot-muted);
+  --primary: var(--ot-saffron-deep);
+  --primary-foreground: var(--ot-white);
+  --accent: var(--ot-saffron-soft);
+  --accent-foreground: var(--ot-ink);
+  --link: var(--ot-saffron-ink);
+  --border: var(--ot-line);
+  --input: var(--ot-line);
+  --ring: var(--ot-saffron-ink);
+  --ring-inverse: var(--ot-saffron);
 
   /* Layout */
   --gutter: clamp(1.25rem, 0.5652rem + 3.0435vw, 3rem);
@@ -41,18 +57,32 @@
 }
 
 @theme inline {
-  --color-ivory-50: var(--ivory-50);
-  --color-sand-100: var(--sand-100);
-  --color-charcoal-900: var(--charcoal-900);
-  --color-charcoal-700: var(--charcoal-700);
-  --color-stone-600: var(--stone-600);
-  --color-saffron-500: var(--saffron-500);
-  --color-saffron-700: var(--saffron-700);
-  --color-saffron-800: var(--saffron-800);
-  --color-gold-500: var(--gold-500);
+  --color-surface: var(--ot-bg);
+  --color-surface-alt: var(--ot-bg-alt);
+  --color-card-surface: var(--ot-card);
+  --color-cream: var(--ot-card);
+  --color-ink: var(--ot-ink);
+  --color-ink-2: var(--ot-ink-2);
+  --color-muted-ink: var(--ot-muted);
+  --color-line: var(--ot-line);
+  --color-gold-line: color-mix(in srgb, var(--ot-gold) 28%, transparent);
+  --color-saffron: var(--ot-saffron);
+  --color-saffron-bright: var(--ot-saffron-bright);
+  --color-saffron-deep: var(--ot-saffron-deep);
+  --color-saffron-ink: var(--ot-saffron-ink);
+  --color-saffron-soft: var(--ot-saffron-soft);
+  --color-saffron-tint: var(--ot-bg-alt);
+  --color-gold: var(--ot-gold);
+  --color-gold-soft: var(--ot-gold-soft);
+  --color-night: var(--ot-night);
+  --color-night-2: var(--ot-night-2);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-primary: var(--primary);
@@ -61,48 +91,89 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-link: var(--link);
   --color-border: var(--border);
+  --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-deva-serif: var(--font-noto-serif-deva), var(--font-display);
+  /* Variables are set by next/font in src/lib/fonts (D-046). */
+  --font-serif: var(--font-cormorant), 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-sans:
+    var(--font-dm-sans), 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-deva-serif: var(--font-noto-serif-deva), var(--font-serif);
   --font-deva-sans: var(--font-noto-sans-deva), var(--font-sans);
 }
 
 @theme {
   /*
-   * Type scale (DESIGN-SYSTEM.md §3). Each style interpolates linearly from its
-   * mobile value at a 360px viewport to its desktop value at 1280px.
+   * Breakpoints (docs/design/HOMEPAGE_SPEC.md): unprefixed = phone (priority 1),
+   * tablet: portrait tablets, tablet-lg: landscape tablets, desktop: desktop.
+   */
+  --breakpoint-tablet: 641px;
+  --breakpoint-tablet-lg: 981px;
+  --breakpoint-desktop: 1200px;
+
+  /*
+   * Type scale for inner pages (D-027). Each style interpolates linearly from its
+   * mobile value at a 360px viewport to its desktop value at 1280px. Homepage sections
+   * use the sizes in docs/design/DESIGN_SYSTEM.md "Typography".
    */
   --text-display: clamp(2.5rem, 1.7174rem + 3.4783vw, 4.5rem);
-  --text-display--line-height: clamp(2.75rem, 1.9674rem + 3.4783vw, 4.75rem);
-  --text-display--letter-spacing: -0.02em;
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.01em;
   --text-h1: clamp(2rem, 1.5109rem + 2.1739vw, 3.25rem);
-  --text-h1--line-height: clamp(2.375rem, 1.8859rem + 2.1739vw, 3.625rem);
-  --text-h1--letter-spacing: -0.015em;
-  --text-h2: clamp(1.625rem, 1.3315rem + 1.3043vw, 2.375rem);
-  --text-h2--line-height: clamp(2rem, 1.7065rem + 1.3043vw, 2.75rem);
-  --text-h2--letter-spacing: -0.01em;
-  --text-h3: clamp(1.25rem, 1.1033rem + 0.6522vw, 1.625rem);
-  --text-h3--line-height: clamp(1.75rem, 1.6033rem + 0.6522vw, 2.125rem);
-  --text-body: clamp(1.0625rem, 1.038rem + 0.1087vw, 1.125rem);
-  --text-body--line-height: clamp(1.6875rem, 1.6386rem + 0.2174vw, 1.8125rem);
+  --text-h1--line-height: 1.06;
+  --text-h1--letter-spacing: -0.005em;
+  --text-h2: clamp(1.9375rem, 1.6386rem + 1.3043vw, 2.875rem);
+  --text-h2--line-height: 1.04;
+  --text-h3: clamp(1.3125rem, 1.1658rem + 0.6522vw, 1.5625rem);
+  --text-h3--line-height: 1.1;
+  --text-body: clamp(0.9375rem, 0.8886rem + 0.2174vw, 1rem);
+  --text-body--line-height: 1.6;
   --text-small: 0.875rem;
   --text-small--line-height: 1.25rem;
-  --text-label: 0.8125rem;
+  --text-label: 0.75rem;
   --text-label--line-height: 1rem;
-  --text-label--letter-spacing: 0.12em;
+  --text-label--letter-spacing: 0.16em;
 
-  /* Radius (§3a) */
-  --radius-card: 0.75rem;
-  --radius-button: 0.625rem;
+  /* Radius */
+  --radius-card: 16px;
+  --radius-panel: 18px;
+  --radius-tile: 14px;
+  --radius-button: 9999px;
 
-  /* Elevation — warm, low, editorial */
-  --shadow-card: 0 1px 2px rgb(31 27 22 / 0.05), 0 12px 32px -16px rgb(31 27 22 / 0.22);
-  --shadow-sheet: 0 -12px 40px -12px rgb(31 27 22 / 0.28);
+  /* Elevation */
+  --shadow-soft: 0 1px 2px rgb(43 33 24 / 0.05), 0 10px 30px -10px rgb(43 33 24 / 0.18);
+  --shadow-lift: 0 30px 60px -24px rgb(43 33 24 / 0.32);
+  --shadow-cta: 0 8px 20px -8px rgb(181 86 26 / 0.6);
+  --shadow-card: var(--shadow-soft);
+  --shadow-sheet: 0 -12px 40px -12px rgb(43 33 24 / 0.28);
 
-  /* Motion (§10): 200–400ms */
+  /* Motion */
+  --ease-temple: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-settle: ot-settle 2.6s var(--ease-temple) both;
+
+  @keyframes ot-settle {
+    from {
+      transform: scale(1.08);
+      opacity: 0.2;
+    }
+    to {
+      transform: none;
+      opacity: 1;
+    }
+  }
+}
+
+/* Site container (DESIGN_SYSTEM.md): max 1200px, 20px phone / 32px tablet and up gutters. */
+@utility container-site {
+  width: 100%;
+  max-width: calc(1200px + 2 * max(20px, env(safe-area-inset-left)));
+  margin-inline: auto;
+  padding-inline: max(20px, env(safe-area-inset-left)) max(20px, env(safe-area-inset-right));
+  @media (width >= 641px) {
+    max-width: calc(1200px + 64px);
+    padding-inline: max(32px, env(safe-area-inset-left)) max(32px, env(safe-area-inset-right));
+  }
 }
 
 /* Containers (§3a): narrow for reading, standard for most pages, wide for galleries/maps. */
@@ -166,13 +237,20 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     overflow-x: clip;
+    /* Pressed states replace the grey tap flash (MOBILE_WEBAPP.md §3). */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* No double-tap zoom delay on controls; pinch-zoom stays available. */
+  :is(a, button, summary, label, [role='button'], [role='tab']) {
+    touch-action: manipulation;
   }
 
   h1,
   h2,
   h3,
   h4 {
-    font-family: var(--font-display);
+    font-family: var(--font-serif);
     font-weight: 500;
     text-wrap: balance;
     font-optical-sizing: auto;
@@ -183,8 +261,8 @@
   }
 
   ::selection {
-    background-color: var(--saffron-500);
-    color: var(--charcoal-900);
+    background-color: var(--ot-saffron-soft);
+    color: var(--ot-ink);
   }
 
   /* One visible, high-contrast focus ring for every interactive element (§8, §12). */
@@ -224,19 +302,19 @@
 /* Long-form Markdown content (D-003): tokens only, ~65-character measure. */
 @utility prose-ot {
   max-width: 65ch;
-  color: var(--charcoal-700);
+  color: var(--ot-ink-2);
 
   & > * + * {
     margin-top: 1em;
   }
   & :is(h3, h4, h5, h6) {
     margin-top: 1.75em;
-    color: var(--charcoal-900);
+    color: var(--ot-ink);
     font-size: var(--text-h3);
     line-height: var(--text-h3--line-height);
   }
   & strong {
-    color: var(--charcoal-900);
+    color: var(--ot-ink);
     font-weight: 600;
   }
   & a {
@@ -258,13 +336,13 @@
   }
   /* Gold only on bullets (decorative); numbered markers are text and stay AA. */
   & ul > li::marker {
-    color: var(--gold-500);
+    color: var(--ot-gold);
   }
   & ol > li::marker {
-    color: var(--stone-600);
+    color: var(--ot-muted);
   }
   & blockquote {
-    border-left: 2px solid var(--gold-500);
+    border-left: 2px solid var(--ot-gold);
     padding-left: 1em;
     font-style: italic;
   }

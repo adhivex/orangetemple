@@ -8,10 +8,10 @@ import { collectionHref, directoryHref } from '@/lib/routes'
 /** Empty results (DESIGN-SYSTEM.md §11): suggestions and a reset action. */
 export function DirectoryEmpty({ filters }: { filters: DirectoryFilters }) {
   return (
-    <div className="rounded-card border border-border bg-sand-100/60 px-6 py-12 text-center">
-      <SearchX className="mx-auto size-10 text-stone-600" aria-hidden="true" />
-      <h2 className="mt-4 text-h3 text-charcoal-900">No temples match</h2>
-      <p className="mx-auto mt-3 max-w-md text-charcoal-700">
+    <div className="rounded-card border border-border bg-card-surface/60 px-6 py-12 text-center">
+      <SearchX className="mx-auto size-10 text-muted-ink" aria-hidden="true" />
+      <h2 className="mt-4 text-h3 text-ink">No temples match</h2>
+      <p className="mx-auto mt-3 max-w-md text-ink-2">
         {filters.q
           ? `Nothing matched “${filters.q}”. Check the spelling, try another name for the temple or its town, or remove a filter.`
           : 'No temple matches this combination of filters. Try removing one.'}
@@ -20,7 +20,7 @@ export function DirectoryEmpty({ filters }: { filters: DirectoryFilters }) {
         <Button asChild>
           <Link href="/temples">Clear search and filters</Link>
         </Button>
-        <Button asChild variant="secondary">
+        <Button asChild variant="outline">
           <Link href={collectionHref('jyotirlingas')}>Browse the 12 Jyotirlingas</Link>
         </Button>
       </div>
@@ -73,10 +73,10 @@ export function ActiveFilters({
         <li key={chip.key}>
           <Link
             href={chip.href}
-            className="inline-flex h-11 items-center gap-2 rounded-full border border-charcoal-900/20 bg-ivory-50 pr-3 pl-4 text-small font-medium text-charcoal-900 hover:border-charcoal-900/40"
+            className="inline-flex h-11 items-center gap-2 rounded-full border border-ink/20 bg-surface pr-3 pl-4 text-small font-medium text-ink hover:border-ink/40"
           >
             {chip.label}
-            <X className="size-4 text-stone-600" aria-hidden="true" />
+            <X className="size-4 text-muted-ink" aria-hidden="true" />
             <span className="sr-only">(remove)</span>
           </Link>
         </li>
@@ -91,14 +91,14 @@ export function DirectorySkeleton() {
     <div aria-busy="true" aria-live="polite" className="container-wide pb-16">
       <span className="sr-only">Loading temples…</span>
       <div aria-hidden="true">
-        <div className="h-13 w-full animate-pulse rounded-full bg-sand-100" />
+        <div className="h-13 w-full animate-pulse rounded-full bg-card-surface" />
         <div className="mt-8 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:ml-[20rem] xl:grid-cols-3">
           {Array.from({ length: 6 }, (_, i) => (
             <div key={i}>
-              <div className="aspect-[3/2] animate-pulse rounded-card bg-sand-100" />
-              <div className="mt-4 h-4 w-24 animate-pulse rounded bg-sand-100" />
-              <div className="mt-3 h-6 w-3/4 animate-pulse rounded bg-sand-100" />
-              <div className="mt-3 h-4 w-1/2 animate-pulse rounded bg-sand-100" />
+              <div className="aspect-[3/2] animate-pulse rounded-card bg-card-surface" />
+              <div className="mt-4 h-4 w-24 animate-pulse rounded bg-card-surface" />
+              <div className="mt-3 h-6 w-3/4 animate-pulse rounded bg-card-surface" />
+              <div className="mt-3 h-4 w-1/2 animate-pulse rounded bg-card-surface" />
             </div>
           ))}
         </div>

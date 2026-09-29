@@ -38,7 +38,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Main"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-ivory-50/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
     >
       <ul className="grid h-(--bottom-nav-height) grid-cols-4">
         {tabs.map(({ href, label, Icon, match }) => {
@@ -50,7 +50,7 @@ export function BottomNav() {
                 aria-current={active ? 'page' : undefined}
                 className={cn(
                   'flex flex-1 flex-col items-center justify-center gap-0.5 text-[0.75rem] leading-4 font-medium transition-colors',
-                  active ? 'text-saffron-800' : 'text-charcoal-700 hover:text-charcoal-900',
+                  active ? 'text-saffron-ink' : 'text-ink-2 hover:text-ink',
                 )}
               >
                 <Icon className="size-6" strokeWidth={active ? 2.25 : 1.75} aria-hidden="true" />

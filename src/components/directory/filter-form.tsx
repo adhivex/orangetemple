@@ -48,7 +48,7 @@ export function FilterForm({
         ))}
       </div>
       <div className={layout === 'bar' ? 'mt-4 flex justify-end gap-3' : 'mt-6 flex gap-3'}>
-        <Button asChild variant="secondary" className={layout === 'bar' ? '' : 'flex-1'}>
+        <Button asChild variant="outline" className={layout === 'bar' ? '' : 'flex-1'}>
           <Link href={directoryHref({ q: filters.q })}>Clear filters</Link>
         </Button>
         <Button type="submit" className={layout === 'bar' ? '' : 'flex-1'}>
@@ -76,7 +76,7 @@ function FilterSelect({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="text-label font-medium text-stone-600 uppercase">
+      <label htmlFor={id} className="text-label font-medium text-muted-ink uppercase">
         {label}
       </label>
       <div className="relative mt-2">
@@ -84,7 +84,7 @@ function FilterSelect({
           id={id}
           name={name}
           defaultValue={value ?? ''}
-          className="h-12 w-full appearance-none rounded-button border border-charcoal-900/20 bg-ivory-50 pr-10 pl-4 text-charcoal-900"
+          className="h-12 w-full appearance-none rounded-button border border-ink/20 bg-surface pr-10 pl-4 text-ink"
         >
           <option value="">{any}</option>
           {options.map((option) => (
@@ -95,7 +95,7 @@ function FilterSelect({
         </select>
         <ChevronDown
           aria-hidden="true"
-          className="pointer-events-none absolute top-1/2 right-3 size-5 -translate-y-1/2 text-stone-600"
+          className="pointer-events-none absolute top-1/2 right-3 size-5 -translate-y-1/2 text-muted-ink"
         />
       </div>
     </div>

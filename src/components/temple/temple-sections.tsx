@@ -23,10 +23,10 @@ export function TempleSection({
 }) {
   return (
     <section id={id} aria-labelledby={`${id}-title`} className="scroll-mt-24">
-      <h2 id={`${id}-title`} className="text-h2 text-charcoal-900">
+      <h2 id={`${id}-title`} className="text-h2 text-ink">
         {title}
       </h2>
-      {note && <p className="mt-2 text-small text-stone-600">{note}</p>}
+      {note && <p className="mt-2 text-small text-muted-ink">{note}</p>}
       <div className="mt-5">{children}</div>
     </section>
   )
@@ -36,8 +36,8 @@ export function RitualsList({ rituals }: { rituals: TempleDetail['rituals'] }) {
   return (
     <ul className="space-y-5">
       {rituals.map((ritual) => (
-        <li key={ritual.name} className="border-l-2 border-gold-500 pl-4">
-          <h3 className="text-h3 text-charcoal-900">{ritual.name}</h3>
+        <li key={ritual.name} className="border-l-2 border-gold pl-4">
+          <h3 className="text-h3 text-ink">{ritual.name}</h3>
           {ritual.description && <Markdown source={ritual.description} className="mt-1" />}
         </li>
       ))}
@@ -51,9 +51,9 @@ export function FestivalsList({ festivals }: { festivals: TempleDetail['festival
     <ul className="grid gap-4 sm:grid-cols-2">
       {festivals.map(({ festival, description }) => (
         <li key={festival.slug} className="rounded-card border border-border p-5">
-          <h3 className="text-h3 text-charcoal-900">{festival.name}</h3>
+          <h3 className="text-h3 text-ink">{festival.name}</h3>
           {festival.recurrenceNote && (
-            <p className="mt-1 text-small text-stone-600">{festival.recurrenceNote}</p>
+            <p className="mt-1 text-small text-muted-ink">{festival.recurrenceNote}</p>
           )}
           {description && <Markdown source={description} className="mt-3" />}
         </li>
@@ -80,15 +80,12 @@ export function NearbyPlaces({ places }: { places: TempleDetail['nearbyPlaces'] 
           place.relatedTemple?.status === 'PUBLISHED' ? templeHref(place.relatedTemple.slug) : null
         return (
           <li key={place.name} className="py-4">
-            <p className="text-label font-medium text-stone-600 uppercase">
+            <p className="text-label font-medium text-muted-ink uppercase">
               {NEARBY_TYPE[place.type]}
             </p>
-            <h3 className="mt-1 text-h3 text-charcoal-900">
+            <h3 className="mt-1 text-h3 text-ink">
               {internal ? (
-                <Link
-                  href={internal}
-                  className="underline decoration-saffron-500 underline-offset-4"
-                >
+                <Link href={internal} className="underline decoration-saffron underline-offset-4">
                   {place.name}
                 </Link>
               ) : place.url ? (
@@ -96,7 +93,7 @@ export function NearbyPlaces({ places }: { places: TempleDetail['nearbyPlaces'] 
                   href={place.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline decoration-saffron-500 underline-offset-4"
+                  className="underline decoration-saffron underline-offset-4"
                 >
                   {place.name}
                   <span className="sr-only"> (opens in a new tab)</span>
@@ -124,7 +121,7 @@ const SOURCE_TYPE: Record<TempleDetail['references'][number]['sourceType'], stri
 
 export function ReferencesList({ references }: { references: TempleDetail['references'] }) {
   return (
-    <ol className="list-decimal space-y-3 pl-5 text-small text-charcoal-700 marker:text-stone-600">
+    <ol className="list-decimal space-y-3 pl-5 text-small text-ink-2 marker:text-muted-ink">
       {references.map((ref, index) => (
         <li key={`${ref.title}-${index}`}>
           {ref.url ? (
@@ -132,16 +129,16 @@ export function ReferencesList({ references }: { references: TempleDetail['refer
               href={ref.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-saffron-800 underline underline-offset-4"
+              className="font-medium text-saffron-ink underline underline-offset-4"
             >
               {ref.title}
               <span className="sr-only"> (opens in a new tab)</span>
             </a>
           ) : (
-            <span className="font-medium text-charcoal-900">{ref.title}</span>
+            <span className="font-medium text-ink">{ref.title}</span>
           )}
           {ref.citation && <span>. {ref.citation}</span>}
-          <span className="text-stone-600">
+          <span className="text-muted-ink">
             {' '}
             · {SOURCE_TYPE[ref.sourceType]}
             {ref.accessedAt && `, accessed ${formatMonthYear(ref.accessedAt)}`}
@@ -152,7 +149,7 @@ export function ReferencesList({ references }: { references: TempleDetail['refer
   )
 }
 
-/** Mapbox pin colour: --saffron-700. The Static Images API needs a literal hex. */
+/** Mapbox pin colour: --saffron-deep. The Static Images API needs a literal hex. */
 const MAP_PIN = 'bf510c'
 
 /**
@@ -191,16 +188,16 @@ export function LocationCard({
           width={640}
           height={360}
           loading="lazy"
-          className="aspect-video w-full bg-sand-100 object-cover"
+          className="aspect-video w-full bg-card-surface object-cover"
         />
       )}
       <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
-        <p className="flex items-start gap-2 text-charcoal-700">
-          <MapPin className="mt-1 size-4 shrink-0 text-saffron-800" aria-hidden="true" />
+        <p className="flex items-start gap-2 text-ink-2">
+          <MapPin className="mt-1 size-4 shrink-0 text-saffron-ink" aria-hidden="true" />
           <span>
             {location}
             {coordinatesSource && (
-              <span className="block text-small text-stone-600">
+              <span className="block text-small text-muted-ink">
                 Coordinates: {coordinatesSource}
               </span>
             )}
@@ -210,7 +207,7 @@ export function LocationCard({
           href={mapsHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex min-h-11 items-center gap-2 font-medium text-saffron-800 underline underline-offset-4"
+          className="inline-flex min-h-11 items-center gap-2 font-medium text-saffron-ink underline underline-offset-4"
         >
           <Navigation className="size-4" aria-hidden="true" />
           Open in Maps

@@ -33,8 +33,8 @@ export function Breadcrumbs({
                   className={cn(
                     'inline-flex min-h-11 items-center underline-offset-4 hover:underline',
                     inverse
-                      ? 'text-ivory-50/90 hover:text-ivory-50'
-                      : 'text-stone-600 hover:text-charcoal-900',
+                      ? 'text-surface/90 hover:text-surface'
+                      : 'text-muted-ink hover:text-ink',
                   )}
                 >
                   {item.name}
@@ -44,7 +44,7 @@ export function Breadcrumbs({
                   aria-current={last ? 'page' : undefined}
                   className={cn(
                     'inline-flex min-h-11 items-center',
-                    inverse ? 'text-ivory-50' : 'text-charcoal-900',
+                    inverse ? 'text-surface' : 'text-ink',
                   )}
                 >
                   {item.name}
@@ -55,7 +55,7 @@ export function Breadcrumbs({
                   aria-hidden="true"
                   className={cn(
                     'size-3.5 shrink-0',
-                    inverse ? 'text-ivory-50/70' : 'text-stone-600',
+                    inverse ? 'text-surface/70' : 'text-muted-ink',
                   )}
                 />
               )}

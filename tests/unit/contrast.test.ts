@@ -15,22 +15,28 @@ const css = readFileSync(join(process.cwd(), 'src/app/globals.css'), 'utf8')
 const tokens = parseColorTokens(css)
 
 describe('design tokens', () => {
-  it('defines every palette token from DESIGN-SYSTEM.md §2 with its documented value', () => {
+  it('defines every palette token from docs/design with its documented value (D-046)', () => {
     expect(tokens).toMatchObject({
-      'ivory-50': '#fbf6ec',
-      'sand-100': '#efe6d6',
-      'charcoal-900': '#1f1b16',
-      'charcoal-700': '#3a342d',
-      'stone-600': '#6b6257',
-      'saffron-500': '#f28c28',
-      'saffron-700': '#bf510c',
-      'saffron-800': '#a63f08',
-      'gold-500': '#b08d3c',
+      bg: '#fbf1e5',
+      'bg-alt': '#faf7f0',
+      card: '#ede2cf',
+      ink: '#2b2118',
+      'ink-2': '#5a4332',
+      muted: '#80563a',
+      line: '#e2d4bd',
+      saffron: '#d96b22',
+      'saffron-deep': '#b5561a',
+      'saffron-ink': '#a34c14',
+      'saffron-soft': '#f6dfc9',
+      gold: '#8b5e3c',
+      'gold-soft': '#ede2cf',
+      night: '#2b2118',
+      white: '#ffffff',
     })
   })
 })
 
-describe('WCAG AA contrast (D-017)', () => {
+describe('WCAG AA contrast (D-017, D-046)', () => {
   it.each(approvedPairings)('$use: $fg on $bg meets $min:1', ({ fg, bg, min }) => {
     expect(tokens[fg], `missing token --${fg}`).toBeDefined()
     expect(tokens[bg], `missing token --${bg}`).toBeDefined()

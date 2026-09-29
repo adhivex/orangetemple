@@ -39,9 +39,9 @@ export default async function CreditsPage() {
         lede="Every photograph on OrangeTemple is credited where it appears and listed here, with the sources behind each temple page."
         breadcrumbs={[{ name: 'Home', href: '/' }, { name: 'Credits' }]}
       />
-      <div className="container-narrow space-y-14 section-y text-charcoal-700">
+      <div className="container-narrow space-y-14 section-y text-ink-2">
         <section aria-labelledby="photography">
-          <h2 id="photography" className="text-h2 text-charcoal-900">
+          <h2 id="photography" className="text-h2 text-ink">
             Photography
           </h2>
           {withImages.length === 0 ? (
@@ -53,7 +53,7 @@ export default async function CreditsPage() {
                   <h3 className="text-h3">
                     <Link
                       href={templeHref(temple.slug)}
-                      className="text-charcoal-900 underline decoration-saffron-500 underline-offset-4"
+                      className="text-ink underline decoration-saffron underline-offset-4"
                     >
                       {temple.name}
                     </Link>
@@ -69,7 +69,7 @@ export default async function CreditsPage() {
                               href={image.sourceUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-saffron-800 underline underline-offset-4"
+                              className="text-saffron-ink underline underline-offset-4"
                             >
                               Source
                               <span className="sr-only"> (opens in a new tab)</span>
@@ -86,7 +86,7 @@ export default async function CreditsPage() {
         </section>
 
         <section aria-labelledby="sources">
-          <h2 id="sources" className="text-h2 text-charcoal-900">
+          <h2 id="sources" className="text-h2 text-ink">
             Sources
           </h2>
           {withReferences.length === 0 ? (
@@ -100,7 +100,7 @@ export default async function CreditsPage() {
                   <h3 className="text-h3">
                     <Link
                       href={templeHref(temple.slug)}
-                      className="text-charcoal-900 underline decoration-saffron-500 underline-offset-4"
+                      className="text-ink underline decoration-saffron underline-offset-4"
                     >
                       {temple.name}
                     </Link>
@@ -113,7 +113,7 @@ export default async function CreditsPage() {
                             href={ref.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-saffron-800 underline underline-offset-4"
+                            className="text-saffron-ink underline underline-offset-4"
                           >
                             {ref.title}
                             <span className="sr-only"> (opens in a new tab)</span>
@@ -132,7 +132,7 @@ export default async function CreditsPage() {
         </section>
 
         <section aria-labelledby="type">
-          <h2 id="type" className="text-h2 text-charcoal-900">
+          <h2 id="type" className="text-h2 text-ink">
             Typefaces and icons
           </h2>
           <ul className="mt-4 space-y-2">

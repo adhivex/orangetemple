@@ -11,7 +11,7 @@ export function MediaPlaceholder({ className }: { className?: string }) {
     <div
       aria-hidden="true"
       className={cn(
-        'flex size-full items-center justify-center bg-sand-100 bg-[radial-gradient(120%_80%_at_50%_0%,var(--ivory-50),transparent_70%)]',
+        'flex size-full items-center justify-center bg-card-surface bg-[radial-gradient(120%_80%_at_50%_0%,var(--ot-bg),transparent_70%)]',
         className,
       )}
     >

@@ -41,18 +41,18 @@ export function SectionHeader({
         {eyebrow && (
           <p
             className={cn(
-              'flex items-center gap-3 text-label font-medium text-saffron-800 uppercase',
+              'flex items-center gap-3 text-label font-medium text-saffron-ink uppercase',
               centered && 'justify-center',
             )}
           >
-            <span aria-hidden="true" className="h-px w-8 bg-gold-500" />
+            <span aria-hidden="true" className="h-px w-8 bg-gold" />
             {eyebrow}
           </p>
         )}
         <Heading
           id={id}
           className={cn(
-            'text-charcoal-900',
+            'text-ink',
             eyebrow && 'mt-3',
             Heading === 'h1' ? 'text-h1' : Heading === 'h2' ? 'text-h2' : 'text-h3',
           )}
@@ -60,15 +60,13 @@ export function SectionHeader({
           {title}
         </Heading>
         {description && (
-          <p className={cn('mt-3 measure text-charcoal-700', centered && 'mx-auto')}>
-            {description}
-          </p>
+          <p className={cn('mt-3 measure text-ink-2', centered && 'mx-auto')}>{description}</p>
         )}
       </div>
       {action && (
         <Link
           href={action.href}
-          className="group inline-flex min-h-11 shrink-0 items-center gap-2 self-start font-medium text-saffron-800 sm:self-auto"
+          className="group inline-flex min-h-11 shrink-0 items-center gap-2 self-start font-medium text-saffron-ink sm:self-auto"
         >
           {action.label}
           <ArrowRight

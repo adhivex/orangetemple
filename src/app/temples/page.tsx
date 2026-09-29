@@ -52,12 +52,12 @@ export default function TemplesPage({ searchParams }: { searchParams: SearchPara
   return (
     <>
       <header className="container-wide pt-10 pb-6 md:pt-14">
-        <p className="flex items-center gap-3 text-label font-medium text-saffron-800 uppercase">
-          <span aria-hidden="true" className="h-px w-8 bg-gold-500" />
+        <p className="flex items-center gap-3 text-label font-medium text-saffron-ink uppercase">
+          <span aria-hidden="true" className="h-px w-8 bg-gold" />
           Directory
         </p>
-        <h1 className="mt-3 text-h1 text-charcoal-900">Temples</h1>
-        <p className="mt-3 measure text-charcoal-700">
+        <h1 className="mt-3 text-h1 text-ink">Temples</h1>
+        <p className="mt-3 measure text-ink-2">
           Search by name, town or state, or narrow the list by deity, region and collection.
         </p>
       </header>
@@ -89,7 +89,7 @@ async function Directory({ searchParams }: { searchParams: SearchParams }) {
         <aside aria-labelledby="filters-title" className="hidden lg:sticky lg:top-24 lg:block">
           <h2
             id="filters-title"
-            className="mb-5 font-sans text-label font-medium text-stone-600 uppercase"
+            className="mb-5 font-sans text-label font-medium text-muted-ink uppercase"
           >
             Filters
           </h2>
@@ -99,7 +99,7 @@ async function Directory({ searchParams }: { searchParams: SearchParams }) {
         <section aria-labelledby="results-title">
           <h2
             id="results-title"
-            className="font-sans text-small font-normal text-stone-600"
+            className="font-sans text-small font-normal text-muted-ink"
             aria-live="polite"
           >
             {result.total === 0

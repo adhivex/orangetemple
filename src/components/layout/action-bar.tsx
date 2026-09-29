@@ -60,8 +60,8 @@ export function ActionBar({ title, latitude, longitude, placement = 'fixed' }: A
     <div
       className={cn(
         placement === 'fixed' &&
-          'fixed inset-x-0 bottom-0 z-40 border-t border-border bg-ivory-50/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden',
-        placement === 'inline' && 'relative rounded-card border border-border bg-ivory-50',
+          'fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden',
+        placement === 'inline' && 'relative rounded-card border border-border bg-surface',
       )}
     >
       <div className="flex min-h-(--bottom-nav-height) items-center gap-3 px-4 py-2">
@@ -76,7 +76,7 @@ export function ActionBar({ title, latitude, longitude, placement = 'fixed' }: A
         )}
         <Button
           type="button"
-          variant="secondary"
+          variant="outline"
           onClick={share}
           className={cn('h-11', directionsHref ? 'flex-1' : 'w-full')}
         >
@@ -90,7 +90,7 @@ export function ActionBar({ title, latitude, longitude, placement = 'fixed' }: A
       {status && (
         <p
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 -top-12 mx-auto w-fit rounded-full bg-charcoal-900 px-4 py-2 text-small text-ivory-50 shadow-card"
+          className="pointer-events-none absolute inset-x-0 -top-12 mx-auto w-fit rounded-full bg-ink px-4 py-2 text-small text-surface shadow-card"
         >
           {status}
         </p>
