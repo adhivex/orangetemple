@@ -166,6 +166,7 @@ async function main() {
           return {
             slug: temple.slug,
             name: temple.name,
+            short_name: temple.shortName ?? null,
             name_native: temple.nameNative,
             alternate_names: temple.alternateNames,
             short_description: temple.shortDescription,
@@ -178,6 +179,7 @@ async function main() {
             state_id: stateIds.get(temple.state)!,
             search_text: buildSearchText([
               temple.name,
+              temple.shortName,
               temple.nameNative,
               ...temple.alternateNames,
               temple.city,

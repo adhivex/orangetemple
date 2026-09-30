@@ -4,6 +4,7 @@ import { defineTemple } from '../schema'
 export default defineTemple({
   slug: 'rameshwaram',
   name: 'Rameshwaram (Ramanathaswamy Temple)',
+  shortName: 'Rameshwaram',
   nameNative: null,
   alternateNames: ['Rameswaram', 'Ramanathaswamy'],
   deity: 'shiva',

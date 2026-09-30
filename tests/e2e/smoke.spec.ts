@@ -1,25 +1,43 @@
 import { expect, isMobile, templeLinks, test } from './fixtures'
 
 test.describe('homepage', () => {
-  test('renders the hero and both launch collections', async ({ page }) => {
+  test('renders the hero and both launch collections from the database', async ({ page }) => {
     const response = await page.goto('/')
     expect(response?.status()).toBe(200)
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Discover the sacred temples of Bharat',
+      'Discover the Sacred Temples of Bharat',
     )
-    expect(
-      await templeLinks(page, 'section[aria-labelledby="collection-jyotirlingas-title"]'),
-    ).toHaveLength(12)
-    expect(
-      await templeLinks(page, 'section[aria-labelledby="collection-char-dham-title"]'),
-    ).toHaveLength(4)
+    expect(await templeLinks(page, 'section#jyotirlingas')).toHaveLength(12)
+    expect(await templeLinks(page, 'section#char-dham')).toHaveLength(4)
+    // Short card names (D-054), and no handoff photographs anywhere (D-045).
+    const somnath = page.locator('section#jyotirlingas a[href="/temples/somnath"]')
+    await expect(somnath.getByRole('heading', { level: 3 })).toHaveText('Somnath')
+    await expect(page.locator('img[src*="/images/"]')).toHaveCount(0)
   })
 
-  test('primary call to action leads to the directory', async ({ page }) => {
+  test('primary call to action leads to the Jyotirlingas', async ({ page }) => {
     await page.goto('/')
-    await page.getByRole('link', { name: 'Explore the temples' }).click()
-    await expect(page).toHaveURL(/\/temples$/)
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Temples')
+    await page.getByRole('link', { name: 'Explore Temples' }).click()
+    await expect(page).toHaveURL(/#jyotirlingas$/)
+    await expect(page.locator('#jyotirlingas-title')).toBeInViewport()
+  })
+
+  test('deity tiles without temples show a toast; the others filter the directory', async ({
+    page,
+  }) => {
+    await page.goto('/')
+    await page.getByRole('button', { name: 'Devi' }).click()
+    await expect(page.getByText('Devi temples are coming soon.')).toBeVisible()
+    await page.getByRole('link', { name: 'Shiva', exact: true }).click()
+    await expect(page).toHaveURL(/\/temples\?deity=shiva$/)
+    await expect(page.locator('#results-title')).toHaveText('12 temples')
+  })
+
+  test('the footer credits OrangeKite on every page', async ({ page }) => {
+    await page.goto('/about')
+    const credit = page.getByRole('contentinfo').getByRole('link', { name: /OrangeKite/ })
+    await expect(credit).toHaveAttribute('href', 'https://orangekite.in/')
+    await expect(credit).toHaveAttribute('target', '_blank')
   })
 })
 

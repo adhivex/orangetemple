@@ -22,6 +22,7 @@
   --ot-line: #e2d4bd; /* card borders, separators */
   --ot-saffron: #d96b22; /* icons, active marks, decoration; ink text only on fills */
   --ot-saffron-bright: #e37b33; /* decorative gradients only */
+  --ot-saffron-glow: #f2a56e; /* logo and accents on dark and photo surfaces */
   --ot-saffron-deep: #b5561a; /* white-text button fill (4.87:1) */
   --ot-saffron-ink: #a34c14; /* saffron text and links on light surfaces (≥ 4.55:1) */
   --ot-saffron-soft: #f6dfc9; /* chip and badge backgrounds */
@@ -29,6 +30,9 @@
   --ot-gold-soft: #ede2cf; /* kickers and labels on dark and photo backgrounds */
   --ot-night: #2b2118; /* footer, quote band, image-card base */
   --ot-night-2: #231a12;
+  --ot-leaf: #2e7d4f; /* Vishnu medallion icon (decorative) */
+  --ot-success-on-dark: #9ed4ae; /* form success message on night */
+  --ot-error-on-dark: #f3a39a; /* form error message on night */
   --ot-white: #ffffff;
 
   /* shadcn/ui semantic variables, mapped onto the brand */
@@ -52,8 +56,7 @@
 
   /* Layout */
   --gutter: clamp(1.25rem, 0.5652rem + 3.0435vw, 3rem);
-  --bottom-nav-height: 3.5rem; /* 56px minimum (D-010) */
-  --top-bar-height: 3.5rem;
+  --bottom-nav-height: 4rem; /* 56px tab bar + 8px float (D-010, D-047) */
 }
 
 @theme inline {
@@ -68,6 +71,7 @@
   --color-gold-line: color-mix(in srgb, var(--ot-gold) 28%, transparent);
   --color-saffron: var(--ot-saffron);
   --color-saffron-bright: var(--ot-saffron-bright);
+  --color-saffron-glow: var(--ot-saffron-glow);
   --color-saffron-deep: var(--ot-saffron-deep);
   --color-saffron-ink: var(--ot-saffron-ink);
   --color-saffron-soft: var(--ot-saffron-soft);
@@ -76,6 +80,9 @@
   --color-gold-soft: var(--ot-gold-soft);
   --color-night: var(--ot-night);
   --color-night-2: var(--ot-night-2);
+  --color-leaf: var(--ot-leaf);
+  --color-success-on-dark: var(--ot-success-on-dark);
+  --color-error-on-dark: var(--ot-error-on-dark);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -164,6 +171,56 @@
   }
 }
 
+/*
+ * Design surfaces (docs/design/reference/orangetemple-home.html). Photo areas use these
+ * until licensed photographs exist (D-045, D-046); the colours live here, not in
+ * components.
+ */
+@utility bg-hero-dusk {
+  background: radial-gradient(
+    120% 90% at 85% 60%,
+    #c07a55 0%,
+    #6d4a4a 38%,
+    #2a2026 72%,
+    #1a1418 100%
+  );
+}
+/* "Photo coming soon" card: deep saffron to brown. */
+@utility bg-photo-placeholder {
+  background: radial-gradient(90% 70% at 50% 30%, #9a4e1c 0%, #4a2e1c 70%, #2b2118 100%);
+}
+/* Dark gradient under text on photo cards (white text ≥ 4.5:1 at the text's position). */
+@utility bg-card-scrim {
+  background: linear-gradient(180deg, transparent 45%, rgb(20 12 8 / 0.82) 100%);
+}
+@utility bg-map-glow {
+  background: radial-gradient(70% 120% at 55% 50%, #fbf1e5 0%, #ede2cf 60%, #e6d7bf 100%);
+}
+@utility bg-band-dusk {
+  background:
+    radial-gradient(80% 90% at 50% 0%, rgb(192 122 85 / 0.35), transparent 70%),
+    linear-gradient(180deg, #3b2a22 0%, #2b2118 100%);
+}
+/* Region tiles without photographs: one deep tone per region (Northeast from the design). */
+@utility bg-region-north {
+  background: radial-gradient(80% 80% at 50% 30%, #3b5570, #16222e);
+}
+@utility bg-region-south {
+  background: radial-gradient(80% 80% at 50% 30%, #3d6a3f, #172a18);
+}
+@utility bg-region-east {
+  background: radial-gradient(80% 80% at 50% 30%, #8a5a22, #2f1d0c);
+}
+@utility bg-region-west {
+  background: radial-gradient(80% 80% at 50% 30%, #245a7a, #0e2230);
+}
+@utility bg-region-central {
+  background: radial-gradient(80% 80% at 50% 30%, #8a4a2a, #2b170d);
+}
+@utility bg-region-northeast {
+  background: radial-gradient(80% 80% at 50% 30%, #2f5a36, #15291a);
+}
+
 /* Site container (DESIGN_SYSTEM.md): max 1200px, 20px phone / 32px tablet and up gutters. */
 @utility container-site {
   width: 100%;
@@ -219,11 +276,12 @@
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     scroll-behavior: smooth;
-    scroll-padding-top: calc(var(--top-bar-height) + 1rem);
-    /* Below md the bottom nav (or the temple action bar) is fixed to the viewport, so
-       keyboard focus and in-page links must stop above it (WCAG 2.4.11). */
-    @media (width < 48rem) {
-      scroll-padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 1.5rem);
+    /* In-page links and keyboard focus stop below the fixed header (HOMEPAGE_SPEC.md §1). */
+    scroll-padding-top: calc(env(safe-area-inset-top) + 80px);
+    /* Phones: the floating tab bar (or the temple action bar) is fixed to the bottom, so
+       focus must stop above it too (WCAG 2.4.11). */
+    @media (width < 641px) {
+      scroll-padding-bottom: calc(env(safe-area-inset-bottom) + 88px);
     }
   }
 

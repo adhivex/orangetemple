@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
  * Sheet primitive built on Radix Dialog: focus trap, Escape to close, scroll lock,
  * aria-modal and labelling come from Radix. Two placements:
  * - bottom: the mobile bottom sheet (filters, menu). Thumb-zone, safe-area aware.
- * - right:  a side panel for larger screens.
+ * - right:  a 380px side panel from tablet up.
  * Enter/exit animations are CSS (tw-animate-css) and collapse under reduced motion.
  */
 
@@ -33,11 +33,11 @@ export function SheetContent({
       <SheetPrimitive.Overlay className="fixed inset-0 z-50 bg-ink/45 backdrop-blur-[2px] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0" />
       <SheetPrimitive.Content
         className={cn(
-          'fixed z-50 flex flex-col bg-surface shadow-sheet outline-none data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:animate-in data-[state=open]:duration-300',
+          'fixed z-50 flex flex-col bg-surface shadow-sheet outline-none data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:animate-in data-[state=open]:duration-[380ms] data-[state=open]:ease-temple',
           side === 'bottom' &&
-            'inset-x-0 bottom-0 max-h-[88dvh] rounded-t-[1.25rem] pb-[env(safe-area-inset-bottom)] data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom',
+            'inset-x-0 bottom-0 max-h-[88dvh] rounded-t-[22px] pb-[env(safe-area-inset-bottom)] data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom',
           side === 'right' &&
-            'inset-y-0 right-0 h-full w-[min(26rem,100%)] data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right',
+            'inset-y-0 right-0 h-full w-[min(380px,100%)] data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right',
           className,
         )}
         {...props}

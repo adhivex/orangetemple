@@ -1,10 +1,14 @@
 import { cacheLife } from 'next/cache'
 import Link from 'next/link'
-import type { ReactNode } from 'react'
 
 import { Logo } from '@/components/brand/logo'
-import { env } from '@/env'
-import { menuNav, primaryNav, siteConfig } from '@/lib/site-config'
+import { NewsletterForm } from '@/components/forms/newsletter-form'
+import { ArrowUpIcon } from '@/components/icons'
+import { NavItem } from '@/components/navigation/nav-item'
+import { homeCopy } from '@/content/home'
+import { siteConfig } from '@/lib/site-config'
+
+const copy = homeCopy.footer
 
 /** Copyright year. Cached for a day: Cache Components forbids a bare `new Date()` in a prerender. */
 async function currentYear() {
@@ -13,88 +17,120 @@ async function currentYear() {
   return new Date().getFullYear()
 }
 
-/** Site footer: navigation, credits, contact and privacy (PRD §5.8). Dark surface. */
+const linkClass =
+  'inline-block py-2.5 text-left text-[15px] text-surface-alt/72 transition-colors hover:text-white tablet:py-0 tablet:text-[14.5px] pointer-coarse:py-[9px]'
+
+/**
+ * Site footer on `night` (HOMEPAGE_SPEC.md §10–11): the newsletter row, a brand column
+ * and three link columns, and a bottom bar with the OrangeKite credit, which stays on
+ * every page. Social buttons are left out until real profile URLs exist (D-053).
+ * Phone: brand full width, Explore and Discover side by side, OrangeTemple full width in
+ * two columns. Tablet portrait: brand row, then three columns. Desktop: four columns.
+ */
 export async function SiteFooter() {
   const year = await currentYear()
-  const contactEmail = env.NEXT_PUBLIC_CONTACT_EMAIL
 
   return (
-    <footer data-surface="dark" className="bg-ink text-card-surface">
-      <div className="container-wide grid gap-12 py-14 md:grid-cols-12 md:py-20">
-        <div className="md:col-span-5">
-          <Link
-            href="/"
-            aria-label="OrangeTemple home"
-            className="inline-flex min-h-11 items-center rounded-md"
-          >
-            <Logo tone="inverse" />
-          </Link>
-          <p className="mt-5 max-w-sm text-card-surface">{siteConfig.description}</p>
-          <p className="mt-6 max-w-sm text-small text-card-surface/80">
-            Timings and access rules change. Please confirm with the official source before you
-            travel.
-          </p>
-        </div>
-
-        <nav aria-label="Footer" className="grid grid-cols-2 gap-8 md:col-span-7 md:grid-cols-3">
+    <footer data-surface="dark" className="bg-night text-surface-alt">
+      <div className="container-site">
+        <section
+          aria-labelledby="newsletter-title"
+          className="grid gap-[22px] border-b border-gold-soft/14 pt-11 pb-9 text-center tablet:grid-cols-2 tablet:items-center tablet:gap-7 tablet:pt-14 tablet:pb-12 tablet:text-left desktop:gap-12"
+        >
           <div>
-            <h2 className="font-sans text-label font-medium text-saffron uppercase">Explore</h2>
-            <ul className="mt-4 space-y-1">
-              {primaryNav.map((item) => (
-                <li key={item.href}>
-                  <FooterLink href={item.href}>{item.label}</FooterLink>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h2 className="font-sans text-label font-medium text-saffron uppercase">
-              OrangeTemple
+            <h2
+              id="newsletter-title"
+              className="font-serif text-[30px] leading-[1.05] font-medium desktop:text-[clamp(30px,3vw,40px)]"
+            >
+              {homeCopy.newsletter.title}
             </h2>
-            <ul className="mt-4 space-y-1">
-              {menuNav.site.map((item) => (
-                <li key={item.href}>
-                  <FooterLink href={item.href}>{item.label}</FooterLink>
-                </li>
-              ))}
-            </ul>
+            <p className="mt-2 text-[15px] text-surface-alt/60">{homeCopy.newsletter.subtitle}</p>
           </div>
-          <div className="col-span-2 md:col-span-1">
-            <h2 className="font-sans text-label font-medium text-saffron uppercase">Corrections</h2>
-            <p className="mt-4 text-small text-card-surface/80">
-              Spotted something inaccurate? We review every correction.
+          <NewsletterForm />
+        </section>
+
+        <div className="grid grid-cols-2 gap-x-5 gap-y-[34px] pt-10 pb-9 tablet:grid-cols-3 tablet:gap-x-7 tablet:gap-y-10 tablet:pt-14 tablet:pb-[52px] desktop:grid-cols-[1.5fr_1fr_1fr_1fr] desktop:gap-12">
+          <div className="col-span-full desktop:col-span-1">
+            <Link
+              href="/"
+              aria-label="OrangeTemple home"
+              className="inline-flex min-h-11 items-center rounded-md"
+            >
+              <Logo tone="onDark" />
+            </Link>
+            <p className="mt-4 max-w-[22em] text-[14px] leading-[1.7] text-surface-alt/60 tablet:mt-5">
+              {copy.description}
             </p>
-            {contactEmail ? (
-              <a
-                href={`mailto:${contactEmail}`}
-                className="mt-2 inline-flex min-h-11 items-center text-surface underline decoration-saffron underline-offset-4"
-              >
-                {contactEmail}
-              </a>
-            ) : (
-              <FooterLink href="/contact">Contact us</FooterLink>
-            )}
           </div>
-        </nav>
+
+          {copy.columns.map((column, index) => {
+            // The last column (OrangeTemple) spans the phone width, its links in two columns.
+            const last = index === copy.columns.length - 1
+            return (
+              <nav
+                key={column.title}
+                aria-labelledby={`footer-${column.title.toLowerCase()}`}
+                className={last ? 'col-span-full tablet:col-span-1' : undefined}
+              >
+                <h2
+                  id={`footer-${column.title.toLowerCase()}`}
+                  className="mt-1 mb-2 font-sans text-[11px] font-semibold tracking-[2.6px] text-gold-soft uppercase tablet:mb-[18px]"
+                >
+                  {column.title}
+                </h2>
+                <ul
+                  className={
+                    last
+                      ? 'grid grid-cols-2 gap-x-5 tablet:grid-cols-1 tablet:gap-[11px] pointer-coarse:tablet:gap-0.5'
+                      : 'grid tablet:gap-[11px] pointer-coarse:tablet:gap-0.5'
+                  }
+                >
+                  {column.links.map((link) => (
+                    <li key={link.label}>
+                      <NavItem item={link} className={linkClass} />
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            )
+          })}
+        </div>
       </div>
 
-      <div className="border-t border-surface/10">
-        <div className="container-wide flex flex-col gap-2 py-6 text-small text-card-surface/70 md:flex-row md:justify-between">
-          <p>© {year} OrangeTemple</p>
-          <p>Photography is credited on each image and on the Credits page.</p>
+      <div className="border-t border-gold-soft/14 pt-5 pb-[calc(env(safe-area-inset-bottom)+22px)] tablet:pt-[22px] tablet:pb-[26px]">
+        <div className="container-site flex flex-col items-start gap-3 text-[13px] text-surface-alt/60 tablet:flex-row tablet:flex-wrap tablet:items-center tablet:justify-between tablet:gap-4">
+          <p className="flex flex-col gap-1.5 tablet:flex-row tablet:gap-0">
+            <span>
+              © {year} {siteConfig.name}.in
+            </span>
+            <span aria-hidden="true" className="hidden px-2.5 opacity-50 tablet:inline">
+              |
+            </span>
+            <span>{copy.dedication}</span>
+          </p>
+          <div className="flex w-full items-center justify-between gap-[18px] tablet:w-auto">
+            <p>
+              {copy.credit.prefix}{' '}
+              <a
+                href={copy.credit.href}
+                target="_blank"
+                rel="noopener"
+                className="inline-block border-b border-gold-line pt-2.5 pb-px font-medium text-surface-alt transition-colors hover:border-saffron-glow hover:text-saffron-glow tablet:pt-0 pointer-coarse:pt-2.5"
+              >
+                {copy.credit.label}
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            </p>
+            <a
+              href="#top"
+              aria-label={copy.backToTop}
+              className="grid size-11 shrink-0 place-items-center rounded-full border border-gold-soft/22 text-[15px] text-surface-alt transition-colors hover:border-saffron-deep hover:bg-saffron-deep tablet:size-[38px] pointer-coarse:size-11"
+            >
+              <ArrowUpIcon />
+            </a>
+          </div>
         </div>
       </div>
     </footer>
-  )
-}
-
-function FooterLink({ href, children }: { href: string; children: ReactNode }) {
-  return (
-    <Link
-      href={href}
-      className="inline-flex min-h-11 items-center text-card-surface transition-colors hover:text-surface"
-    >
-      {children}
-    </Link>
   )
 }

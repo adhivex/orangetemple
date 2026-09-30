@@ -51,6 +51,8 @@ export const deitySeedSchema = z.object({
 export const templeSeedSchema = z.object({
   slug,
   name: text,
+  /** Short card and search label, e.g. "Somnath" (D-054). Pages keep the full name. */
+  shortName: text.nullable().default(null),
   /** Verified Devanagari name only (SEED-DATA.md §8.1); otherwise null. */
   nameNative: text.nullable(),
   alternateNames: z.array(text),

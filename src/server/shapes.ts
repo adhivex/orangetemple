@@ -33,10 +33,12 @@ export type ImageData = {
 export type TempleCardData = {
   slug: string
   name: string
+  /** Short card label (D-054); falls back to `name`. */
+  shortName: string
   nameNative: string | null
   city: string
   shortDescription: string
-  state: { slug: string; name: string }
+  state: { slug: string; name: string; region: Region }
   deity: { slug: string; name: string }
   /** The first HERO image, if any. */
   images: ImageData[]
@@ -129,7 +131,7 @@ const IMAGE_COLUMNS =
   'url, alt_text, caption, width, height, blur_data_url, credit, license_type, source_url, is_placeholder, image_type, display_order' as const
 
 export const TEMPLE_CARD_SELECT =
-  `slug, name, name_native, city, short_description, state:states(slug, name), deity:deities(slug, name), images:temple_images(${IMAGE_COLUMNS}), collections:collection_temples(collection:collections(slug, name, display_order))` as const
+  `slug, name, short_name, name_native, city, short_description, state:states(slug, name, region), deity:deities(slug, name), images:temple_images(${IMAGE_COLUMNS}), collections:collection_temples(collection:collections(slug, name, display_order))` as const
 
 export const COLLECTION_CARD_SELECT =
   'slug, name, subtitle, description, image_url, image_alt, published_temples:collection_temples(count)' as const
@@ -160,9 +162,9 @@ type OrderedCollectionRef = NamedRef & { display_order: number }
 
 export type TempleCardRow = Pick<
   Tables<'temples'>,
-  'slug' | 'name' | 'name_native' | 'city' | 'short_description'
+  'slug' | 'name' | 'short_name' | 'name_native' | 'city' | 'short_description'
 > & {
-  state: NamedRef | null
+  state: (NamedRef & { region: Region }) | null
   deity: NamedRef | null
   images: ImageRow[]
   collections: { collection: OrderedCollectionRef | null }[]
@@ -283,6 +285,7 @@ export function toTempleCard(row: TempleCardRow): TempleCardData {
   return {
     slug: row.slug,
     name: row.name,
+    shortName: row.short_name ?? row.name,
     nameNative: row.name_native,
     city: row.city,
     shortDescription: row.short_description,

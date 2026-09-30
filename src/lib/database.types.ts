@@ -216,6 +216,27 @@ export type Database = {
           },
         ]
       }
+      newsletter_subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          source: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          source?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          source?: string
+        }
+        Relationships: []
+      }
       related_collections: {
         Row: {
           collection_id: string
@@ -593,6 +614,7 @@ export type Database = {
           published_at: string | null
           search_text: string
           short_description: string
+          short_name: string | null
           significance: string
           slug: string
           state_id: string
@@ -626,6 +648,7 @@ export type Database = {
           published_at?: string | null
           search_text: string
           short_description: string
+          short_name?: string | null
           significance: string
           slug: string
           state_id: string
@@ -659,6 +682,7 @@ export type Database = {
           published_at?: string | null
           search_text?: string
           short_description?: string
+          short_name?: string | null
           significance?: string
           slug?: string
           state_id?: string

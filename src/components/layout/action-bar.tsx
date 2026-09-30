@@ -60,7 +60,7 @@ export function ActionBar({ title, latitude, longitude, placement = 'fixed' }: A
     <div
       className={cn(
         placement === 'fixed' &&
-          'fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden',
+          'fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md tablet:hidden',
         placement === 'inline' && 'relative rounded-card border border-border bg-surface',
       )}
     >

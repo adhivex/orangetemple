@@ -12,8 +12,9 @@ export const metadata: Metadata = pageMetadata({
 })
 
 /*
- * Privacy notice. Describes the site as it works today, including Vercel Web Analytics
- * (D-021); must be reviewed by the owner before launch.
+ * Privacy notice. Describes the site as it works today: the consent cookie (D-051),
+ * consent-gated Vercel Web Analytics (D-021, D-051) and the newsletter (D-052). Must be
+ * reviewed by the owner before launch.
  */
 export default function PrivacyPage() {
   return (
@@ -31,10 +32,29 @@ export default function PrivacyPage() {
             What we collect
           </h2>
           <ul className="mt-4 list-disc space-y-2 pl-5 marker:text-gold">
-            <li>There are no accounts, and we do not ask for your name or contact details.</li>
-            <li>OrangeTemple does not set cookies.</li>
+            <li>There are no accounts, and we do not ask for your name.</li>
+            <li>
+              If you join the newsletter, we store your email address and the date you signed up,
+              and nothing else.
+            </li>
+            <li>
+              One essential cookie, <code>ot_consent</code>, remembers your cookie choices for a
+              year.
+            </li>
             <li>We do not use advertising or third-party tracking scripts.</li>
           </ul>
+        </section>
+
+        <section aria-labelledby="cookies">
+          <h2 id="cookies" className="text-h2 text-ink">
+            Cookies and your choices
+          </h2>
+          <p className="mt-4">
+            On your first visit we ask whether we may use analytics and marketing cookies. Nothing
+            optional loads until you choose, and rejecting is as easy as accepting. You can change
+            your choice at any time from Cookie Settings in the footer. We do not use marketing
+            cookies at present; the choice is there so that we can ask before we ever do.
+          </p>
         </section>
 
         <section aria-labelledby="analytics">
@@ -42,12 +62,12 @@ export default function PrivacyPage() {
             Visitor statistics
           </h2>
           <p className="mt-4">
-            To learn which pages are useful, we count page views with Vercel Web Analytics, our
-            hosting provider&rsquo;s cookieless analytics. It records the page viewed, the site that
-            linked to it, and general information such as country, browser and device type. We
-            remove search terms and filters from page addresses before they are counted. Vercel
-            states that this analytics does not use cookies and does not follow visitors across
-            websites.
+            Only if you allow analytics: to learn which pages are useful, we count page views with
+            Vercel Web Analytics, our hosting provider&rsquo;s cookieless analytics. It records the
+            page viewed, the site that linked to it, and general information such as country,
+            browser and device type. We remove search terms and filters from page addresses before
+            they are counted. Vercel states that this analytics does not use cookies and does not
+            follow visitors across websites.
           </p>
         </section>
 
@@ -71,6 +91,21 @@ export default function PrivacyPage() {
           <p className="mt-4">
             The Share button uses your device&rsquo;s own share sheet, or copies the link.
             Directions open your maps app. Nothing is sent to us.
+          </p>
+        </section>
+
+        <section aria-labelledby="newsletter">
+          <h2 id="newsletter" className="text-h2 text-ink">
+            The newsletter
+          </h2>
+          <p className="mt-4">
+            If you subscribe, we use your email address only to send occasional updates about new
+            temples, stories and features. It is kept in our database, is never shown on the site
+            and is not shared or sold. To be removed, email us from the{' '}
+            <Link href="/contact" className="text-saffron-ink underline underline-offset-4">
+              Contact
+            </Link>{' '}
+            page.
           </p>
         </section>
 

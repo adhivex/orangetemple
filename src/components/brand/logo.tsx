@@ -1,57 +1,64 @@
+import { TempleIcon } from '@/components/icons'
+import { siteConfig } from '@/lib/site-config'
 import { cn } from '@/lib/utils'
 
-/**
- * Geometric doorway-arch mark. Abstract by design: it does not depict any real
- * temple or deity. Placeholder brand mark pending owner approval.
- */
+/** The temple mark on its own, for error pages and image placeholders. */
 export function LogoMark({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 32 32"
-      aria-hidden="true"
-      focusable="false"
-      className={cn('size-8', className)}
-    >
-      <path
-        d="M7.5 27.5V15.2C7.5 10.3 11.4 7.4 16 3.5C20.6 7.4 24.5 10.3 24.5 15.2V27.5"
-        fill="none"
-        className="stroke-saffron-deep"
-        strokeWidth="2.25"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M12.25 27.5V19.4C12.25 17 13.9 15.5 16 13.9C18.1 15.5 19.75 17 19.75 19.4V27.5Z"
-        className="fill-saffron"
-      />
-      <path
-        d="M4.5 27.5H27.5"
-        className="stroke-saffron-deep"
-        strokeWidth="2.25"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
+  return <TempleIcon className={cn('size-8 text-saffron', className)} />
 }
 
-/** Mark plus wordmark. `tone="inverse"` is for dark surfaces such as the footer. */
+/**
+ * Temple mark + "OrangeTemple" wordmark + tagline (HOMEPAGE_SPEC.md §1). The mark is the
+ * design's generic temple silhouette, not a depiction of a particular temple.
+ * - onPhoto: over the hero (white text, light saffron accent)
+ * - onCream: on the page background (ink text, saffron accent)
+ * - onDark:  on the footer (cream text, light saffron accent)
+ * The wordmark is decorative text: callers give the surrounding link an aria-label.
+ */
 export function Logo({
+  tone = 'onCream',
+  showTagline = true,
   className,
-  tone = 'default',
 }: {
+  tone?: 'onPhoto' | 'onCream' | 'onDark'
+  showTagline?: boolean
   className?: string
-  tone?: 'default' | 'inverse'
 }) {
+  const accent = tone === 'onCream' ? 'text-saffron' : 'text-saffron-glow'
   return (
-    <span className={cn('inline-flex items-center gap-2', className)}>
-      <LogoMark className="size-7 shrink-0" />
-      <span
+    <span className={cn('inline-flex items-center gap-2.5', className)}>
+      <TempleIcon
         className={cn(
-          'font-serif text-[1.3125rem] leading-none font-medium tracking-[-0.01em]',
-          tone === 'inverse' ? 'text-surface' : 'text-ink',
+          'h-8 w-[29px] shrink-0 transition-colors duration-300 tablet:h-9 tablet:w-8',
+          accent,
         )}
-      >
-        Orange
-        <span className={tone === 'inverse' ? 'text-saffron' : 'text-saffron-ink'}>Temple</span>
+      />
+      <span className="flex flex-col">
+        <span className="font-serif text-[25px] leading-[0.9] font-semibold tracking-[0.2px] tablet:text-[27px]">
+          <span className={cn('transition-colors duration-300', accent)}>Orange</span>
+          <span
+            className={cn(
+              'transition-colors duration-300',
+              tone === 'onCream'
+                ? 'text-ink'
+                : tone === 'onDark'
+                  ? 'text-surface-alt'
+                  : 'text-white',
+            )}
+          >
+            Temple
+          </span>
+        </span>
+        {showTagline && (
+          <span
+            className={cn(
+              'mt-[5px] text-[7.5px] leading-none tracking-[1.6px] whitespace-nowrap uppercase tablet:text-[8.5px] tablet:tracking-[2.4px]',
+              tone === 'onCream' ? 'text-muted-ink' : 'text-white/70',
+            )}
+          >
+            {siteConfig.motto}
+          </span>
+        )}
       </span>
     </span>
   )

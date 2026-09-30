@@ -1,10 +1,31 @@
 import { test as base, expect, type Page } from '@playwright/test'
 
+/** A stored "essential only" choice, so the first-visit cookie banner stays out of the way. */
+const storedConsent = encodeURIComponent(
+  JSON.stringify({
+    v: 1,
+    essential: true,
+    analytics: false,
+    marketing: false,
+    ts: '2026-09-30T00:00:00.000Z',
+  }),
+)
+
 /**
  * Every test fails if the page logs a console error or throws: that catches hydration
  * mismatches, CSP violations and broken client code on the pages the smoke tests visit.
+ * Tests start with a cookie choice already made; set `consent: 'none'` to see the banner.
  */
-export const test = base.extend<{ consoleErrors: string[] }>({
+export const test = base.extend<{ consent: 'stored' | 'none'; consoleErrors: string[] }>({
+  consent: ['stored', { option: true }],
+  // `provide` is Playwright's fixture callback (usually named `use`, which the React hooks
+  // lint rule mistakes for React's `use` in a property named like a function).
+  context: async ({ context, consent, baseURL }, provide) => {
+    if (consent === 'stored') {
+      await context.addCookies([{ name: 'ot_consent', value: storedConsent, url: baseURL! }])
+    }
+    await provide(context)
+  },
   consoleErrors: [
     async ({ page }, use) => {
       const errors: string[] = []

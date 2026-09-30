@@ -3,6 +3,7 @@ import { defineTemple } from '../schema'
 export default defineTemple({
   slug: 'kashi-vishwanath',
   name: 'Kashi Vishwanath Temple',
+  shortName: 'Kashi Vishwanath',
   nameNative: null,
   alternateNames: ['Kashi', 'Varanasi', 'Benares', 'Vishwanath'],
   deity: 'shiva',

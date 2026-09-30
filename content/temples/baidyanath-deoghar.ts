@@ -3,6 +3,7 @@ import { defineTemple } from '../schema'
 export default defineTemple({
   slug: 'baidyanath-deoghar',
   name: 'Baidyanath Temple, Deoghar',
+  shortName: 'Baidyanath',
   nameNative: null,
   alternateNames: ['Vaidyanath', 'Baba Baidyanath Dham', 'Deoghar'],
   deity: 'shiva',

@@ -74,8 +74,8 @@ export async function getCollectionWithTemples(
 export type Tile = { slug: string; name: string; count: number }
 
 /**
- * "Explore by deity" tiles (D-007): deities with at least one published temple, featured
- * first, then by display order.
+ * "Explore by deity" tiles (D-049): the featured deities in display order, each with its
+ * published-temple count. A tile with no temples yet shows a "coming soon" toast.
  */
 export async function getDeityTiles(): Promise<Tile[]> {
   'use cache'
@@ -84,15 +84,17 @@ export async function getDeityTiles(): Promise<Tile[]> {
     await getSupabase()
       .from('deities')
       .select('slug, name, published_temples:temples(count)')
-      .order('is_featured', { ascending: false })
+      .eq('is_featured', true)
       .order('display_order'),
   )
-  return deities
-    .map((d) => ({ slug: d.slug, name: d.name, count: d.published_temples[0]?.count ?? 0 }))
-    .filter((tile) => tile.count > 0)
+  return deities.map((d) => ({
+    slug: d.slug,
+    name: d.name,
+    count: d.published_temples[0]?.count ?? 0,
+  }))
 }
 
-/** "Explore by region" tiles (D-007): regions with at least one published temple. */
+/** "Explore by region" tiles (D-049): every region, with its published-temple count. */
 export async function getRegionTiles(): Promise<Tile[]> {
   'use cache'
   cacheContent()
@@ -104,29 +106,7 @@ export async function getRegionTiles(): Promise<Tile[]> {
     const count = state.published_temples[0]?.count ?? 0
     totals.set(state.region, (totals.get(state.region) ?? 0) + count)
   }
-  return REGIONS.filter((r) => (totals.get(r.value) ?? 0) > 0).map((r) => ({
-    slug: r.param,
-    name: r.label,
-    count: totals.get(r.value)!,
-  }))
-}
-
-/** Totals for the homepage hero, derived from published content only. */
-export async function getCatalogueStats() {
-  'use cache'
-  cacheContent()
-  const db = getSupabase()
-  const [temples, states] = await Promise.all([
-    db.from('temples').select('id', { count: 'exact', head: true }).eq('status', 'PUBLISHED'),
-    // `!inner` keeps only states with at least one (published, per RLS) temple.
-    db
-      .from('states')
-      .select('id, temples!inner(id)', { count: 'exact', head: true })
-      .eq('temples.status', 'PUBLISHED'),
-  ])
-  unwrap(temples)
-  unwrap(states)
-  return { temples: temples.count ?? 0, states: states.count ?? 0 }
+  return REGIONS.map((r) => ({ slug: r.param, name: r.label, count: totals.get(r.value) ?? 0 }))
 }
 
 export type CollectionPageData = CollectionWithTemples & {

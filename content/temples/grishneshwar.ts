@@ -3,6 +3,7 @@ import { defineTemple } from '../schema'
 export default defineTemple({
   slug: 'grishneshwar',
   name: 'Grishneshwar Temple',
+  shortName: 'Grishneshwar',
   nameNative: null,
   alternateNames: ['Ghrishneshwar', 'Ellora', 'Verul'],
   deity: 'shiva',
