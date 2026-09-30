@@ -3,6 +3,9 @@
 allowBuilds:
   # Native resolver used by eslint-import-resolver-typescript (via eslint-config-next).
   unrs-resolver: true
-  # Verifies and links esbuild's native binary, used by tsx to run the seed script.
+  # Verifies and links esbuild's native binary, used by tsx to run the seed script and by
+  # Serwist to bundle the service worker.
   esbuild: true
-  '@swc/core': set this to true or false
+  # Checks that SWC's native binary loads (falls back to @swc/wasm if not). A dependency
+  # of @serwist/turbopack, which builds the service worker (D-050).
+  '@swc/core': true
