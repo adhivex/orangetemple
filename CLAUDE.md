@@ -53,7 +53,6 @@ pnpm lint           # ESLint 9 flat config, zero warnings allowed
 pnpm typecheck      # tsc --noEmit (strict)
 pnpm test           # Vitest unit tests in tests/unit
 pnpm format         # Prettier write (format:check in CI)
-pnpm icons          # regenerate PWA icons and favicon from the logomark
 
 pnpm db:up          # start the local Supabase stack in Docker (API :54321, DB :54322, Studio :54323)
 pnpm db:reset       # rebuild the local database from supabase/migrations

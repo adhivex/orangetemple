@@ -18,7 +18,6 @@ const CARD = '#EDE2CF'
 const INK = '#2B2118'
 const INK_2 = '#5A4332'
 const SAFFRON = '#D96B22'
-const SAFFRON_DEEP = '#B5561A'
 const SAFFRON_INK = '#A34C14'
 const GOLD = '#8B5E3C'
 
@@ -27,23 +26,28 @@ async function loadFontData() {
   'use cache'
   cacheLife('max')
   const dir = join(process.cwd(), 'src/assets/fonts')
-  const [fraunces, inter] = await Promise.all([
-    readFile(join(dir, 'fraunces-latin-600-normal.woff')),
-    readFile(join(dir, 'inter-latin-500-normal.woff')),
+  // Cormorant Garamond and DM Sans, the site's type pair (D-046), from Fontsource (OFL).
+  const [cormorant, dmSans] = await Promise.all([
+    readFile(join(dir, 'cormorant-garamond-latin-600-normal.woff')),
+    readFile(join(dir, 'dm-sans-latin-500-normal.woff')),
   ])
   // ArrayBuffers: serialisable by the cache and accepted by ImageResponse.
   const toArrayBuffer = (b: Buffer) =>
     b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength) as ArrayBuffer
-  return { fraunces: toArrayBuffer(fraunces), inter: toArrayBuffer(inter) }
+  return { cormorant: toArrayBuffer(cormorant), dmSans: toArrayBuffer(dmSans) }
 }
 
 async function loadFonts() {
-  const { fraunces, inter } = await loadFontData()
+  const { cormorant, dmSans } = await loadFontData()
   return [
-    { name: 'Fraunces', data: fraunces, weight: 600 as const, style: 'normal' as const },
-    { name: 'Inter', data: inter, weight: 500 as const, style: 'normal' as const },
+    { name: 'Cormorant Garamond', data: cormorant, weight: 600 as const, style: 'normal' as const },
+    { name: 'DM Sans', data: dmSans, weight: 500 as const, style: 'normal' as const },
   ]
 }
+
+/** TempleIcon's path; the image renderer cannot use React components from the icon set. */
+const TEMPLE_MARK =
+  'M20 0l.9 3.2 5.1 1.3-5.3 1.1V8c2.6 1.5 4.2 4.3 4.8 7.2 2.3 1.2 3.5 3.5 3.8 6.1 2.2 1 3.3 3.2 3.5 5.6H36v2.5h-2v12.1h4V44H2v-2.5h4V29.4H4v-2.5h3.2c.2-2.4 1.3-4.6 3.5-5.6.3-2.6 1.5-4.9 3.8-6.1.6-2.9 2.2-5.7 4.8-7.2V3.2L20 0zm-3 30.5v11h6v-11c0-1.7-1.3-3-3-3s-3 1.3-3 3zM9 29.4v12.1h5V29.4H9zm17 0v12.1h5V29.4h-5z'
 
 /** Text stays inside this centred column so WhatsApp's 630px centre-square crop keeps it all. */
 const COLUMN = 560
@@ -68,35 +72,25 @@ export async function renderOgImage({
         flexDirection: 'column',
         alignItems: 'center',
         background: `radial-gradient(120% 90% at 50% 0%, ${BG} 45%, ${CARD} 100%)`,
-        fontFamily: 'Inter',
+        fontFamily: 'DM Sans',
       }}
     >
       {/* Brand: mark and wordmark together at the top. */}
       <div style={{ display: 'flex', alignItems: 'center', marginTop: 56 }}>
-        <svg width="52" height="52" viewBox="0 0 32 32">
-          <path
-            d="M7.5 27.5V15.2C7.5 10.3 11.4 7.4 16 3.5C20.6 7.4 24.5 10.3 24.5 15.2V27.5"
-            fill="none"
-            stroke={SAFFRON_DEEP}
-            strokeWidth="2.25"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M12.25 27.5V19.4C12.25 17 13.9 15.5 16 13.9C18.1 15.5 19.75 17 19.75 19.4V27.5Z"
-            fill={SAFFRON}
-          />
-          <path d="M4.5 27.5H27.5" stroke={SAFFRON_DEEP} strokeWidth="2.25" strokeLinecap="round" />
+        {/* The design's temple mark (src/components/icons TempleIcon). */}
+        <svg width="46" height="52" viewBox="0 0 40 44">
+          <path fill={SAFFRON} d={TEMPLE_MARK} />
         </svg>
         <div
           style={{
             display: 'flex',
             marginLeft: 14,
-            fontFamily: 'Fraunces',
+            fontFamily: 'Cormorant Garamond',
             fontSize: 34,
             color: INK,
           }}
         >
-          Orange<span style={{ color: SAFFRON_INK }}>Temple</span>
+          <span style={{ color: SAFFRON_INK }}>Orange</span>Temple
         </div>
       </div>
 
@@ -130,7 +124,7 @@ export async function renderOgImage({
         <div
           style={{
             marginTop: 20,
-            fontFamily: 'Fraunces',
+            fontFamily: 'Cormorant Garamond',
             fontSize: titleSize,
             lineHeight: 1.08,
             letterSpacing: -1,

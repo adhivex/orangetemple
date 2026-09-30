@@ -137,8 +137,8 @@ export default async function CreditsPage() {
           </h2>
           <ul className="mt-4 space-y-2">
             <li>
-              Fraunces, Inter, Noto Serif Devanagari and Noto Sans Devanagari — SIL Open Font
-              License.
+              Cormorant Garamond, DM Sans, Noto Serif Devanagari and Noto Sans Devanagari — SIL Open
+              Font License.
             </li>
             <li>Lucide icons — ISC License.</li>
           </ul>
