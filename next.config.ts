@@ -1,3 +1,4 @@
+import { withSerwist } from '@serwist/turbopack'
 import type { NextConfig } from 'next'
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -79,4 +80,5 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+// Keeps esbuild (which bundles the service worker, D-050) out of the server bundle.
+export default withSerwist(nextConfig)

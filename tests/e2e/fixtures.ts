@@ -39,6 +39,8 @@ export const test = base.extend<{ consent: 'stored' | 'none'; consoleErrors: str
       page.on('console', (message) => {
         if (message.type() !== 'error') return
         if (notFoundPages.size > 0 && message.text().includes('status of 404')) return
+        // Offline tests cut the network on purpose (pwa.spec.ts).
+        if (message.text().includes('ERR_INTERNET_DISCONNECTED')) return
         errors.push(message.text())
       })
       page.on('pageerror', (error) => errors.push(error.message))

@@ -57,13 +57,13 @@ Measured on a production build with Lighthouse mobile (throttled) and real-devic
 - No blocking third-party scripts
 
 ## 11. Progressive web app
-V1 ships `manifest.webmanifest` (name, short name, standalone display, theme and background colours, 192 and 512 icons, maskable icon), `apple-touch-icon` and `theme-color`. No service worker in V1 (D-011).
+V1 ships `manifest.webmanifest` (name, short name, standalone display, theme and background colours, 192 and 512 icons, maskable icon), `apple-touch-icon` and `theme-color`. A Serwist service worker (production builds only, D-050) precaches the stylesheet, preloaded fonts, small icons and an `/offline` page, caches pages network-first (3 s timeout) and images and fonts cache-first (60 days, 200 entries), and never caches POST or `/api/*`; see `src/app/sw.ts` and `docs/design/MOBILE_WEBAPP.md` §2.
 
 ## 12. Security and privacy
 - No secrets in the repository or the browser. Only `NEXT_PUBLIC_` variables reach the client.
 - Set security headers in `next.config` (CSP appropriate to Cloudinary and Mapbox, `X-Content-Type-Options`, `Referrer-Policy`, `frame-ancestors`).
 - The corrections and contact flow is a `mailto:` link in V1, so there is no public write endpoint.
-- Analytics: Vercel Web Analytics, cookieless (D-021).
+- Analytics: Vercel Web Analytics, cookieless (D-021), loaded only after the visitor allows analytics cookies (D-051).
 
 ## 13. Testing and CI
 - Vitest for pure logic (slug rules, search ranking, related-temple selection, seed validation).

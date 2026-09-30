@@ -1,3 +1,4 @@
+import { SerwistProvider } from '@serwist/turbopack/react'
 import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 
@@ -8,6 +9,7 @@ import { MobileTabBar } from '@/components/layout/mobile-tab-bar'
 import { ShellProvider } from '@/components/layout/shell-context'
 import { SiteFooter } from '@/components/layout/site-footer'
 import { SiteHeader } from '@/components/layout/site-header'
+import { ConnectivityToasts } from '@/components/pwa/connectivity-toasts'
 import { InstallPromptListener } from '@/components/pwa/install-prompt'
 import { SearchProvider } from '@/components/search/search-provider'
 import { Toaster } from '@/components/ui/sonner'
@@ -84,6 +86,14 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           )}
         </CookieConsentProvider>
         <InstallPromptListener />
+        <ConnectivityToasts />
+        {/* Service worker (D-050): production builds only. Pages opened by in-app
+            navigation are cached too; reconnecting shows a toast rather than reloading. */}
+        <SerwistProvider
+          swUrl="/serwist/sw.js"
+          disable={process.env.NODE_ENV !== 'production'}
+          reloadOnOnline={false}
+        />
         <Toaster />
       </body>
     </html>
