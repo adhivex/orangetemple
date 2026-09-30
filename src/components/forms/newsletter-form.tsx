@@ -4,7 +4,8 @@ import { useActionState, useEffect, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { homeCopy } from '@/content/home'
-import { newsletterEmail, type NewsletterState } from '@/lib/newsletter'
+import { looksLikeEmail } from '@/lib/email'
+import type { NewsletterState } from '@/lib/newsletter'
 import { cn } from '@/lib/utils'
 import { subscribeToNewsletter } from '@/server/newsletter'
 
@@ -47,7 +48,7 @@ export function NewsletterForm() {
         action={formAction}
         noValidate
         onSubmit={(event) => {
-          const valid = newsletterEmail.safeParse(input.current?.value ?? '').success
+          const valid = looksLikeEmail(input.current?.value ?? '')
           setClientInvalid(!valid)
           if (!valid) {
             event.preventDefault()

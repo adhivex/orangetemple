@@ -1,8 +1,9 @@
 import { z } from 'zod'
 
 /**
- * Newsletter email rule, shared by the form (instant feedback) and the server action
- * (the authority). Stored lowercased and trimmed, matching the database check (D-052).
+ * Newsletter email rule for the server action, the authority (D-052). Stored lowercased
+ * and trimmed, matching the database check. Server-only: importing zod into the form
+ * would ship all of it to every page, since the footer is everywhere.
  */
 export const newsletterEmail = z.string().trim().toLowerCase().max(254).pipe(z.email())
 
