@@ -84,7 +84,7 @@ test('filters can be applied from the keyboard', async ({ page }) => {
     await expect(page.getByRole('dialog', { name: 'Filter temples' })).toBeVisible()
     await page.locator('#sheet-deity').focus()
   } else {
-    await page.locator('#panel-deity').focus()
+    await page.locator('main #panel-deity').focus()
   }
   await page.keyboard.press('ArrowDown')
   // Tab on to "Show results" through the remaining fields (and "Clear filters", which
