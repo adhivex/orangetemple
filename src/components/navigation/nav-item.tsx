@@ -3,10 +3,10 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
-import { toast } from 'sonner'
 
 import { useConsent } from '@/components/consent/cookie-consent-provider'
 import type { LinkItem } from '@/content/home'
+import { notify } from '@/lib/notify'
 import { isCurrentPath } from '@/lib/site-config'
 
 /**
@@ -52,7 +52,7 @@ export function NavItem({
       className={className}
       onClick={() => {
         onSelect?.()
-        if ('soon' in item) toast(item.soon)
+        if ('soon' in item) notify(item.soon)
         else openPreferences()
       }}
     >
@@ -78,7 +78,7 @@ export function SoonButton({
       type="button"
       className={className}
       aria-label={ariaLabel}
-      onClick={() => toast(message)}
+      onClick={() => notify(message)}
     >
       {children}
     </button>

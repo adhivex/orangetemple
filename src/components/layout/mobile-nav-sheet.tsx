@@ -1,13 +1,13 @@
 'use client'
 
 import { useSyncExternalStore } from 'react'
-import { toast } from 'sonner'
 
 import { NavItem } from '@/components/navigation/nav-item'
 import { InstallCard } from '@/components/pwa/install-card'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { soon } from '@/content/home'
+import { notify } from '@/lib/notify'
 import { sheetNav } from '@/lib/site-config'
 import { useOverlayHistory } from '@/lib/use-overlay-history'
 
@@ -78,7 +78,7 @@ export function MobileNavSheet({
             className="mt-4 w-full"
             onClick={() => {
               onOpenChange(false)
-              toast(soon.signIn)
+              notify(soon.signIn)
             }}
           >
             Sign In

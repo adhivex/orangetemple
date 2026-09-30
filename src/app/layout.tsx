@@ -12,7 +12,7 @@ import { SiteHeader } from '@/components/layout/site-header'
 import { ConnectivityToasts } from '@/components/pwa/connectivity-toasts'
 import { InstallPromptListener } from '@/components/pwa/install-prompt'
 import { SearchProvider } from '@/components/search/search-provider'
-import { Toaster } from '@/components/ui/sonner'
+import { LazyToaster } from '@/components/ui/lazy-toaster'
 import { env } from '@/env'
 import { cormorant, dmSans } from '@/lib/fonts'
 import { siteConfig } from '@/lib/site-config'
@@ -94,7 +94,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           disable={process.env.NODE_ENV !== 'production'}
           reloadOnOnline={false}
         />
-        <Toaster />
+        <LazyToaster />
       </body>
     </html>
   )

@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useSyncExternalStore } from 'react'
-import { toast } from 'sonner'
 
 import { TempleIcon } from '@/components/icons'
 import { Button } from '@/components/ui/button'
+import { notify } from '@/lib/notify'
 
 import { useInstallPrompt } from './install-prompt'
 
@@ -71,7 +71,7 @@ export function InstallCard() {
             return
           }
           const outcome = await install()
-          if (outcome === 'accepted') toast('OrangeTemple installed.')
+          if (outcome === 'accepted') notify('OrangeTemple installed.')
         }}
       >
         Install

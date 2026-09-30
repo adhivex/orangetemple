@@ -11,7 +11,6 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from 'react'
-import { toast } from 'sonner'
 
 import { homeCopy } from '@/content/home'
 import {
@@ -21,6 +20,7 @@ import {
   type Consent,
   type ConsentCategory,
 } from '@/lib/consent'
+import { notify } from '@/lib/notify'
 
 import { CookieBanner } from './cookie-banner'
 
@@ -99,7 +99,7 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
     listeners.forEach((listener) => listener())
     setBannerVisible(false)
     setPrefsOpen(false)
-    toast(choice.analytics || choice.marketing ? copy.savedToast : copy.essentialOnlyToast)
+    notify(choice.analytics || choice.marketing ? copy.savedToast : copy.essentialOnlyToast)
   }, [])
 
   const openPreferences = useCallback(() => {

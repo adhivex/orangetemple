@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect } from 'react'
-import { toast } from 'sonner'
+
+import { notify } from '@/lib/notify'
 
 /**
  * Tells the visitor when the connection drops or returns (MOBILE_WEBAPP.md §2). Renders
@@ -9,8 +10,8 @@ import { toast } from 'sonner'
  */
 export function ConnectivityToasts() {
   useEffect(() => {
-    const offline = () => toast("You're offline, showing saved pages")
-    const online = () => toast('Back online')
+    const offline = () => notify("You're offline, showing saved pages")
+    const online = () => notify('Back online')
     window.addEventListener('offline', offline)
     window.addEventListener('online', online)
     return () => {
