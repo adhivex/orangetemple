@@ -30,7 +30,7 @@ test.describe('homepage', () => {
     await expect(page.getByText('Devi temples are coming soon.')).toBeVisible()
     await page.getByRole('link', { name: 'Shiva', exact: true }).click()
     await expect(page).toHaveURL(/\/temples\?deity=shiva$/)
-    await expect(page.locator('#results-title')).toHaveText('12 temples')
+    await expect(page.locator('main #results-title')).toHaveText('12 temples')
   })
 
   test('the footer credits OrangeKite on every page', async ({ page }) => {
@@ -44,7 +44,7 @@ test.describe('homepage', () => {
 test.describe('temple directory', () => {
   test('lists all 15 temples', async ({ page }) => {
     await page.goto('/temples')
-    await expect(page.locator('#results-title')).toHaveText('15 temples')
+    await expect(page.locator('main #results-title')).toHaveText('15 temples')
   })
 
   test('search finds a temple by name', async ({ page }) => {
@@ -52,7 +52,7 @@ test.describe('temple directory', () => {
     await page.getByRole('searchbox', { name: /search temples/i }).fill('Kedarnath')
     await page.getByRole('searchbox', { name: /search temples/i }).press('Enter')
     await expect(page).toHaveURL(/[?&]q=Kedarnath/)
-    await expect(page.locator('#results-title')).toHaveText('1 temple')
+    await expect(page.locator('main #results-title')).toHaveText('1 temple')
     await expect(page.getByRole('link', { name: /Kedarnath Temple/ }).first()).toBeVisible()
   })
 
@@ -69,7 +69,7 @@ test.describe('temple directory', () => {
 
   test('a search with no matches shows the empty state', async ({ page }) => {
     await page.goto('/temples?q=qqqzzzxxx')
-    await expect(page.locator('#results-title')).toHaveText('No results')
+    await expect(page.locator('main #results-title')).toHaveText('No results')
     await expect(page.getByRole('heading', { name: 'No temples match' })).toBeVisible()
   })
 
@@ -86,7 +86,7 @@ test.describe('temple directory', () => {
       await panel.getByRole('button', { name: 'Show results' }).click()
     }
     await expect(page).toHaveURL(/[?&]collection=char-dham/)
-    await expect(page.locator('#results-title')).toHaveText('4 temples')
+    await expect(page.locator('main #results-title')).toHaveText('4 temples')
   })
 
   test('filtered results are noindex with a canonical to the directory (D-038)', async ({
@@ -150,7 +150,7 @@ test('Explore Bharat links each state to the filtered directory', async ({ page 
   const href = await stateLink.getAttribute('href')
   await stateLink.click()
   await expect(page).toHaveURL(new RegExp(`${href?.replace('?', '\\?')}$`))
-  await expect(page.locator('#results-title')).not.toHaveText('No results')
+  await expect(page.locator('main #results-title')).not.toHaveText('No results')
 })
 
 test('an unknown path shows the branded 404 with ways back', async ({ page }) => {

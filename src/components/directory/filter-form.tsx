@@ -84,7 +84,7 @@ function FilterSelect({
           id={id}
           name={name}
           defaultValue={value ?? ''}
-          className="h-12 w-full appearance-none rounded-button border border-ink/20 bg-surface pr-10 pl-4 text-ink"
+          className="h-12 w-full appearance-none rounded-button border border-ink/20 bg-surface pr-10 pl-4 text-[16px] text-ink"
         >
           <option value="">{any}</option>
           {options.map((option) => (

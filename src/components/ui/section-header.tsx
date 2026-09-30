@@ -54,8 +54,8 @@ export function SectionHeader({
         <Link
           href={moreHref}
           className={cn(
-            'group ml-auto flex shrink-0 items-center gap-2.5 self-start border-b border-gold-line pt-2.5 pb-1 text-[13px] font-medium whitespace-nowrap text-ink transition-colors hover:border-saffron-ink hover:text-saffron-ink',
-            'tablet:self-end tablet:pt-0 tablet:pb-1.5 tablet:text-[14px] pointer-coarse:pt-2.5',
+            'group ml-auto flex min-h-11 shrink-0 items-end gap-2.5 self-start border-b border-gold-line pb-1 text-[13px] font-medium whitespace-nowrap text-ink transition-colors hover:border-saffron-ink hover:text-saffron-ink',
+            'tablet:min-h-0 tablet:self-end tablet:pb-1.5 tablet:text-[14px] pointer-coarse:tablet:min-h-11',
           )}
         >
           <span className="tablet:hidden">{moreLabelMobile ?? moreLabel}</span>

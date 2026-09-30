@@ -37,7 +37,7 @@ export function SearchForm({ filters }: { filters: DirectoryFilters }) {
           placeholder="Search by name, city or state"
           autoComplete="off"
           enterKeyHint="search"
-          className="h-13 w-full rounded-full border border-ink/20 bg-surface pr-28 pl-12 text-body text-ink placeholder:text-muted-ink focus-visible:border-saffron-ink"
+          className="h-13 w-full rounded-full border border-ink/20 bg-surface pr-28 pl-12 text-[16px] text-ink placeholder:text-muted-ink focus-visible:border-saffron-ink"
         />
         <Button
           type="submit"

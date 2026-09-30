@@ -18,7 +18,8 @@ async function currentYear() {
 }
 
 const linkClass =
-  'inline-block py-2.5 text-left text-[15px] text-surface-alt/72 transition-colors hover:text-white tablet:py-0 tablet:text-[14.5px] pointer-coarse:py-[9px]'
+  // Phones and touch tablets: 44px targets (MOBILE_WEBAPP.md §3, §6).
+  'inline-flex min-h-11 min-w-11 items-center text-left text-[15px] text-surface-alt/72 transition-colors hover:text-white tablet:min-h-0 tablet:min-w-0 tablet:text-[14.5px] pointer-coarse:tablet:min-h-11'
 
 /**
  * Site footer on `night` (HOMEPAGE_SPEC.md §10–11): the newsletter row, a brand column
