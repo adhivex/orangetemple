@@ -4,7 +4,7 @@ import { defineConfig, devices } from '@playwright/test'
  * Playwright smoke, accessibility, keyboard and link checks (ARCHITECTURE.md §13) against
  * a production build at the two reference sizes. Run `pnpm build` first; the web server
  * below serves it. Locally an installed browser can be used instead of downloading one:
- * `PW_CHANNEL=msedge pnpm test:e2e`.
+ * `PW_CHANNEL=chrome pnpm test:e2e` (closest to CI's Chromium) or `PW_CHANNEL=msedge`.
  */
 const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:3000'
 const channel = process.env.PW_CHANNEL || undefined

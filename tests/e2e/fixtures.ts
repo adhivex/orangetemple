@@ -27,7 +27,7 @@ export const test = base.extend<{ consent: 'stored' | 'none'; consoleErrors: str
     await provide(context)
   },
   consoleErrors: [
-    async ({ page }, use) => {
+    async ({ page }, use, testInfo) => {
       const errors: string[] = []
       // A 404 page is served with a 404 status on purpose; Chrome logs that as a failed load.
       const notFoundPages = new Set<string>()
@@ -39,8 +39,11 @@ export const test = base.extend<{ consent: 'stored' | 'none'; consoleErrors: str
       page.on('console', (message) => {
         if (message.type() !== 'error') return
         if (notFoundPages.size > 0 && message.text().includes('status of 404')) return
-        // Offline tests cut the network on purpose (pwa.spec.ts).
-        if (message.text().includes('ERR_INTERNET_DISCONNECTED')) return
+        // Tests annotated "offline" cut the network on purpose, so failed loads are expected
+        // (Chromium reports them as ERR_INTERNET_DISCONNECTED or, through the service worker,
+        // ERR_FAILED).
+        const offline = testInfo.annotations.some((a) => a.type === 'offline')
+        if (offline && /Failed to load resource: net::ERR_/.test(message.text())) return
         errors.push(message.text())
       })
       page.on('pageerror', (error) => errors.push(error.message))

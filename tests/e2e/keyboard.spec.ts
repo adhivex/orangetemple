@@ -87,9 +87,14 @@ test('filters can be applied from the keyboard', async ({ page }) => {
     await page.locator('#panel-deity').focus()
   }
   await page.keyboard.press('ArrowDown')
-  // Tab to "Show results" through the remaining fields and "Clear filters".
-  for (let i = 0; i < 5; i++) await page.keyboard.press('Tab')
-  await expect(page.getByRole('button', { name: 'Show results' }).first()).toBeFocused()
+  // Tab on to "Show results" through the remaining fields (and "Clear filters", which
+  // appears once the change renders, so the number of stops can vary).
+  const showResults = page.getByRole('button', { name: 'Show results' }).first()
+  for (let i = 0; i < 8; i++) {
+    await page.keyboard.press('Tab')
+    if (await showResults.evaluate((el) => el === document.activeElement)) break
+  }
+  await expect(showResults).toBeFocused()
   await page.keyboard.press('Enter')
   await expect(page).toHaveURL(/[?&]deity=/)
 })

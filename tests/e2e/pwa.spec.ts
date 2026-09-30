@@ -31,6 +31,7 @@ test.describe('PWA', () => {
     context,
   }) => {
     test.setTimeout(60_000)
+    test.info().annotations.push({ type: 'offline', description: 'network cut on purpose' })
     await page.goto('/')
     await page.evaluate(async () => {
       await navigator.serviceWorker.ready
