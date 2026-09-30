@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { soon } from '@/content/home'
 import { sheetNav } from '@/lib/site-config'
+import { useOverlayHistory } from '@/lib/use-overlay-history'
 
 const TABLET_UP = '(min-width: 641px)'
 
@@ -33,6 +34,7 @@ export function MobileNavSheet({
   onOpenChange: (open: boolean) => void
   onClosed: () => void
 }) {
+  const history = useOverlayHistory(open, () => onOpenChange(false))
   const tabletUp = useSyncExternalStore(
     subscribe,
     () => window.matchMedia(TABLET_UP).matches,
@@ -61,7 +63,12 @@ export function MobileNavSheet({
               <li key={item.label} className="border-b border-line">
                 <NavItem
                   item={item}
-                  onSelect={() => onOpenChange(false)}
+                  replace
+                  onSelect={() => {
+                    // A page link replaces the menu's Back entry instead of popping it.
+                    if ('href' in item) history.release()
+                    onOpenChange(false)
+                  }}
                   className="flex min-h-14 w-full items-center py-[13px] text-left font-serif text-[22px] font-medium text-ink aria-[current=page]:text-saffron-ink tablet:py-4 tablet:text-[26px]"
                 />
               </li>

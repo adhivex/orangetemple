@@ -1,7 +1,9 @@
 import { cacheLife, cacheTag } from 'next/cache'
 
-import { REGIONS } from '@/lib/regions'
+import { regionLabel, REGIONS } from '@/lib/regions'
+import { buildSearchText } from '@/lib/search-text'
 import { getSupabase, unwrap } from '@/lib/supabase'
+import type { SearchEntry } from '@/lib/temple-search'
 
 import {
   COLLECTION_CARD_SELECT,
@@ -248,4 +250,47 @@ export async function getSitemapData(): Promise<SitemapData> {
     temples: unwrap(temples).map(toEntry),
     collections: unwrap(collections).map(toEntry),
   }
+}
+
+/**
+ * The search overlay's index (D-048): every published temple with its short name, state,
+ * region and collections, in collection order (Jyotirlingas, then Char Dham). Small
+ * enough to send to the browser, which filters it as the visitor types.
+ */
+export async function getSearchEntries(): Promise<SearchEntry[]> {
+  'use cache'
+  cacheContent()
+  const temples = unwrap(
+    await getSupabase()
+      .from('temples')
+      .select(
+        'slug, name, short_name, alternate_names, state:states(name, region), collections:collection_temples(display_order, collection:collections(name, display_order))',
+      )
+      .eq('status', 'PUBLISHED'),
+  )
+  const order = (t: (typeof temples)[number]) => {
+    const first = [...t.collections]
+      .filter((c) => c.collection)
+      .sort((a, b) => a.collection!.display_order - b.collection!.display_order)[0]
+    return first ? first.collection!.display_order * 1000 + first.display_order : Infinity
+  }
+  return [...temples]
+    .sort((a, b) => order(a) - order(b) || a.name.localeCompare(b.name))
+    .map((t) => {
+      const state = t.state?.name ?? ''
+      const region = t.state ? regionLabel(t.state.region) : ''
+      const groups = [...t.collections]
+        .filter((c) => c.collection)
+        .sort((a, b) => a.collection!.display_order - b.collection!.display_order)
+        .map((c) => c.collection!.name)
+      const name = t.short_name ?? t.name
+      return {
+        slug: t.slug,
+        name,
+        state,
+        region,
+        groups,
+        haystack: buildSearchText([name, t.name, ...t.alternate_names, state, region, ...groups]),
+      }
+    })
 }

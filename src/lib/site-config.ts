@@ -28,9 +28,6 @@ export const primaryNav: LinkItem[] = [
 /** The menu sheet (bottom sheet on phones, right sheet on tablets). */
 export const sheetNav: LinkItem[] = primaryNav
 
-/** Search has no route of its own until the search overlay (design phase D5, D-048). */
-export const searchHref = '/temples#search'
-
 /** Shortcuts on the 404 page. */
 export const menuNav: { collections: NavItem[]; site: NavItem[] } = {
   collections: [

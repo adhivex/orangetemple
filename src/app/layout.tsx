@@ -9,11 +9,13 @@ import { ShellProvider } from '@/components/layout/shell-context'
 import { SiteFooter } from '@/components/layout/site-footer'
 import { SiteHeader } from '@/components/layout/site-header'
 import { InstallPromptListener } from '@/components/pwa/install-prompt'
+import { SearchProvider } from '@/components/search/search-provider'
 import { Toaster } from '@/components/ui/sonner'
 import { env } from '@/env'
 import { cormorant, dmSans } from '@/lib/fonts'
 import { siteConfig } from '@/lib/site-config'
 import { cn } from '@/lib/utils'
+import { getSearchEntries } from '@/server/queries'
 
 import './globals.css'
 
@@ -48,7 +50,8 @@ export const viewport: Viewport = {
   colorScheme: 'only light',
 }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const searchEntries = await getSearchEntries()
   return (
     <html lang="en-IN" className={cn(cormorant.variable, dmSans.variable)}>
       <body id="top" className="flex min-h-dvh flex-col">
@@ -60,15 +63,17 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </a>
         <CookieConsentProvider>
           <ShellProvider>
-            <SiteHeader />
-            <main id="main" tabIndex={-1} className="flex-1 outline-none">
-              {children}
-            </main>
-            {/* Phones: room for the floating tab bar (or the temple action bar). */}
-            <div className="bg-night pb-20 tablet:pb-0">
-              <SiteFooter />
-            </div>
-            <MobileTabBar />
+            <SearchProvider entries={searchEntries}>
+              <SiteHeader />
+              <main id="main" tabIndex={-1} className="flex-1 outline-none">
+                {children}
+              </main>
+              {/* Phones: room for the floating tab bar (or the temple action bar). */}
+              <div className="bg-night pb-20 tablet:pb-0">
+                <SiteFooter />
+              </div>
+              <MobileTabBar />
+            </SearchProvider>
           </ShellProvider>
           {/* Only on Vercel, which serves the analytics script (D-021), and only after the
               visitor allows analytics (D-051). */}

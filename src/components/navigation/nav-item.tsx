@@ -18,12 +18,15 @@ export function NavItem({
   item,
   className,
   onSelect,
+  replace,
   children,
 }: {
   item: LinkItem
   className?: string
   /** Called after a selection, for example to close the menu sheet. */
   onSelect?: () => void
+  /** Replace the current history entry instead of adding one (links inside overlays). */
+  replace?: boolean
   children?: ReactNode
 }) {
   const pathname = usePathname()
@@ -34,6 +37,7 @@ export function NavItem({
     return (
       <Link
         href={item.href}
+        replace={replace}
         aria-current={isCurrentPath(pathname, item.href) ? 'page' : undefined}
         className={className}
         onClick={onSelect}

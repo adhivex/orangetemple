@@ -8,7 +8,8 @@ import { Logo } from '@/components/brand/logo'
 import { MenuIcon, SearchIcon } from '@/components/icons'
 import { NavItem, SoonButton } from '@/components/navigation/nav-item'
 import { soon } from '@/content/home'
-import { primaryNav, searchHref } from '@/lib/site-config'
+import { SearchButton } from '@/components/search/search-button'
+import { primaryNav } from '@/lib/site-config'
 import { cn } from '@/lib/utils'
 
 import { useShell } from './shell-context'
@@ -99,13 +100,12 @@ export function SiteHeader() {
           </nav>
 
           <div className="ml-auto flex items-center gap-0.5 tablet-lg:ml-3.5 tablet-lg:gap-1.5 desktop:ml-[30px] desktop:gap-3">
-            <Link
-              href={searchHref}
+            <SearchButton
               aria-label="Search temples"
               className="grid size-11 place-items-center rounded-full text-[20px] transition-colors hover:bg-current/10 pointer-coarse:size-[46px]"
             >
               <SearchIcon />
-            </Link>
+            </SearchButton>
             <SoonButton
               message={soon.signIn}
               className={cn(

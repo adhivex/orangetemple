@@ -5,19 +5,19 @@ import { usePathname } from 'next/navigation'
 import { useRef, type ComponentType, type SVGProps } from 'react'
 
 import { HomeIcon, MapIcon, MoreIcon, SearchIcon, TempleIcon } from '@/components/icons'
-import { isCurrentPath, isTempleDetailPath, searchHref } from '@/lib/site-config'
+import { SearchButton } from '@/components/search/search-button'
+import { isCurrentPath, isTempleDetailPath } from '@/lib/site-config'
 import { cn } from '@/lib/utils'
 
 import { useShell } from './shell-context'
 
 type Tab = { label: string; href: string; Icon: ComponentType<SVGProps<SVGSVGElement>> }
 
-/** D-047: every tab leads somewhere real in V1. Search is an action, never "current". */
+/** D-047: every tab leads somewhere real in V1. Search and More are actions, never "current". */
 const tabs: Tab[] = [
   { label: 'Home', href: '/', Icon: HomeIcon },
   { label: 'Temples', href: '/temples', Icon: TempleIcon },
   { label: 'Explore', href: '/explore-bharat', Icon: MapIcon },
-  { label: 'Search', href: searchHref, Icon: SearchIcon },
 ]
 
 const itemClass =
@@ -44,9 +44,7 @@ export function MobileTabBar() {
           <li key={label}>
             <Link
               href={href}
-              aria-current={
-                href !== searchHref && isCurrentPath(pathname, href) ? 'page' : undefined
-              }
+              aria-current={isCurrentPath(pathname, href) ? 'page' : undefined}
               className={itemClass}
             >
               <Icon />
@@ -54,6 +52,12 @@ export function MobileTabBar() {
             </Link>
           </li>
         ))}
+        <li>
+          <SearchButton className={cn(itemClass, 'w-full')}>
+            <SearchIcon />
+            Search
+          </SearchButton>
+        </li>
         <li>
           <button
             ref={more}

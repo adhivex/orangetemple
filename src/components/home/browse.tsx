@@ -18,10 +18,10 @@ import {
   WaveIcon,
 } from '@/components/icons'
 import { SoonButton } from '@/components/navigation/nav-item'
+import { SearchButton } from '@/components/search/search-button'
 import { ScrollList } from '@/components/ui/rail'
 import { homeCopy, soon } from '@/content/home'
 import { directoryHref } from '@/lib/routes'
-import { searchHref } from '@/lib/site-config'
 import { cn } from '@/lib/utils'
 import type { Tile } from '@/server/queries'
 
@@ -131,12 +131,12 @@ export function Browse({ deities, regions }: { deities: Tile[]; regions: Tile[] 
               )
             })}
             <li>
-              <Link href={searchHref} className={tileClass}>
+              <SearchButton className={cn(tileClass, 'w-full')}>
                 <Medallion>
                   <GridIcon />
                 </Medallion>
                 {copy.deities.allLabel}
-              </Link>
+              </SearchButton>
             </li>
           </ul>
         </div>
